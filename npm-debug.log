@@ -1,0 +1,49 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'nunjucks', '--save' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.33
+4 verbose readDependencies using package.json deps
+5 verbose cache add [ 'nunjucks', null ]
+6 verbose cache add name=undefined spec="nunjucks" args=["nunjucks",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: 'nunjucks',
+7 verbose parsed url   path: 'nunjucks',
+7 verbose parsed url   href: 'nunjucks' }
+8 silly lockFile 9eefa431-nunjucks nunjucks
+9 verbose lock nunjucks /Users/miguelangel/.npm/9eefa431-nunjucks.lock
+10 silly lockFile 9eefa431-nunjucks nunjucks
+11 silly lockFile 9eefa431-nunjucks nunjucks
+12 verbose addNamed [ 'nunjucks', '' ]
+13 verbose addNamed [ null, '*' ]
+14 silly lockFile 7ba8c248-nunjucks nunjucks@
+15 verbose lock nunjucks@ /Users/miguelangel/.npm/7ba8c248-nunjucks.lock
+16 silly addNameRange { name: 'nunjucks', range: '*', hasData: false }
+17 verbose registry.get https://registry.npmjs.org/nunjucks not expired, no request
+18 silly addNameRange number 2 { name: 'nunjucks', range: '*', hasData: true }
+19 silly addNameRange versions [ undefined, [] ]
+20 error TypeError: Cannot read property 'latest' of undefined
+20 error     at next (/usr/local/lib/node_modules/npm/lib/cache/add-named.js:219:35)
+20 error     at /usr/local/lib/node_modules/npm/lib/cache/add-named.js:207:5
+20 error     at RegClient.get_ (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/get.js:130:14)
+20 error     at RegClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/get.js:49:12)
+20 error     at evalmachine.<anonymous>:271:14
+20 error     at /usr/local/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:102:5
+20 error     at Object.oncomplete (evalmachine.<anonymous>:107:15)
+21 error If you need help, you may report this *entire* log,
+21 error including the npm and node versions, at:
+21 error     <http://github.com/npm/npm/issues>
+22 error System Darwin 15.0.0
+23 error command "node" "/usr/local/bin/npm" "install" "nunjucks" "--save"
+24 error cwd /Applications/XAMPP/xamppfiles/htdocs/dedos
+25 error node -v v0.10.33
+26 error npm -v 1.4.28
+27 error type non_object_property_load
+28 verbose exit [ 1, true ]

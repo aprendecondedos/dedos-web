@@ -1,0 +1,557 @@
+<Project version="2">
+  <resolution x="1144" y="783"/>
+  <language code="en"/>
+  <Activity>
+    <Objectives>
+      <obj type="sel" obj="instance1356"/>
+    </Objectives>
+    <Tokenlist/>
+    <Arealist>
+      <Area id="instance198" type="Jugador">
+        <pos x="35.65" y="27.65"/>
+        <rotation value="0"/>
+        <posfondo x="0" y="0"/>
+        <size height="436.5" width="1085.1"/>
+        <bg url=""/>
+        <Tokenlist>
+          <Token id="instance360" type="txt" numValue="1">
+            <pos x="390" y="42"/>
+            <size height="119.65" width="236.3"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <text>Where is the cat?</text>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance1648" type="img" numValue="1">
+            <pos x="391" y="204"/>
+            <size height="143" width="306"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <urlList>
+                <url>images(1).jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance1940" type="img" numValue="1">
+            <pos x="706" y="203"/>
+            <size height="142.1" width="301.25"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <urlList>
+                <url>images.jpg</url>
+              </urlList>
+              <feedback>I am an elephant</feedback>
+            </content>
+          </Token>
+          <Token id="instance1356" type="img" numValue="1">
+            <pos x="77" y="203"/>
+            <size height="142.95" width="301.35"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <urlList>
+                <url>images(2).jpg</url>
+                <url>descarga.jpg</url>
+                <url>gato.jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+        </Tokenlist>
+        <Tokenlist>null</Tokenlist>
+      </Area>
+    </Arealist>
+    <Arrows/>
+  </Activity>
+  <Activity>
+    <Objectives>
+      <obj type="sel" obj="instance11540"/>
+    </Objectives>
+    <Tokenlist/>
+    <Arealist>
+      <Area id="instance11031" type="Juego">
+        <pos x="361.3" y="32.35"/>
+        <rotation value="0"/>
+        <posfondo x="0" y="0"/>
+        <size height="209.25" width="345.6"/>
+        <bg url=""/>
+        <Tokenlist>
+          <Token id="instance11191" type="txt" numValue="1">
+            <pos x="26" y="53"/>
+            <size height="125.55000000000001" width="288"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <text>Where is the cat?</text>
+              <feedback/>
+            </content>
+          </Token>
+        </Tokenlist>
+        <Tokenlist>null</Tokenlist>
+      </Area>
+      <Area id="instance11360" type="Jugador">
+        <pos x="76.45" y="270.2"/>
+        <rotation value="0"/>
+        <posfondo x="0" y="0"/>
+        <size height="203.05" width="977.8"/>
+        <bg url=""/>
+        <Tokenlist>
+          <Token id="instance12124" type="img" numValue="1">
+            <pos x="646" y="46"/>
+            <size height="142.9" width="306.25"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <urlList>
+                <url>images.jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance11832" type="img" numValue="1">
+            <pos x="341" y="43"/>
+            <size height="145.25" width="291.5"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <urlList>
+                <url>images(1).jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance11540" type="img" numValue="1">
+            <pos x="31" y="41"/>
+            <size height="145.05" width="298.65"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <urlList>
+                <url>gato.jpg</url>
+                <url>descarga.jpg</url>
+                <url>images(2).jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+        </Tokenlist>
+        <Tokenlist>null</Tokenlist>
+      </Area>
+    </Arealist>
+    <Arrows/>
+  </Activity>
+  <Activity>
+    <Objectives>
+      <obj type="sel" obj="instance14059"/>
+      <obj type="sel" obj="instance14384"/>
+    </Objectives>
+    <Tokenlist/>
+    <Arealist>
+      <Area id="instance12700" type="Jugador">
+        <pos x="52.35" y="23.85"/>
+        <rotation value="0"/>
+        <posfondo x="0" y="0"/>
+        <size height="353.6" width="987.55"/>
+        <bg url=""/>
+        <Tokenlist>
+          <Token id="instance12861" type="txt" numValue="1">
+            <pos x="326" y="43"/>
+            <size height="108.19999999999999" width="342.2"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <text>Which animals are herbivorous?</text>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance14059" type="img" numValue="1">
+            <pos x="357" y="177"/>
+            <size height="143.55" width="288"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <urlList>
+                <url>images(1).jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance13690" type="img" numValue="1">
+            <pos x="49" y="177"/>
+            <size height="145.45" width="289.05"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <urlList>
+                <url>descarga.jpg</url>
+                <url>gato.jpg</url>
+                <url>images(2).jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance14384" type="img" numValue="1">
+            <pos x="669" y="178"/>
+            <size height="143.55" width="286.4"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <urlList>
+                <url>images.jpg</url>
+              </urlList>
+              <feedback>I am an elephant</feedback>
+            </content>
+          </Token>
+        </Tokenlist>
+        <Tokenlist>null</Tokenlist>
+      </Area>
+    </Arealist>
+    <Arrows/>
+  </Activity>
+  <Activity>
+    <Objectives>
+      <obj type="pair" origen="instance17678" tokenMeter="false">
+        <Targets>
+          <target name="instance15032"/>
+        </Targets>
+      </obj>
+      <obj type="pair" origen="instance17970" tokenMeter="false">
+        <Targets>
+          <target name="instance15535"/>
+        </Targets>
+      </obj>
+      <obj type="pair" origen="instance18262" tokenMeter="false">
+        <Targets>
+          <target name="instance15785"/>
+        </Targets>
+      </obj>
+    </Objectives>
+    <Tokenlist/>
+    <Arealist>
+      <Area id="instance14858" type="Juego">
+        <pos x="154.8" y="32.7"/>
+        <rotation value="0"/>
+        <posfondo x="0" y="0"/>
+        <size height="197.55" width="749.85"/>
+        <bg url=""/>
+        <Tokenlist>
+          <Token id="instance15032" type="txt" numValue="1">
+            <pos x="42" y="60"/>
+            <size height="102.1" width="203.8"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <text>Carnivorous</text>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance15535" type="txt" numValue="1">
+            <pos x="270" y="63"/>
+            <size height="99.65" width="209.45"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <text>Herbivore</text>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance15785" type="txt" numValue="1">
+            <pos x="497.8" y="61.6"/>
+            <size height="100.44999999999999" width="212.8"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <text>Omnivorous</text>
+              <feedback/>
+            </content>
+          </Token>
+        </Tokenlist>
+        <Tokenlist>null</Tokenlist>
+      </Area>
+      <Area id="instance16586" type="Jugador">
+        <pos x="69.5" y="250.35"/>
+        <rotation value="0"/>
+        <posfondo x="0" y="0"/>
+        <size height="310.85" width="965.3"/>
+        <bg url=""/>
+        <Tokenlist>
+          <Token id="instance16740" type="txt" numValue="1">
+            <pos x="248" y="26"/>
+            <size height="98.85" width="468.95"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <text>Clasify the images with the corresponding type</text>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance17970" type="img" numValue="1">
+            <pos x="331" y="147"/>
+            <size height="136.6" width="288"/>
+            <rotation value="0"/>
+            <clickable>false</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>true</movable>
+            <content>
+              <urlList>
+                <url>vaca.jpg</url>
+                <url>panda.jpg</url>
+                <url>elefante.jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance17678" type="img" numValue="1">
+            <pos x="32" y="147"/>
+            <size height="136.85" width="264.75"/>
+            <rotation value="0"/>
+            <clickable>false</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>true</movable>
+            <content>
+              <urlList>
+                <url>cocodrilo.jpg</url>
+                <url>leon.jpg</url>
+                <url>tigre.jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance18262" type="img" numValue="1">
+            <pos x="631" y="146"/>
+            <size height="136.05" width="290.9"/>
+            <rotation value="0"/>
+            <clickable>false</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>true</movable>
+            <content>
+              <urlList>
+                <url>chimpance.jpg</url>
+                <url>erizo.jpg</url>
+                <url>zorro.jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+        </Tokenlist>
+        <Tokenlist>null</Tokenlist>
+      </Area>
+    </Arealist>
+    <Arrows>
+      <arrow origin="instance17678" dest="instance15032"/>
+      <arrow origin="instance17970" dest="instance15535"/>
+      <arrow origin="instance18262" dest="instance15785"/>
+    </Arrows>
+  </Activity>
+  <Activity>
+    <Objectives>
+      <obj type="tokenMeter" id="instance19273" numValue="10">
+        <OriginTokens/>
+        <OriginZones>
+          <zone id="instance22002"/>
+        </OriginZones>
+      </obj>
+      <obj type="pair" origen="instance22002" tokenMeter="true">
+        <Targets>
+          <target name="instance19273"/>
+        </Targets>
+      </obj>
+    </Objectives>
+    <Tokenlist/>
+    <Arealist>
+      <Area id="instance18839" type="Juego">
+        <pos x="156.3" y="25.2"/>
+        <rotation value="0"/>
+        <posfondo x="0" y="0"/>
+        <size height="214" width="716.35"/>
+        <bg url=""/>
+        <Tokenlist>
+          <Token id="instance19273" type="img" numValue="1">
+            <pos x="370" y="47"/>
+            <size height="141.55" width="288"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <urlList>
+                <url>nina.jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance19000" type="txt" numValue="1">
+            <pos x="63" y="47"/>
+            <size height="139.15" width="288"/>
+            <rotation value="0"/>
+            <clickable>true</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>false</movable>
+            <content>
+              <text>Mary wants to buy 10 cats. Please, help her.</text>
+              <feedback/>
+            </content>
+          </Token>
+        </Tokenlist>
+        <Tokenlist>null</Tokenlist>
+      </Area>
+      <Area id="instance22002" type="Jugador">
+        <pos x="58.95" y="252.75"/>
+        <rotation value="0"/>
+        <posfondo x="0" y="0"/>
+        <size height="364.75" width="982.65"/>
+        <bg url=""/>
+        <Tokenlist>
+          <Token id="instance23386" type="img" numValue="5">
+            <pos x="501" y="209"/>
+            <size height="141.15" width="289"/>
+            <rotation value="0"/>
+            <clickable>false</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>true</movable>
+            <content>
+              <urlList>
+                <url>cincogatos.jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance23094" type="img" numValue="4">
+            <pos x="193" y="207"/>
+            <size height="142.55" width="295.55"/>
+            <rotation value="0"/>
+            <clickable>false</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>true</movable>
+            <content>
+              <urlList>
+                <url>cuatrogatos.jpg</url>
+                <url>cuatrogatosbus.jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance22510" type="img" numValue="2">
+            <pos x="349" y="41"/>
+            <size height="143.6" width="290"/>
+            <rotation value="0"/>
+            <clickable>false</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>true</movable>
+            <content>
+              <urlList>
+                <url>dosgatos.jpg</url>
+                <url>dosgatosbis.jpg</url>
+                <url>dosgatostris.jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance22218" type="img" numValue="1">
+            <pos x="36" y="42"/>
+            <size height="142.4" width="299.5"/>
+            <rotation value="0"/>
+            <clickable>false</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>true</movable>
+            <content>
+              <urlList>
+                <url>ungato.jpg</url>
+                <url>ungatobis.jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+          <Token id="instance22802" type="img" numValue="3">
+            <pos x="658" y="40"/>
+            <size height="144.85" width="289.15"/>
+            <rotation value="0"/>
+            <clickable>false</clickable>
+            <rotatable>true</rotatable>
+            <resizable>true</resizable>
+            <movable>true</movable>
+            <content>
+              <urlList>
+                <url>tresgatos.jpg</url>
+                <url>tresgatosbis.jpg</url>
+              </urlList>
+              <feedback/>
+            </content>
+          </Token>
+        </Tokenlist>
+        <Tokenlist>null</Tokenlist>
+      </Area>
+    </Arealist>
+    <Arrows>
+      <arrow origin="instance22002" dest="instance19273"/>
+    </Arrows>
+  </Activity>
+  <Activity>
+    <Objectives/>
+    <Tokenlist/>
+    <Arealist/>
+    <Arrows/>
+  </Activity>
+</Project>
