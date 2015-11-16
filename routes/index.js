@@ -21,7 +21,7 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 var uniqueId = function() {
-  return Math.random().toString(36).substr(2, 16);
+  return Math.random().toString(36).substr(2, 5).toUpperCase();
 };
 
 
@@ -34,14 +34,13 @@ router.get('/', function(req, res, next) {
 });
 
 // Uploading files
-var cpUpload = upload.fields([{ name: 'xml', maxCount: 1 }, { name: 'images' }]);
+var cpUpload = upload.fields([{ name: 'file_zip', maxCount: 1 }, { name: 'images' }]);
 router.post('/project/upload', cpUpload, function(req, res, next){
-  console.log(req.files) // form files
-  //fs.createReadStream(req.files.xml[0].path).pipe(unzip.Extract({ path: './uploads/'+ uniqueId() }));
 
   var image_array = [],
-      xml = '';
-  fs.createReadStream(req.files.xml[0].path)
+      xml = '',
+      folderName = uniqueId();
+  fs.createReadStream(req.files.file_zip[0].path)
       .pipe(unzip.Parse())
       .on('entry', function (entry) {
         var fileName = entry.path;
@@ -61,10 +60,11 @@ router.post('/project/upload', cpUpload, function(req, res, next){
         //  entry.autodrain();
         //}
       });
-  var stream = fs.createReadStream(req.files.xml[0].path).pipe(unzip.Extract({ path: './uploads/'+ uniqueId() }));
+  var stream = fs.createReadStream(req.files.file_zip[0].path).pipe(unzip.Extract({ path: './uploads/'+ folderName }));
   stream.on('close', function(){
     var upload_project = new Activity({
       name: req.body.name,
+      project: folderName,
       //data: req.files.xml[0].filename,
       data: xml,
       images: image_array

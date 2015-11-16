@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var activitySchema = mongoose.Schema({
     name        : String,
+    project      : String,
     data        : String,
     images        : [],
     //collar      : {type: Number, ref: 'Collar'},
