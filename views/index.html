@@ -7,11 +7,19 @@
         >
     <p>
     <label>Nombre del proyecto</label><br>
-    <input type="text" name="name" placeholder="¿Cuales son los animales?"/>
+    <input type="text" name="name"/>
     </p>
     <label>Archivo comprimido</label><br>
     <input type="file" name="file_zip" />
-    <br><br>
-    <input type="submit" value="Upload" name="submit">
+    <br>
+    <p>
+        <label>Jugadores</label><br>
+        <label><input type="radio" name="players" value="1"> 1</label>
+        <label><input type="radio" name="players" value="2"> 2</label>
+        <label><input type="radio" name="players" value="3"> 3</label>
+        <label><input type="radio" name="players" value="4"> 4</label>
+    </p>
+    <br>
+    <input type="submit" value="Enviar" name="submit">
 </form>
 {% endblock %}

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{title}}</title>
+    <title>{% block title %} {{name}} {% endblock %}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     {% block header %}{% endblock %}
   </head>

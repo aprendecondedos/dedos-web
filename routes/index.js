@@ -1,31 +1,31 @@
 var express = require('express');
 var router = express.Router();
+var lib = require('../lib/functions');
 var multer =  require('multer');
-var path =  require('path');
 var AdmZip = require('adm-zip');
-var fs = require('fs');  // file system
+// NodeJS libs
+var path =  require('path');
+var fs = require('fs');
 
-var unzip =  require('unzip');
-// Load models
-var Project =  require('../models/project');
+// Load model
+var Project = require('../models/project');
+
+// routes relacionadas con las páginas /play
+router.use('/play', require('./play'));
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './uploads/')
   },
   filename: function (req, file, cb) {
-    cb(null, uniqueId() + Date.now() +path.extname(file.originalname))
+    cb(null, lib.unique_id() + Date.now() + path.extname(file.originalname))
   }
 });
-var upload = multer({ storage: storage });
-
-var uniqueId = function() {
-  return Math.random().toString(36).substr(2, 5).toUpperCase();
-};
+var upload = multer({storage: storage});
 
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
+// home page
+router.get('/', function (req, res, next) {
   var data = {
     title: 'Express'
   };
@@ -33,41 +33,46 @@ router.get('/', function(req, res, next) {
 });
 
 // Uploading files
-var cpUpload = upload.fields([{ name: 'file_zip'}]);
-router.post('/project/upload', cpUpload, function(req, res, next){
+router.post('/project/upload', upload.fields([{name: 'file_zip'}]), function (req, res, next) {
 
   var image_array = [],
       xml = '',
-      folderName = uniqueId();
+      folderName = lib.unique_id();
 
   var zip = new AdmZip(req.files.file_zip[0].path);
   var zipEntries = zip.getEntries(); // an array of ZipEntry records
 
-  zipEntries.forEach(function(zipEntry) {
+  zipEntries.forEach(function (zipEntry) {
     if (zipEntry.isDirectory == false) {
-      console.log(zipEntry.toString());
-      if(zipEntry.name.indexOf('.xml') != -1 ) {
+      if (zipEntry.name.indexOf('.xml') != -1) {
         xml = zipEntry.entryName;
       } else {
         image_array.push(zipEntry.entryName);
       }
     }
   });
-  zip.extractAllTo('./uploads/'+ folderName, true);
+  // extraer todos los archivos a una ruta específica
+  zip.extractAllTo('./uploads/' + folderName, true);
+
+  // Creación de la tabla con los datos recogidos del formulario y el zip
   var project = new Project({
     name: req.body.name,
     project: folderName,
     data: xml,
-    images: image_array
+    images: image_array,
+    players: req.body.players
   });
   project.save(function (err) {
     if (err) // ...
       console.log('meow');
+    project.setActivities(project);
   });
 
-  fs.unlink('./'+req.files.file_zip[0].path);
+  // eliminamos el archivo comprimido
+  fs.unlink('./' + req.files.file_zip[0].path);
+
   res.status(204).end()
 });
 
 
-module.exports = router;
+module.exports = router
