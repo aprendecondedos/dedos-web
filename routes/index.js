@@ -65,7 +65,7 @@ router.post('/project/upload', upload.fields([{name: 'file_zip'}]), function (re
   project.save(function (err) {
     if (err) // ...
       console.log('meow');
-    project.setActivities(project);
+      project.setActivities();
   });
 
   // eliminamos el archivo comprimido
