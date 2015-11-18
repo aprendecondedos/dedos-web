@@ -16,11 +16,21 @@ router.get('/:id', function (req, res, next) {
     fs.readFile('uploads/'+project.project +'/'+ project.data, function(err, data) {
       parser.parseString(data, function (err, result) {
         //console.dir(result);
-        console.log(result.Project.Activity[1].Objectives[0].obj[0].$.type);
-        console.log(result.Project.Activity[1].Objectives[0].obj[0].$.obj);
-        console.log('Done');
+        //console.log(result.Project.Activity[0].Objectives[0].obj[0].$.type);
+        //console.log('Done');
+        //console.log(result.Project.Activity);
       });
     });
+
+    //project.save(function (err) {
+    //  activities: [
+    //    {
+    //
+    //    }
+    //  ]
+    //})
+    project.setActivities();
+    console.log(project)
 
   })
 });
