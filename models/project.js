@@ -13,14 +13,6 @@ var projectSchema = mongoose.Schema({
     activities  : [{type: Schema.Types.ObjectId, ref: 'Activity'}],
     createdDate : {type: Date, default: Date.now}
 });
-/**
- * Carga y guardado de actividades antes de guardar el project
- *
- */
-//projectSchema.pre('save', function(next) {
-//    this.setActivities();
-//    next();
-//});
 
 projectSchema.methods.setActivities = function() {
     var project = this;
@@ -34,9 +26,10 @@ projectSchema.methods.setActivities = function() {
             obj_activity = new Activity({
                 project_id: project._id
             });
-            //obj_activity
-            //    .setElements();
-            obj_activity.save();
+            obj_activity
+                //.setElements()
+                .setObjectives(activity.Objectives)
+                .save();
             activities.push(obj_activity);
         });
         project.activities = activities;
@@ -57,15 +50,6 @@ projectSchema.methods.loadXML = function(file) {
     return parser;
 };
 
-projectSchema.methods.updateUser = function(request, response){
-
-    this.user.name = request.body.name;
-    this.user.address = request.body.address;
-    this.user.save();
-    response.redirect('/user');
-};
-
-
 module.exports = mongoose.model('Project', projectSchema);
 
 // Activity model
@@ -78,18 +62,19 @@ var activitySchema = mongoose.Schema({
     elements            : [{type: Schema.Types.ObjectId, ref: 'Element' }],
     objectives          : [{type: Schema.Types.ObjectId, ref: 'Objective' }]
 });
-//activitySchema.pre('save', function(next) {
-//    //this.setElements();
-//    //this.setObjectives();
-//    next();
-//});
 
-activitySchema.methods.setElements = function() {
-    var project = this;
+activitySchema.methods.setElements = function(dataXML) {
+    var activity = this;
     // Cargamos las actividades del XML
     //var file = 'uploads/'+this.project +'/'+ this.data;
     //this.prueba = [{'OBJETIVO_id': {done: false, answered: false} }];
-    console.log(this.prueba);
+};
+activitySchema.methods.setObjectives = function(objectives) {
+    objectives.forEach(function(objective){
+        obj_objective = new Objective();
+        obj_objective.save();
+    });
+    return this;
 };
 
 activitySchema.methods.loadFromXML = function(file) {
@@ -103,3 +88,20 @@ activitySchema.methods.loadFromXML = function(file) {
 };
 
 var Activity  = mongoose.model('Activity', activitySchema);
+
+
+// Objective model
+var objectiveSchema = mongoose.Schema({
+    project_id     : { type: Schema.Types.ObjectId, ref: 'Project' },
+    players        : [{type: Schema.Types.ObjectId, ref: 'Player' }],
+    cards          : [{type: Schema.Types.ObjectId, ref: 'Card' }]
+});
+var Objective  = mongoose.model('Objective', objectiveSchema);
+
+// Element model
+var elementSchema = mongoose.Schema({
+    project_id     : { type: Schema.Types.ObjectId, ref: 'Project' },
+    players        : [{type: Schema.Types.ObjectId, ref: 'Player' }],
+    cards          : [{type: Schema.Types.ObjectId, ref: 'Card' }]
+});
+var Element  = mongoose.model('Element', elementSchema);

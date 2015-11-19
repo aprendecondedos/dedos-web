@@ -10,10 +10,10 @@ router.get('/:id', function (req, res, next) {
     Project.findOne({ 'project': req.params.id }).populate('activities').exec(function(err, project) {
         // Excepcion de los errores
         if (err) return handleError(err);
-
+        console.log(project.setActivities());
         project.activities.forEach(function(activity){
             //console.log(activity);
-            activity.setElements();
+            //activity.setElements();
         });
         // Mostramos la vista
         res.render('play', project);

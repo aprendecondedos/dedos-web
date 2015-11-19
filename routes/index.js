@@ -62,11 +62,12 @@ router.post('/project/upload', upload.fields([{name: 'file_zip'}]), function (re
     images: image_array,
     players: req.body.players
   });
-  project.save(function (err) {
-    if (err) // ...
-      console.log('meow');
-      project.setActivities();
-  });
+    project.save(function (err) {
+        if (err) // ...
+            console.log('meow');
+
+        project.setActivities();
+    });
 
   // eliminamos el archivo comprimido
   fs.unlink('./' + req.files.file_zip[0].path);
