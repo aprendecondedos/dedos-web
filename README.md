@@ -2,6 +2,7 @@
 A través de este proyecto los estudiantes podrán completar las actividades diseñadas por los profesores con DEDOS-Editor en ordenadores, pizarras digitales, tabletas y superficies multicontacto necesitando únicamente acceso a internet.
 
 ## Requisitos
+Dedos-web requiere las siguientes tecnologías para su instalación:
 * [node.js](https://github.com/nodejs/node)
 * [npm - Package manager](https://github.com/npm/npm)
 * [MongoDB](https://www.mongodb.org/)
@@ -23,6 +24,15 @@ module.exports = {
 ```
 
 ### Instalación
-```node.js
+```javascript
 npm install
 ```
+### Ejecutar
+
+* Desarrollo
+
+Actualmente se encuentra en fase de desarrollo, para acceder a la página web deberá insertar la siguiente url en su navegador:
+http://127.0.0.1:3000
+
+### Licencia
+Dedos-web se encuentra bajo la licencia GNU General Public License v3 (GPL-3)
