@@ -13,7 +13,7 @@ A través de este proyecto los estudiantes podrán completar las actividades dis
 * [mongoose](https://www.npmjs.com/package/mongoose)
 * [nunjucks](https://www.npmjs.com/package/nunjucks)
 * [multer](https://www.npmjs.com/package/multer)
-
+*
 ### Configuración
 Editar [config/database.js](../master/config/database.js)
 
