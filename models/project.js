@@ -88,7 +88,8 @@ activitySchema.methods.setElements = function() {
     var project = this;
     // Cargamos las actividades del XML
     //var file = 'uploads/'+this.project +'/'+ this.data;
-    console.log(this);
+    //this.prueba = [{'OBJETIVO_id': {done: false, answered: false} }];
+    console.log(this.prueba);
 };
 
 activitySchema.methods.loadFromXML = function(file) {
