@@ -1,4 +1,6 @@
 # dedos-web
+![Dedos banner](http://i.imgur.com/vg6EzC9.png)
+
 A través de este proyecto los estudiantes podrán completar las actividades diseñadas por los profesores con DEDOS-Editor en ordenadores, pizarras digitales, tabletas y superficies multicontacto necesitando únicamente acceso a internet.
 
 ## Requisitos
