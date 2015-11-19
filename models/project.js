@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 var fs = require('fs');
 var xml2js = require('xml2js');
 var parser = new xml2js.Parser({async: true});
+var util = require('util');
 
 var projectSchema = mongoose.Schema({
     name        : String,
@@ -27,7 +28,7 @@ projectSchema.methods.setActivities = function() {
                 project_id: project._id
             });
             obj_activity
-                //.setElements()
+                .setElements(activity.Arealist[0].Area)
                 .setObjectives(activity.Objectives)
                 .save();
             activities.push(obj_activity);
@@ -63,16 +64,25 @@ var activitySchema = mongoose.Schema({
     objectives          : [{type: Schema.Types.ObjectId, ref: 'Objective' }]
 });
 
-activitySchema.methods.setElements = function(dataXML) {
-    var activity = this;
+activitySchema.methods.setElements = function(elements) {
+    if(util.isArray(elements)) {
+        elements.forEach(function(element){
+            obj_element = new Element();
+            // {id, type}
+            console.log(element.$.type);
+            element.Tokenlist.forEach(function(token){
+                console.log(token);
+            });
+        });
+        return this;
+    }
     // Cargamos las actividades del XML
     //var file = 'uploads/'+this.project +'/'+ this.data;
     //this.prueba = [{'OBJETIVO_id': {done: false, answered: false} }];
 };
 activitySchema.methods.setObjectives = function(objectives) {
     objectives.forEach(function(objective){
-        obj_objective = new Objective();
-        obj_objective.save();
+        obj_objective = new Objective().save();
     });
     return this;
 };
