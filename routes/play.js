@@ -5,12 +5,19 @@ var xml2js = require('xml2js');
 // Load model
 var Project = require('../models/project');
 var Activity = require('../models/project');
+var User = require('../models/user');
 
 router.get('/:id', function (req, res, next) {
+    var user = User({name: 'ALUMNO1'});
+    user
+        .setAsStudent()
+        .save()
+    console.log(user);
+
     Project.findOne({ 'project': req.params.id }).populate('activities').exec(function(err, project) {
         // Excepcion de los errores
         if (err) return handleError(err);
-        console.log(project.setActivities());
+        //console.log(project.setActivities());
         project.activities.forEach(function(activity){
             //console.log(activity);
             //activity.setElements();

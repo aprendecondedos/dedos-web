@@ -5,6 +5,8 @@ var xml2js = require('xml2js');
 var parser = new xml2js.Parser({async: true});
 var util = require('util');
 
+
+// Project model
 var projectSchema = mongoose.Schema({
     name        : String,
     project     : String,
@@ -53,13 +55,11 @@ projectSchema.methods.loadXML = function(file) {
 
 module.exports = mongoose.model('Project', projectSchema);
 
+
+
 // Activity model
-
-
 var activitySchema = mongoose.Schema({
     project_id          : { type: Schema.Types.ObjectId, ref: 'Project' },
-    numPlayersAnswered  : {type: Number, default: 0},
-    numSuccessAnswers   : {type: Number, default: 0},
     elements            : [{type: Schema.Types.ObjectId, ref: 'Element' }],
     objectives          : [{type: Schema.Types.ObjectId, ref: 'Objective' }]
 });
@@ -103,15 +103,33 @@ var Activity  = mongoose.model('Activity', activitySchema);
 // Objective model
 var objectiveSchema = mongoose.Schema({
     project_id     : { type: Schema.Types.ObjectId, ref: 'Project' },
-    players        : [{type: Schema.Types.ObjectId, ref: 'Player' }],
+    players        : [{type: Schema.Types.ObjectId, ref: 'User' }],
     cards          : [{type: Schema.Types.ObjectId, ref: 'Card' }]
 });
 var Objective  = mongoose.model('Objective', objectiveSchema);
 
 // Element model
 var elementSchema = mongoose.Schema({
-    project_id     : { type: Schema.Types.ObjectId, ref: 'Project' },
-    players        : [{type: Schema.Types.ObjectId, ref: 'Player' }],
-    cards          : [{type: Schema.Types.ObjectId, ref: 'Card' }]
+
 });
+elementSchema.methods.setElementType = function() {
+
+};
+elementSchema.methods.setCardType = function() {
+    //this.card_type = {img, text}
+    //this.objective_id = n
+    //this.text = string
+    //this.images = array
+};
 var Element  = mongoose.model('Element', elementSchema);
+
+// Action model
+var actionSchema = mongoose.Schema({
+    player_id       : { type: Schema.Types.ObjectId, ref: 'User' },
+    action          : String,
+    answered        : Boolean,
+    done            : Boolean,
+    element_id      : { type: Schema.Types.ObjectId, ref: 'Element' },
+    createdDate     : {type: Date, default: Date.now}
+});
+var Action  = mongoose.model('Action', actionSchema);
