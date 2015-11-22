@@ -1,4 +1,6 @@
 var express = require('express');
+var io = require('socket.io');
+var passport = require('passport');
 var path = require('path');
 var favicon = require('serve-favicon');
 var nunjucks = require('nunjucks');
@@ -7,6 +9,8 @@ var multer = require('multer');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose =  require('mongoose');
+var fs = require('fs');
+var join = require('path').join;
 
 var app = express();
 
@@ -16,14 +20,24 @@ var configDB = require('./config/database.js');
 // Connecto to MongoDB
 mongoose.connect(configDB.url);
 
+var i18n = require('./i18n/i18n');
+app.use(i18n.middleware({
+    supported_languages: ['es', 'en'],
+    default_lang: "es",
+    mappings: {
+        'es': 'es'
+    },
+    translation_directory: __dirname+"/i18n"
+}));
 
 // view engine setup
-nunjucks.configure('views', {
+nunjucks.configure('app/views', {
   autoescape: true,
   express: app,
   watch: true
 });
-app.set('views', path.join(__dirname, 'views'));
+
+app.set('views', path.join(__dirname, '/app/views'));
 app.set('view engine', 'html');
 
 
@@ -35,7 +49,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(require('./routes'))
+//app.use(require('./routes'))
+
+// Bootstrap models
+fs.readdirSync(join(__dirname, 'app/models')).forEach(function (file) {
+    if (~file.indexOf('.js')) require(join(__dirname, 'app/models', file));
+});
+// Bootstrap routes
+require('./app/routes')(app, passport);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

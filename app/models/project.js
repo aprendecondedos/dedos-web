@@ -5,18 +5,23 @@ var xml2js = require('xml2js');
 var parser = new xml2js.Parser({async: true});
 var util = require('util');
 
-
 // Project model
 var projectSchema = mongoose.Schema({
     name        : String,
     project     : String,
     data        : String,
     images      : [],
-    players     : Number,
+    players      : [{type: Schema.Types.ObjectId, ref: 'User' }],
     activities  : [{type: Schema.Types.ObjectId, ref: 'Activity'}],
+    // Propiedades extra del proyectos
+    properties  : {
+        numPlayers     : Number
+    },
     createdDate : {type: Date, default: Date.now}
 });
+projectSchema.methods.load = function() {
 
+};
 projectSchema.methods.setActivities = function() {
     var project = this;
     // Cargamos las actividades del XML
@@ -29,6 +34,9 @@ projectSchema.methods.setActivities = function() {
             obj_activity = new Activity({
                 project_id: project._id
             });
+            // @todo crear actividades desde XML
+            obj_activity.saveFromXML(activity);
+
             obj_activity
                 .setElements(activity.Arealist[0].Area)
                 .setObjectives(activity.Objectives)
@@ -53,51 +61,29 @@ projectSchema.methods.loadXML = function(file) {
     return parser;
 };
 
-module.exports = mongoose.model('Project', projectSchema);
+/**
+ * Statics
+ */
 
+projectSchema.statics = {
 
+    /**
+     * Buscar proyecto por id
+     *
+     * @param {ObjectId} id
+     * @param {Function} cb
+     * @api private
+     */
 
-// Activity model
-var activitySchema = mongoose.Schema({
-    project_id          : { type: Schema.Types.ObjectId, ref: 'Project' },
-    elements            : [{type: Schema.Types.ObjectId, ref: 'Element' }],
-    objectives          : [{type: Schema.Types.ObjectId, ref: 'Objective' }]
-});
-
-activitySchema.methods.setElements = function(elements) {
-    if(util.isArray(elements)) {
-        elements.forEach(function(element){
-            obj_element = new Element();
-            // {id, type}
-            console.log(element.$.type);
-            element.Tokenlist.forEach(function(token){
-                console.log(token);
-            });
-        });
-        return this;
+    load: function (id, cb) {
+        this.findOne({_id: id})
+            //.populate('user', 'name email username')
+            //.populate('comments.user')
+            .exec(cb);
     }
-    // Cargamos las actividades del XML
-    //var file = 'uploads/'+this.project +'/'+ this.data;
-    //this.prueba = [{'OBJETIVO_id': {done: false, answered: false} }];
-};
-activitySchema.methods.setObjectives = function(objectives) {
-    objectives.forEach(function(objective){
-        obj_objective = new Objective().save();
-    });
-    return this;
-};
+}
 
-activitySchema.methods.loadFromXML = function(file) {
-  var parser = new xml2js.Parser();
-    fs.readFile(file, function(err, data) {
-        parser.parseString(data, function (err, result) {
-          //console.dir(result);
-          console.log('Done!!');
-        });
-  });
-};
-
-var Activity  = mongoose.model('Activity', activitySchema);
+mongoose.model('Project', projectSchema);
 
 
 // Objective model

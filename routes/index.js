@@ -8,7 +8,7 @@ var path =  require('path');
 var fs = require('fs');
 
 // Load model
-var Project = require('../models/project');
+var Project = require('./project');
 
 // routes relacionadas con las páginas /play
 router.use('/play', require('./play'));
@@ -56,11 +56,11 @@ router.post('/project/upload', upload.fields([{name: 'file_zip'}]), function (re
 
   // Creación de la tabla con los datos recogidos del formulario y el zip
   var project = new Project({
-    name: req.body.name,
-    project: folderName,
-    data: xml,
-    images: image_array,
-    players: req.body.players
+        name: req.body.name,
+        project: folderName,
+        data: xml,
+        images: image_array,
+        numPlayers: req.body.players
   });
     project.save(function (err) {
         if (err) // ...

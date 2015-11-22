@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %} {{ gettext("new:project") }} {% endblock %}
+{% block content %}
+
+<h2>{{ gettext("new:project") }}</h2>
+<hr>
+<form id        =  "upload_form"
+      enctype   =  "multipart/form-data"
+      action    =  "/project/new"
+      method    =  "post"
+        >
+    <p>
+        <label>{{ gettext("new:project:name") }}</label><br>
+        <input type="text" name="name"/>
+    </p>
+    <label>{{ gettext("new:project:file") }}</label><br>
+    <input type="file" name="file_zip" />
+    <br>
+    <p>
+        <label>{{ gettext("players") }}</label><br>
+        <label><input type="radio" name="players" value="1"> 1</label>
+        <label><input type="radio" name="players" value="2"> 2</label>
+        <label><input type="radio" name="players" value="3"> 3</label>
+        <label><input type="radio" name="players" value="4"> 4</label>
+    </p>
+    <br>
+    <input type="submit" value="Enviar" name="submit">
+</form>
+{% endblock %}

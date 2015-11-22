@@ -3,16 +3,24 @@ var router = express.Router();
 var fs = require('fs');
 var xml2js = require('xml2js');
 // Load model
-var Project = require('../models/project');
-var Activity = require('../models/project');
-var User = require('../models/user');
+var Project = require('./project');
+//var Activity = require('../models/user');
+var mongoose = require('mongoose');
+require('./user');
+var User = mongoose.model('User');
+require('./player');
+var Player = mongoose.model('Player');
+//var Student = require('../models/student');
 
 router.get('/:id', function (req, res, next) {
-    var user = User({name: 'ALUMNO1'});
-    user
-        .setAsStudent()
-        .save()
+    var user = new User({'name': 'pep'}).setAsStudent();
+    var player = new Player();
+    console.log(player);
+    //user
+    //    .setAsStudent()
+        //.save()
     console.log(user);
+
 
     Project.findOne({ 'project': req.params.id }).populate('activities').exec(function(err, project) {
         // Excepcion de los errores
@@ -20,7 +28,7 @@ router.get('/:id', function (req, res, next) {
         //console.log(project.setActivities());
         project.activities.forEach(function(activity){
             //console.log(activity);
-            //activity.setElements();
+            activity.setElements();
         });
         // Mostramos la vista
         res.render('play', project);

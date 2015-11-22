@@ -26,7 +26,7 @@ module.exports = {
 ```
 
 ### Instalación
-```javascript
+```sh
 npm install
 ```
 ### Ejecutar
