@@ -6,7 +6,11 @@ var parser = new xml2js.Parser({async: true});
 
 var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
+var Activity = mongoose.model('Activity');
+var Objective = mongoose.model('Objective');
+var Element = mongoose.model('Element');
 var Area = mongoose.model('Area');
+var Token = mongoose.model('Token');
 
 /**
  * Load
@@ -59,13 +63,75 @@ exports.new = function(req, res){
             // Lectura del XML para la creación del proyecto
             var xml_file = new_path + "/" + xml;
             var xml_data = fs.readFileSync(xml_file);
-            parser.parseString(xml_data);
+
             var project = new Project({
                 name: req.body.name,
                 project: project_id
             });
+
+            parser.parseString(xml_data);
+            parser.on('end', function (XML) {
+                XML.Project.Activity.forEach(function(activity_data){
+                    // Set activities
+                    activities = [];
+                    var activity = new Activity({ project_id: project.id });
+
+                    // Set objectives
+                    var objectives = [];
+                    activity_data.Objectives.forEach(function(objectives_data) {
+                        objectives_data.obj.forEach(function(objective_data) {
+                            var objective = new Objective(objective_data.$);
+                            objective.save();
+                            objectives.push(objective);
+                        });
+                    });
+                    activity.setObjectives(objectives);
+
+                    // Set elements
+                    var elements = [];
+                    activity_data.Arealist.forEach(function(area_list) {
+                        area_list.Area.forEach(function(area_data){
+                            var area = new Area({
+                                element_id  : area_data.$.id,
+                                type        : area_data.$.type,
+                                bg          : area_data.bg[0].$.url
+                            });
+                            area.save();
+                            elements.push(area);
+
+                            // Set tokens (cards)
+                            var tokens = [];
+                            area_data.Tokenlist.forEach(function(tokens_data){
+                                if(typeof tokens_data == 'object'){
+                                    tokens_data.Token.forEach(function(token_data) {
+                                        //console.log(token_data);
+                                        //console.log("\n");
+                                        var token = new Token({
+                                            element_id  : token_data.$.id,
+                                            type        : area_data.$.type
+                                        });
+                                        token.save();
+                                        // imgCard
+                                        // textCard
+                                        tokens.push(token);
+                                        elements.push(token);
+                                    });
+                                    //area.setTokens(tokens);
+                                }
+                            });
+                            //elements.push(new Area(objective_data.$));
+                        });
+                    });
+                    activity.setElements(elements);
+                    //
+                    console.log(activity);
+                    activity.save();
+                    activities.push(activity);
+                });
+            });
+            project.setActivities(activities);
             project.save();
-            res.redirect('/project/'+ project._id);
+            //res.redirect('/project/'+ project._id);
 
         });
 
@@ -81,9 +147,12 @@ exports.new = function(req, res){
 
 exports.show = function (req, res){
     var p = new Area({
+        name: 'ejejeje',
         prueba: 'FUNCIONA'
     });
     console.log(p);
+    p.setProject();
+
     res.render('project/show', {
         title: req.project.name,
         project: req.project

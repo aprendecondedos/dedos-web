@@ -1,10 +1,24 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+require('./element');
 var Element = mongoose.model('Element');
-var extend = require('mongoose-schema-extend');
+
 
 var AreaSchema = new Schema({
-    prueba: String,
+    background  : String,
+    tokens      : [{type: Schema.Types.ObjectId, ref: 'Token'}]
 });
-
+/**
+ * Methods
+ *
+ * @type {{}}
+ */
+AreaSchema.methods = {
+    setTokens: function(tokens){
+        if (util.isArray(tokens)) {
+            this.tokens = tokens;
+            return this;
+        }
+    }
+};
 var Area = Element.discriminator('Area', AreaSchema);

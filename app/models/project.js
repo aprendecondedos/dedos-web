@@ -19,9 +19,7 @@ var projectSchema = mongoose.Schema({
     },
     createdDate : {type: Date, default: Date.now}
 });
-projectSchema.methods.load = function() {
 
-};
 projectSchema.methods.setActivities = function() {
     var project = this;
     // Cargamos las actividades del XML
@@ -47,6 +45,15 @@ projectSchema.methods.setActivities = function() {
         project.save();
     });
 
+};
+
+projectSchema.methods = {
+    setObjectives: function(activities) {
+        if (util.isArray(activities)) {
+            this.activties = activities;
+            return this;
+        }
+    }
 };
 
 /**
@@ -92,7 +99,7 @@ var objectiveSchema = mongoose.Schema({
     players        : [{type: Schema.Types.ObjectId, ref: 'User' }],
     cards          : [{type: Schema.Types.ObjectId, ref: 'Card' }]
 });
-var Objective  = mongoose.model('Objective', objectiveSchema);
+var Objective  = mongoose.model('ObjectiveXXXX', objectiveSchema);
 
 // Element model
 var elementSchema = mongoose.Schema({
@@ -118,4 +125,4 @@ var actionSchema = mongoose.Schema({
     element_id      : { type: Schema.Types.ObjectId, ref: 'Element' },
     createdDate     : {type: Date, default: Date.now}
 });
-var Action  = mongoose.model('Action', actionSchema);
+var Action  = mongoose.model('ActionXX', actionSchema);

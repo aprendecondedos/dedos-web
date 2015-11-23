@@ -5,7 +5,8 @@ var util = require('util');
 // Activity model
 var activitySchema = new Schema({
     project_id   : { type: Schema.Types.ObjectId, ref: 'Project' },
-    objectives   : [{type: Schema.Types.ObjectId, ref: 'Objective' }]
+    objectives   : [{type: Schema.Types.ObjectId, ref: 'Objective' }],
+    elements     : [{type: Schema.Types.ObjectId, ref: 'Elements' }]
 });
 /**
  * Hooks
@@ -19,27 +20,16 @@ activitySchema.pre('save', function (next) {
  * @type {{}}
  */
 activitySchema.methods = {
-    saveFromXML: function(xml_data) {
-        this
-            .setElements(xml_data.Arealist[0].Area)
-            .setObjectives(xml_data.Objectives);
-    },
+
     setObjectives: function(objectives) {
-        objectives.forEach(function(objective){
-            obj_objective = new Objective().save();
-        });
-        return this;
+        if (util.isArray(objectives)) {
+            this.objectives = objectives;
+            return this;
+        }
     },
     setElements: function(elements) {
         if (util.isArray(elements)) {
-            elements.forEach(function (element) {
-                obj_element = new Element();
-                // {id, type}
-                console.log(element.$.type);
-                element.Tokenlist.forEach(function (token) {
-                    console.log(token);
-                });
-            });
+            this.elements = elements;
             return this;
         }
     }
