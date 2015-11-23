@@ -6,6 +6,7 @@ var parser = new xml2js.Parser({async: true});
 
 var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
+var Area = mongoose.model('Area');
 
 /**
  * Load
@@ -79,6 +80,10 @@ exports.new = function(req, res){
  */
 
 exports.show = function (req, res){
+    var p = new Area({
+        prueba: 'FUNCIONA'
+    });
+    console.log(p);
     res.render('project/show', {
         title: req.project.name,
         project: req.project

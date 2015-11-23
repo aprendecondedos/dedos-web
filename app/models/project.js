@@ -107,7 +107,7 @@ elementSchema.methods.setCardType = function() {
     //this.text = string
     //this.images = array
 };
-var Element  = mongoose.model('Element', elementSchema);
+var ElementZZZZ  = mongoose.model('ElementZZZZ', elementSchema);
 
 // Action model
 var actionSchema = mongoose.Schema({
