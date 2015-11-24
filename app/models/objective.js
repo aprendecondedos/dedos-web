@@ -4,9 +4,8 @@ var Schema = mongoose.Schema;
 
 var ObjectiveSchema = new Schema({
     type           : String,
-    obj            : String,
-    tokenMeter     : Boolean,
-    numValue       : Number
+
+    // MATH
 });
 /**
  * Hooks

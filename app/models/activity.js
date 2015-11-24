@@ -3,15 +3,15 @@ var Schema = mongoose.Schema;
 var util = require('util');
 
 // Activity model
-var activitySchema = new Schema({
+var ActivitySchema = new Schema({
     project_id   : { type: Schema.Types.ObjectId, ref: 'Project' },
     objectives   : [{type: Schema.Types.ObjectId, ref: 'Objective' }],
-    elements     : [{type: Schema.Types.ObjectId, ref: 'Elements' }]
+    elements     : [{type: Schema.Types.ObjectId, ref: 'Element' }]
 });
 /**
  * Hooks
  */
-activitySchema.pre('save', function (next) {
+ActivitySchema.pre('save', function (next) {
     next();
 });
 /**
@@ -19,7 +19,7 @@ activitySchema.pre('save', function (next) {
  *
  * @type {{}}
  */
-activitySchema.methods = {
+ActivitySchema.methods = {
 
     setObjectives: function(objectives) {
         if (util.isArray(objectives)) {
@@ -35,5 +35,26 @@ activitySchema.methods = {
     }
 };
 
+/**
+ * Statics
+ */
 
-mongoose.model('Activity', activitySchema);
+ActivitySchema.statics = {
+
+    /**
+     * Buscar proyecto por id
+     *
+     * @param {ObjectId} id
+     * @param {Function} cb
+     * @api private
+     */
+
+    load: function (id, cb) {
+        this.findOne({_id: id})
+            .populate('objectives')
+            .populate('elements')
+            .exec(cb);
+    }
+}
+
+mongoose.model('Activity', ActivitySchema);

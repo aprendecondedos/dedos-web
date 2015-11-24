@@ -1,1 +1,8 @@
 <h1>Proyecto: {{project.name}}</h1>
+<br>
+<h2>Actividades</h2>
+<ul>
+    {% for activity in project.activities %}
+        <li>{{activity._id}}</li>
+    {% endfor %}
+</ul>

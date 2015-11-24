@@ -7,8 +7,8 @@ var parser = new xml2js.Parser({async: true});
 var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
 var Activity = mongoose.model('Activity');
-var Objective = mongoose.model('Objective');
-var Element = mongoose.model('Element');
+var Selection = mongoose.model('Selection');
+var Pair = mongoose.model('Pair');
 var Area = mongoose.model('Area');
 var Token = mongoose.model('Token');
 
@@ -71,18 +71,40 @@ exports.new = function(req, res){
 
             parser.parseString(xml_data);
             parser.on('end', function (XML) {
+                var activities = [];
+
                 XML.Project.Activity.forEach(function(activity_data){
+                    if(typeof activity_data != 'object') return;
+
                     // Set activities
-                    activities = [];
                     var activity = new Activity({ project_id: project.id });
 
                     // Set objectives
                     var objectives = [];
                     activity_data.Objectives.forEach(function(objectives_data) {
+                        if(typeof objectives_data != 'object') return;
+
                         objectives_data.obj.forEach(function(objective_data) {
-                            var objective = new Objective(objective_data.$);
-                            objective.save();
-                            objectives.push(objective);
+
+                            if(objective_data.$.type == 'sel'){
+                                var objective = new Selection(objective_data.$);
+                            } else if(objective_data.$.type == 'pair'){
+                                var objective = new Pair(objective_data.$);
+
+                                // set targets
+                                var targets = [];
+                                objective_data.Targets.forEach(function(targets_data) {
+                                    targets_data.target.forEach(function(target_data) {
+                                        targets.push(target_data.$.name);
+                                    });
+                                });
+                                objective.setTargets(targets);
+                            }
+                            //var objective = new Objective(objective_data.$);
+                            if(objective) {
+                                objective.save();
+                                objectives.push(objective);
+                            }
                         });
                     });
                     activity.setObjectives(objectives);
@@ -90,6 +112,8 @@ exports.new = function(req, res){
                     // Set elements
                     var elements = [];
                     activity_data.Arealist.forEach(function(area_list) {
+                        if(typeof area_list != 'object') return;
+
                         area_list.Area.forEach(function(area_data){
                             var area = new Area({
                                 element_id  : area_data.$.id,
@@ -102,36 +126,43 @@ exports.new = function(req, res){
                             // Set tokens (cards)
                             var tokens = [];
                             area_data.Tokenlist.forEach(function(tokens_data){
-                                if(typeof tokens_data == 'object'){
-                                    tokens_data.Token.forEach(function(token_data) {
-                                        //console.log(token_data);
-                                        //console.log("\n");
-                                        var token = new Token({
-                                            element_id  : token_data.$.id,
-                                            type        : area_data.$.type
-                                        });
-                                        token.save();
-                                        // imgCard
-                                        // textCard
-                                        tokens.push(token);
-                                        elements.push(token);
+                                if(typeof tokens_data != 'object') return;
+
+                                tokens_data.Token.forEach(function(token_data) {
+                                    var token = new Token({
+                                        element_id  : token_data.$.id,
+                                        type: token_data.$.type,
+                                        clickable: token_data.clickable.pop(),
+                                        rotatable: token_data.rotatable.pop(),
+                                        resizable: token_data.resizable.pop(),
+                                        movable: token_data.movable.pop(),
+                                        feedback: token_data.content[0].feedback.pop()
                                     });
-                                    //area.setTokens(tokens);
-                                }
+
+                                    if(token_data.$.type == 'img') {
+                                        token.setUrls(token_data.content[0].urlList[0].url);
+                                    } else if(token_data.$.type == 'txt') {
+                                        token.text = token_data.content[0].text[0]
+                                    }
+                                    //tokens.push(token);
+                                    token.save();
+                                    elements.push(token);
+                                });
+                                //area.setTokens(tokens);
                             });
-                            //elements.push(new Area(objective_data.$));
                         });
                     });
                     activity.setElements(elements);
-                    //
-                    console.log(activity);
+
                     activity.save();
                     activities.push(activity);
                 });
+                project.setActivities(activities);
+                project.save();
+
+                // Redireccionar al proyecto
+                res.redirect('/project/'+ project._id);
             });
-            project.setActivities(activities);
-            project.save();
-            //res.redirect('/project/'+ project._id);
 
         });
 
@@ -146,16 +177,18 @@ exports.new = function(req, res){
  */
 
 exports.show = function (req, res){
-    var p = new Area({
-        name: 'ejejeje',
-        prueba: 'FUNCIONA'
-    });
-    console.log(p);
-    p.setProject();
+    var activities = req.project.activities;
+    activities.forEach(function(act) {
+        //var p = Activity.load(act._id);
+        Activity.load(act._id, function (err, activity) {
+            console.log(activity.elements);
+        });
 
+    });
     res.render('project/show', {
         title: req.project.name,
-        project: req.project
+        project: req.project,
+        activities: activities
     });
 };
 
