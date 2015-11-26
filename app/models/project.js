@@ -8,6 +8,10 @@ var ProjectSchema = mongoose.Schema({
     name        : String,
     project     : String,
     data        : String,
+    resolution  : {
+        x: Number,
+        y: Number
+    },
     players     : [{type: Schema.Types.ObjectId, ref: 'User' }],
     activities  : [{type: Schema.Types.ObjectId, ref: 'Activity'}],
     // Propiedades extra del proyectos

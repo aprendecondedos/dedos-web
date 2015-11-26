@@ -3,7 +3,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ElementSchema = new Schema({
-    element_id  : String
+    element_id  : String,
+    position: {
+        x: Number,
+        y: Number
+    }
 });
 /**
  * Hooks
