@@ -7,6 +7,8 @@ var nunjucks = require('nunjucks');
 var logger = require('morgan');
 var multer = require('multer');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var flash = require('connect-flash');
 var bodyParser = require('body-parser');
 var mongoose =  require('mongoose');
 var fs = require('fs');
@@ -46,17 +48,32 @@ app.set('view engine', 'html');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+//app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
-//app.use(require('./routes'))
+app.use(cookieParser('secret'));
+app.use(session({
+    cookie: { maxAge: 60000 },
+    secret: 'dedosweb-secret',
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(flash());
+
+// use passport session
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 // Bootstrap models
+
 fs.readdirSync(join(__dirname, 'app/models')).forEach(function (file) {
     if (~file.indexOf('.js')) require(join(__dirname, 'app/models', file));
 });
 // Bootstrap routes
 require('./app/routes')(app, passport);
+
+require('./config/passport')(passport);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

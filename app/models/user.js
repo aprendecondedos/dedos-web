@@ -18,6 +18,12 @@ var userSchemaSSSS = mongoose.Schema({
     classes        : [{type: Schema.Types.ObjectId, ref: 'Class'}]
 });
 
+var UserSchema = Schema({
+    createdDate     : {type: Date, default: Date.now},
+    name            : String,
+    avatar          : String,
+    type            : String
+});
 //function baseSchema(){
 var baseSchema = function(){
     Schema.apply(this, arguments);
@@ -43,11 +49,39 @@ userSchema.methods.setAsStudent = function() {
     console.log(this);
     return this;
 };
+/**
+ * Methods
+ *
+ * @type {{}}
+ */
+UserSchema.methods = {
+    getProjects: function(){
 
+    }
+};
+/**
+ * Statics
+ */
+
+UserSchema.statics = {
+
+    /**
+     * Buscar proyecto por id
+     *
+     * @param {ObjectId} id
+     * @param {Function} cb
+     * @api private
+     */
+
+    load: function (id, cb) {
+        this.findOne({_id: id})
+            .exec(cb);
+    }
+}
 //module.exports = mongoose.model('User', userSchema);
 //var User = mongoose.model('User', userSchema);
 //module.exports = mongoose.model('User', userSchema);
-mongoose.model('User', userSchema);
+mongoose.model('User', UserSchema);
 
 //var studentSchema = new baseSchema({
 //    projects       : [{type: Schema.Types.ObjectId, ref: 'Project'}],

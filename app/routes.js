@@ -1,23 +1,90 @@
 var lib = require('../lib/functions');
 var multer = require('multer');
 
-module.exports = function (app, passport) {
-    var classroom = require('classroom');
-    var project = require('project');
-    var play = require('play');
-    var user = require('user');
+var classroom = require('./controllers/classroom');
+var project = require('./controllers/project');
+var play = require('./controllers/play');
+var user = require('./controllers/user');
+/**
+ * Route middlewares
+ */
+var auth = require('../config/middlewares/authorization');
 
-    app.get('/', project.index);
+module.exports = function (app, passport) {
+
+    app.get('/', project.new);
 
     //app.get('/articles/new', auth.requiresLogin, articles.new);
     //app.get('/create/class', classroom.create);
+    // User routes
+    app.param('userId', user.load);
+    app.get('/signup', user.new);
+    app.post('/signup', user.new);
+    app.get('/login', user.login);
+    app.post('/login',
+        passport.authenticate('local', {
+            failureRedirect: '/login',
+            failureFlash: 'Invalid email or password.'
+        }), user.session);
+    app.get('/logout', user.logout);
+    // social login
+    app.get('/auth/facebook',
+        passport.authenticate('facebook', {
+            scope: [ 'email', 'user_about_me'],
+            failureRedirect: '/login'
+        }), user.signin);
+    app.get('/auth/facebook/callback',
+        passport.authenticate('facebook', {
+            failureRedirect: '/login'
+        }), user.authCallback);
+    app.get('/auth/github',
+        passport.authenticate('github', {
+            failureRedirect: '/login'
+        }), user.signin);
+    app.get('/auth/github/callback',
+        passport.authenticate('github', {
+            failureRedirect: '/login'
+        }), user.authCallback);
+    app.get('/auth/twitter',
+        passport.authenticate('twitter', {
+            failureRedirect: '/login'
+        }), user.signin);
+    app.get('/auth/twitter/callback',
+        passport.authenticate('twitter', {
+            failureRedirect: '/login'
+        }), user.authCallback);
+    app.get('/auth/google',
+        passport.authenticate('google', {
+            failureRedirect: '/login',
+            scope: [
+                'https://www.googleapis.com/auth/userinfo.profile',
+                'https://www.googleapis.com/auth/userinfo.email'
+            ]
+        }), user.signin);
+    app.get('/auth/google/callback',
+        passport.authenticate('google', {
+            failureRedirect: '/login'
+        }), user.authCallback);
+    app.get('/auth/linkedin',
+        passport.authenticate('linkedin', {
+            failureRedirect: '/login',
+            scope: [
+                'r_emailaddress'
+            ]
+        }), user.signin);
+    app.get('/auth/linkedin/callback',
+        passport.authenticate('linkedin', {
+            failureRedirect: '/login'
+        }), user.authCallback);
+
+    app.param('userId', user.load);
 
     // Project routes
     app.param('projectId', project.load);
-    app.get('/project/new', project.new);
-    app.post('/project/new', project.new);
-    app.get('/project/:projectId', project.show);
-    app.get('/project/:projectId/admin', project.admin);
+    app.get('/project/new',auth.requiresLogin, project.new);
+    app.post('/project/new', auth.requiresLogin, project.new);
+    app.get('/project/:projectId', auth.requiresLogin, project.show);
+    app.get('/project/:projectId/admin', auth.requiresLogin, project.admin);
     //app.get('/project/:id/admin', lib.upload([{name: 'file_zip'}]), lib.test(), project.admin);
 
     // Play routes

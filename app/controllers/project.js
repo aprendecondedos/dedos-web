@@ -66,13 +66,18 @@ exports.new = function(req, res){
 
             var project = new Project({
                 name: req.body.name,
-                project: project_id
+                project: project_id,
             });
 
             parser.parseString(xml_data);
+            parser.on('error', function (err) {
+                console.log(err);
+            });
             parser.on('end', function (XML) {
-                var activities = [];
+                // Guardamos la resolución del proyecto
+                project.resolution = XML.Project.resolution.pop().$;
 
+                var activities = [];
                 XML.Project.Activity.forEach(function(activity_data){
                     if(typeof activity_data != 'object') return;
 
@@ -118,13 +123,13 @@ exports.new = function(req, res){
                             var area = new Area({
                                 element_id  : area_data.$.id,
                                 type        : area_data.$.type,
-                                bg          : area_data.bg[0].$.url
+                                position: area_data.pos.pop().$,
+                                bg          : area_data.bg.pop().$.url
                             });
                             area.save();
                             elements.push(area);
 
                             // Set tokens (cards)
-                            var tokens = [];
                             area_data.Tokenlist.forEach(function(tokens_data){
                                 if(typeof tokens_data != 'object') return;
 
@@ -132,6 +137,7 @@ exports.new = function(req, res){
                                     var token = new Token({
                                         element_id  : token_data.$.id,
                                         type: token_data.$.type,
+                                        position: token_data.pos.pop().$,
                                         clickable: token_data.clickable.pop(),
                                         rotatable: token_data.rotatable.pop(),
                                         resizable: token_data.resizable.pop(),
@@ -144,11 +150,9 @@ exports.new = function(req, res){
                                     } else if(token_data.$.type == 'txt') {
                                         token.text = token_data.content[0].text[0]
                                     }
-                                    //tokens.push(token);
                                     token.save();
                                     elements.push(token);
                                 });
-                                //area.setTokens(tokens);
                             });
                         });
                     });
@@ -168,6 +172,7 @@ exports.new = function(req, res){
 
     } else {
         var data = {};
+        console.log(req.flash('test'));
         return res.render('project/new', data);
     }
 };
