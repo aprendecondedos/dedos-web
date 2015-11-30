@@ -172,7 +172,6 @@ exports.new = function(req, res){
 
     } else {
         var data = {};
-        console.log(req.flash('test'));
         return res.render('project/new', data);
     }
 };
@@ -182,6 +181,7 @@ exports.new = function(req, res){
  */
 
 exports.show = function (req, res){
+
     var activities = req.project.activities;
     activities.forEach(function(act) {
         //var p = Activity.load(act._id);

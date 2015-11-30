@@ -1,3 +1,6 @@
+{% extends '../layout.html' %}
+
+{% block content %}
 <h1>Proyecto: {{project.name}}</h1>
 <br>
 <h2>Actividades</h2>
@@ -6,3 +9,4 @@
         <li>{{activity._id}}</li>
     {% endfor %}
 </ul>
+{% endblock %}

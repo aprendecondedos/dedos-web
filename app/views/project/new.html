@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "../layouts/default.html" %}
 
 {% block title %} {{ gettext("new:project") }} {% endblock %}
 {% block content %}
@@ -10,6 +10,7 @@
       action    =  "/project/new"
       method    =  "post"
         >
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
     <p>
         <label>{{ gettext("new:project:name") }}</label><br>
         <input type="text" name="name"/>

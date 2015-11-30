@@ -3,16 +3,21 @@ var io = require('socket.io');
 var passport = require('passport');
 var path = require('path');
 var favicon = require('serve-favicon');
-var nunjucks = require('nunjucks');
+//var nunjucks = require('nunjucks');
+var swig = require('swig');
 var logger = require('morgan');
 var multer = require('multer');
 var cookieParser = require('cookie-parser');
+var helpers = require('view-helpers');
 var session = require('express-session');
+var mongoStore = require('connect-mongo')(session);
 var flash = require('connect-flash');
 var bodyParser = require('body-parser');
 var mongoose =  require('mongoose');
 var fs = require('fs');
 var join = require('path').join;
+var config = require('./config/config');
+var pkg = require('./package.json');
 
 var app = express();
 
@@ -33,11 +38,12 @@ app.use(i18n.middleware({
 }));
 
 // view engine setup
-nunjucks.configure('app/views', {
-  autoescape: true,
-  express: app,
-  watch: true
-});
+//nunjucks.configure('app/views', {
+//  autoescape: true,
+//  express: app,
+//  watch: true
+//});
+app.engine('html', swig.renderFile);
 
 app.set('views', path.join(__dirname, '/app/views'));
 app.set('view engine', 'html');
@@ -52,11 +58,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser('secret'));
+
 app.use(session({
-    cookie: { maxAge: 60000 },
-    secret: 'dedosweb-secret',
     resave: true,
-    saveUninitialized: true
+    cookie: { maxAge: 60000 },
+    secret: pkg.name,
+    saveUninitialized: true,
+    store: new mongoStore({
+        url: config.db,
+        collection : 'sessions'
+    })
 }));
 app.use(flash());
 
@@ -64,6 +75,7 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(helpers(pkg.name));
 
 // Bootstrap models
 

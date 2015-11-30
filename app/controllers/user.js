@@ -22,7 +22,6 @@ exports.new = function(req, res){
         user.provider = 'local';
         user.save(function (err) {
             if (err) {
-                console.log(err);
                 return res.render('user/signup', {
                     errors: lib.errors(err.errors || err.message),
                     user: user,
@@ -32,7 +31,6 @@ exports.new = function(req, res){
 
             // manually login the user once successfully signed up
             req.logIn(user, function (err) {
-                console.log(err);
                 if (err) req.flash('info', 'Sorry! We are not able to log you in!');
                 return res.redirect('/');
             });

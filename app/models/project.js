@@ -52,6 +52,24 @@ ProjectSchema.statics = {
             //.populate('comments.user')
             .populate('activities')
             .exec(cb);
+    },
+    /**
+     * Listar proyectos y filtrarlos
+     *
+     * @param {Object} options
+     * @api private
+     */
+
+    list: function (options) {
+        const criteria = options.criteria || {};
+        const page = options.page || 0;
+        const limit = options.limit || 30;
+        return this.find(criteria)
+            .populate('activities')
+            .sort({ createdDate: -1 })
+            .limit(limit)
+            .skip(limit * page)
+            .exec();
     }
 }
 

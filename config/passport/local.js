@@ -1,13 +1,12 @@
-'use strict';
 
 /**
  * Module dependencies.
  */
 
-const mongoose = require('mongoose');
-const LocalStrategy = require('passport-local').Strategy;
-const config = require('../config');
-const User = mongoose.model('Teacher');
+var mongoose = require('mongoose');
+var LocalStrategy = require('passport-local').Strategy;
+var config = require('../config');
+var User = mongoose.model('Teacher');
 
 /**
  * Expose

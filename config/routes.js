@@ -1,7 +1,7 @@
-var classroom = require('./controllers/classroom');
-var project = require('./controllers/project');
-var play = require('./controllers/play');
-var user = require('./controllers/user');
+var classroom = require('../app/controllers/classroom');
+var project = require('../app/controllers/project');
+var play = require('../app/controllers/play');
+var user = require('../app/controllers/user');
 
 /**
  * Route middlewares

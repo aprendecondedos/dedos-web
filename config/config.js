@@ -10,8 +10,9 @@ var defaults = {
     //notifier: notifier
 };
 
+
 module.exports = {
     development: extend(development, defaults),
-    production: extend(production, defaults),
-    test: extend(test, defaults)
-};
+    test: extend(test, defaults),
+    production: extend(production, defaults)
+}[process.env.NODE_ENV || 'development'];
