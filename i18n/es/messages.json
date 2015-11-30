@@ -5,6 +5,9 @@
 
   "players": "Jugadores",
 
+  "mail:subject:user:register": "Bienvenido a dedos player",
+  "mail:body:user:register": "",
+
   "classroom": "Clase",
   "classrooms": "Clases",
 

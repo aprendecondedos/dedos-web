@@ -14,11 +14,13 @@ var ProjectSchema = mongoose.Schema({
     },
     players     : [{type: Schema.Types.ObjectId, ref: 'User' }],
     activities  : [{type: Schema.Types.ObjectId, ref: 'Activity'}],
+    classroomId : {type: Schema.Types.ObjectId, ref: 'Classroom'},
     // Propiedades extra del proyectos
     properties  : {
         numPlayers     : Number
     },
-    createdDate : {type: Date, default: Date.now}
+    createdDate : {type: Date, default: Date.now},
+    createdBy   : {type: Schema.Types.ObjectId, ref: 'User'}
 });
 
 

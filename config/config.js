@@ -5,9 +5,27 @@ var development = require('./env/development');
 var test = require('./env/test');
 var production = require('./env/production');
 
+var mailer = {
+    from: 'info@aprendecondedos.es',
+    /**
+     * Ejemplo con datos de Gmail
+     */
+    transporter: {
+        service: 'Gmail',
+        auth: {
+            user: 'gmail.user@gmail.com',
+            pass: 'userpass'
+        }
+    },
+    /**
+     * Servidor propio
+     */
+    transporter: null
+};
+
 var defaults = {
     root: path.join(__dirname, '..'),
-    //notifier: notifier
+    mailer: mailer
 };
 
 

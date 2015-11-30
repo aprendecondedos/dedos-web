@@ -28,6 +28,9 @@ exports.new = function(req, res){
                     title: 'Sign up'
                 });
             }
+            // Emviamos un correo de bienvenida
+            var mailer = require('../mailer');
+            mailer.user.register(user);
 
             // manually login the user once successfully signed up
             req.logIn(user, function (err) {
