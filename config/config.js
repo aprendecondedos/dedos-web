@@ -5,6 +5,8 @@ var development = require('./env/development');
 var test = require('./env/test');
 var production = require('./env/production');
 
+var mandrillTransport = require('nodemailer-mandrill-transport');
+
 var mailer = {
     from: 'info@aprendecondedos.es',
     /**
@@ -20,7 +22,17 @@ var mailer = {
     /**
      * Servidor propio
      */
-    transporter: null
+    transporter: null,
+    /**
+     * MandrillApp
+     */
+    transporter: mandrillTransport({
+        auth:{
+            apiKey: 'oUDJQIP_RDb7T2Xvr_-vCA'
+        }
+    })
+
+
 };
 
 var defaults = {

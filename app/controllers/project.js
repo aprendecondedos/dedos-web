@@ -197,6 +197,10 @@ exports.show = function (req, res){
     });
 };
 
+exports.list = function(req, res){
+
+};
+
 exports.admin = function(){
 
 };

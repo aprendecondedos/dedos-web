@@ -44,7 +44,7 @@ module.exports = {
           subject: i18n.gettext('mail:subject:user:register'),
           html: renderTemplate('user/register', {
             name: user.name
-          }),
+          })
         };
 
         return send(obj);

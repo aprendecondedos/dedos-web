@@ -21,7 +21,7 @@ ClassroomSchema.pre('save', function (next) {
  * @type {{}}
  */
 ClassroomSchema.methods = {
-  setProject: function(){
+  list: function(){
 
   },
   getProjects: function(){
@@ -29,5 +29,24 @@ ClassroomSchema.methods = {
   }
 };
 
+/**
+ * Statics
+ */
+
+ClassroomSchema.statics = {
+
+    /**
+     * Buscar clase por id
+     *
+     * @param {ObjectId} id
+     * @param {Function} cb
+     * @api private
+     */
+
+    load: function (id, cb) {
+        this.findOne({_id: id})
+            .exec(cb);
+    }
+}
 
 mongoose.model('Classroom', ClassroomSchema);

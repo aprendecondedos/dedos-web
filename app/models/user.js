@@ -66,7 +66,7 @@ UserSchema.methods = {
 UserSchema.statics = {
 
     /**
-     * Buscar proyecto por id
+     * Buscar usuario por id
      *
      * @param {ObjectId} id
      * @param {Function} cb
