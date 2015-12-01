@@ -25,7 +25,6 @@ exports.new = function(req, res){
                 return res.render('user/signup', {
                     errors: lib.errors(err.errors || err.message),
                     user: user,
-                    title: 'Sign up'
                 });
             }
             // Emviamos un correo de bienvenida
@@ -58,9 +57,6 @@ exports.authCallback = login;
 
 exports.login = function (req, res) {
     res.render('user/login');
-    //res.render('user/login', {
-    //    title: 'Login'
-    //});
 };
 
 exports.logout = function(req, res){

@@ -5,8 +5,10 @@
   "user:forgotpassword": "¿Olvidó la contraseña?",
   "user:noaccount": "¿No tienes cuenta?",
   "user:signup": "Registrarse",
-  "email": "Correo electrónico",
-  "password": "Contraseña",
+  "user:haveaccount": "¿Tienes una cuenta? haz click en ",
+  "user:name": "Nombre",
+  "user:email": "Correo electrónico",
+  "user:password": "Contraseña",
 
   "new:project": "Nuevo proyecto",
   "new:project:name": "Nombre del proyecto",
