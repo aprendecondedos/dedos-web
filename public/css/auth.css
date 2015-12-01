@@ -49,6 +49,18 @@
 .page-walled-garden form a {
   margin-left: 20px;
 }
+.page-walled-garden form .separator-text {
+  text-align: center;
+  background: #e4eaec;
+  height: 1px;
+  line-height: 0px;
+  margin: 30px 0;
+}
+.page-walled-garden form .separator-text span {
+  text-transform: uppercase;
+  background: #fff;
+  padding: 0 10px;
+}
 .page-walled-garden footer {
   position: absolute;
   bottom: 0;

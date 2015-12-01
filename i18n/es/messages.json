@@ -5,6 +5,8 @@
   "user:forgotpassword": "¿Olvidó la contraseña?",
   "user:noaccount": "¿No tienes cuenta?",
   "user:signup": "Registrarse",
+  "user:signup:or": "o",
+  "user:signup:usingemail": "Registrate usando el correo electrónico",
   "user:haveaccount": "¿Tienes una cuenta? haz click en ",
   "user:name": "Nombre",
   "user:email": "Correo electrónico",

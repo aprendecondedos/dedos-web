@@ -6,6 +6,22 @@
 
 <form method="post" action="/login" role="form">
     <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <div class="form-group row">
+        <div class="col-md-6">
+            <button type="button" class="btn btn-labeled social-twitter text-left" style="width: 100%">
+                <span class="btn-label"><i class="icon fa fa-twitter" aria-hidden="true"></i></span>
+                Twitter
+            </button>
+        </div>
+        <div class="col-md-6">
+            <button type="button" class="btn btn-labeled social-facebook text-left" style="width: 100%">
+                <span class="btn-label"><i class="icon fa fa-facebook" aria-hidden="true"></i></span>
+                Facebook
+            </button>
+        </div>
+    </div>
+    <div class="separator-text"><span>{{gettext('user:signup:or')}}</span></div>
+    <div>{{gettext('user:signup:usingemail')}}</div>
     <div class="form-group error">
         {% include '../includes/messages.html' %}
     </div>

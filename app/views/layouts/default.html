@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,500,300italic">
   {% endblock %}
 
+
   {# HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries #}
   <!--[if lt IE 9]>
   <script src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>
@@ -39,7 +40,16 @@
       {% include '../includes/menu.html' %}
     </div>
     <div class="page animsition">
-      {% block content %}{% endblock %}
+        <div class="page-header">
+            <h1 class="page-title">Blockquotes</h1>
+            <ol class="breadcrumb">
+                <li><a href="../index.html">Home</a></li>
+                <li class="active">Structure</li>
+            </ol>
+        </div>
+        <div class="page-content container-fluid">
+            {% block content %}{% endblock %}
+        </div>
     </div>
   {% include '../includes/footer.html' %}
   {% include '../includes/foot.html' %}

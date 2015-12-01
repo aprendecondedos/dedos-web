@@ -10,7 +10,7 @@ var auth = require('../config/middlewares/authorization');
 
 module.exports = function (app, passport) {
 
-    app.get('/', project.new);
+    app.get('/', auth.requiresLogin, project.new);
 
     // User routes
     app.param('userId', user.load);
@@ -89,6 +89,11 @@ module.exports = function (app, passport) {
     app.get('/project/:projectId', auth.requiresLogin, project.show);
     app.get('/project/:projectId/admin', auth.requiresLogin, project.admin);
     //app.get('/project/:id/admin', lib.upload([{name: 'file_zip'}]), lib.test(), project.admin);
+
+    // Other routes
+    app.get('/faq',auth.requiresLogin, function(req, res){
+      console.log('test');
+    });
 
     // Play routes
     app.get('/play/:id', play.show);
