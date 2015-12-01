@@ -94,11 +94,4 @@ module.exports = function (app, passport) {
     app.get('/play/:id', play.show);
     app.get('/play/:id/admin', play.admin);
 
-// assume 404 since no middleware responded
-    app.use(function (req, res) {
-        res.status(404).render('404', {
-            url: req.originalUrl,
-            error: 'Not found'
-        });
-    });
 };

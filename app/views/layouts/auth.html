@@ -1,0 +1,33 @@
+{% extends 'default.html' %}
+{% block head %}
+    {% parent %}
+    <link rel="stylesheet" href="/css/auth.css">
+{% endblock %}
+{% block body %}
+<body class="page-walled-garden layout-full page-dark">
+<div class="page animsition">
+    <div class="page-content">
+        <div class="page-brand-info">
+            <div class="brand">
+                <img class="brand-img" src="http://getbootstrapadmin.com/remark/base/assets/images/logo@2x.png" alt="...">
+                <h2 class="brand-text font-size-40">Dedos</h2>
+            </div>
+            <p class="font-size-20">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+        </div>
+        <div class="page-auth-main">
+            <div class="brand visible-xs">
+                <img class="brand-img" src="../assets/images/logo-blue@2x.png" alt="...">
+                <h3 class="brand-text font-size-40">Remark</h3>
+            </div>
+
+            {% block auth %}{% endblock %}
+
+        </div>
+    </div>
+</div>
+{% include '../includes/foot.html' %}
+</body>
+{% endblock %}

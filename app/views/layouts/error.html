@@ -1,0 +1,34 @@
+{% extends 'default.html' %}
+{% block head %}
+    {% parent %}
+    <link rel="stylesheet" href="/css/errors.css">
+{% endblock %}
+{% block body %}
+<body class="page-error page-error-503 layout-full">
+    <div class="page animsition vertical-align text-center">
+        <div class="page-content vertical-align-middle">
+            {% block content %}{% endblock %}
+
+            <h1>{{error_code}}</h1>
+            <h2>{{title}}</h2>
+            <p class="error-advise">{{description}}</p>
+
+            <a class="btn btn-primary btn-round" href="/">{{gettext('error:button')}}</a>
+            <footer class="page-copyright">
+                <div class="social">
+                    <a href="javascript:void(0)">
+                        <i class="icon fa fa-twitter" aria-hidden="true"></i>
+                    </a>
+                    <a href="javascript:void(0)">
+                        <i class="icon fa fa-facebook" aria-hidden="true"></i>
+                    </a>
+                    <a href="javascript:void(0)">
+                        <i class="icon fa fa-youtube" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </footer>
+        </div>
+    </div>
+    {% include '../includes/foot.html' %}
+</body>
+{% endblock %}

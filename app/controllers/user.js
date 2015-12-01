@@ -57,9 +57,10 @@ exports.authCallback = login;
  */
 
 exports.login = function (req, res) {
-    res.render('user/login', {
-        title: 'Login'
-    });
+    res.render('user/login');
+    //res.render('user/login', {
+    //    title: 'Login'
+    //});
 };
 
 exports.logout = function(req, res){

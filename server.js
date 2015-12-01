@@ -35,6 +35,8 @@ require('./config/express')(app, passport);
 
 // Bootstrap routes
 require('./config/routes')(app, passport);
+// Errors handlers
+require('./config/errors')(app);
 
 app.listen(port);
 console.log('Express app started on port ' + port);

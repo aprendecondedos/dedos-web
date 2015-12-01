@@ -1,0 +1,19 @@
+.page-error .error-mark {
+  margin-bottom: 33px;
+}
+.page-error h1 {
+  font-size: 160px;
+  font-weight: 400;
+}
+.page-error h2 {
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+.page-error .error-advise {
+  margin-bottom: 25px;
+  color: #A9AFB5;
+  text-transform: uppercase;
+}
+.page-error .btn-primary {
+  text-transform: uppercase;
+}

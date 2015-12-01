@@ -1,33 +1,32 @@
-{% extends 'auth.html' %}
+{% extends '../layouts/auth.html' %}
 
 {% block auth %}
-<form action="/login" method="post" role="form" class="form-horizontal">
+<h3 class="font-size-24">{{gettext('user:signin')}}</h3>
+<p>{{gettext('user:signin:description')}}</p>
+
+<form method="post" action="/login" role="form">
     <input type="hidden" name="_csrf" value="{{ csrf_token }}">
-
-    <p class="col-sm-offset-2 error">
-        {{ message }}
-    </p>
-
-    <div class="form-group">
-        <label for="email" class="col-sm-2 control-label">Email</label>
-        <div class="col-sm-10">
-            <input id="email" class="form-control" type="email" placeholder="Email" name="email">
-        </div>
+    <div class="form-group error">
+        {% include '../includes/messages.html' %}
     </div>
-
     <div class="form-group">
-        <label for="password" class="col-sm-2 control-label">Password</label>
-        <div class="col-sm-10">
-            <input id="password" class="form-control" type="password" placeholder="Password" name="password">
-        </div>
+        <label class="sr-only" for="inputEmail">{{gettext('email')}}</label>
+        <input type="email" class="form-control" id="inputEmail" required name="email" placeholder="{{gettext('email')}}">
     </div>
-
     <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <button class="btn btn-primary" type="submit">Log in</button>
-            &nbsp; or &nbsp;
-            <a href="/signup" class="show-signup">Sign up</a>
-        </div>
+        <label class="sr-only" for="inputPassword">{{gettext('password')}}</label>
+        <input type="password" class="form-control" id="inputPassword" required name="password" placeholder="{{gettext('password')}}">
     </div>
+    <div class="form-group clearfix">
+        <div class="checkbox-custom checkbox-inline checkbox-primary pull-left">
+            <input type="checkbox" id="remember" name="remember">
+            <label for="remember">{{gettext('user:rememberme')}}</label>
+        </div>
+        <a class="pull-right" href="forgot-password.html">{{gettext('user:forgotpassword')}}</a>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">{{gettext('user:signin')}}</button>
 </form>
+
+<p>{{gettext('user:noaccount')}} <a href="/signup">{{gettext('user:signup')}}</a></p>
+
 {% endblock %}

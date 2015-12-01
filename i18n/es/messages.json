@@ -1,4 +1,13 @@
 {
+  "user:signin": "Iniciar sesión",
+  "user:signin:description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+  "user:rememberme": "Recuérdame",
+  "user:forgotpassword": "¿Olvidó la contraseña?",
+  "user:noaccount": "¿No tienes cuenta?",
+  "user:signup": "Registrarse",
+  "email": "Correo electrónico",
+  "password": "Contraseña",
+
   "new:project": "Nuevo proyecto",
   "new:project:name": "Nombre del proyecto",
   "new:project:file": "Archivo comprimido",
@@ -10,6 +19,10 @@
 
   "classroom": "Clase",
   "classrooms": "Clases",
+
+  "error:404:title": "Página no encontrada",
+  "error:404:description": "You seem to be trying to find his way home",
+  "error:button": "Ir al inicio",
 
 
   "": ""
