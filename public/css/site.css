@@ -104,7 +104,8 @@ body {
   white-space: nowrap;
 }
 .site-menu-arrow {
-  font-family: 'Web Icons';
+  font-family: 'FontAwesome';
+  font-size: 19px;
   -webkit-transition: transform 0.15s;
   -o-transition: transform 0.15s;
   transition: transform 0.15s;
@@ -119,7 +120,7 @@ body {
   transform: translate(0, 0);
 }
 .site-menu-arrow:before {
-  content: '\f17f';
+  content: "\f105";
 }
 .site-menu-arrow,
 .site-menu-badge,
