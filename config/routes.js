@@ -13,7 +13,6 @@ module.exports = function (app, passport) {
     app.get('/', auth.requiresLogin, project.new);
 
     // User routes
-    app.param('userId', user.load);
     app.get('/signup', user.new);
     app.post('/signup', user.new);
     app.get('/login', user.login);
@@ -74,8 +73,11 @@ module.exports = function (app, passport) {
         }), user.authCallback);
 
     app.param('userId', user.load);
+  //{% include pets.html with pets only %}
+    app.get('/user/settings',auth.requiresLogin, user.edit);
+    app.post('/user/settings',auth.requiresLogin, user.edit);
 
-    // Project routes
+  // Project routes
     app.param('classroomId', classroom.load);
     app.get('/classrooms',auth.requiresLogin, classroom.list);
     app.get('/classroom/new',auth.requiresLogin, classroom.new);
@@ -83,6 +85,7 @@ module.exports = function (app, passport) {
 
     // Project routes
     app.param('projectId', project.load);
+
     app.get('/projects',auth.requiresLogin, project.list);
     app.get('/project/new',auth.requiresLogin, project.new);
     app.post('/project/new', auth.requiresLogin, project.new);

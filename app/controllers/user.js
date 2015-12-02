@@ -4,7 +4,7 @@ var Teacher = mongoose.model('Teacher');
 
 
 exports.load = function(req, res, next, id) {
-    User.load(id, function (err, user) {
+    Teacher.load(id, function (err, user) {
         if (err) return next(err);
         if (!user) return next(new Error('Failed to load User'));
         req.user = user;
@@ -24,7 +24,7 @@ exports.new = function(req, res){
             if (err) {
                 return res.render('user/signup', {
                     errors: lib.errors(err.errors || err.message),
-                    user: user,
+                    user: user
                 });
             }
             // Emviamos un correo de bienvenida
@@ -42,6 +42,16 @@ exports.new = function(req, res){
             user: new Teacher()
         });
     }
+};
+
+exports.edit = function (req, res) {
+
+  Teacher.load({ criteria: { _id: req.user._id }, select: 'email name' }, function (err, user) {
+    res.render('user/edit', {
+      user: user
+    });
+  });
+
 };
 
 exports.signin = function () {};
