@@ -8,3 +8,52 @@
 <script src='/vendors/switchery/switchery.min.js'></script>
 <link rel="stylesheet" href="/vendors/switchery/switchery.min.css">
 
+
+<!---->
+
+
+<script src="/assets/vendor/animsition/jquery.animsition.js"></script>
+<script src="/assets/vendor/asscroll/jquery-asScroll.js"></script>
+<script src="/assets/vendor/mousewheel/jquery.mousewheel.js"></script>
+<script src="/assets/vendor/asscrollable/jquery.asScrollable.all.js"></script>
+<script src="/assets/vendor/ashoverscroll/jquery-asHoverScroll.js"></script>
+
+<!-- Plugins -->
+<script src="/assets/vendor/switchery/switchery.min.js"></script>
+<script src="/assets/vendor/intro-js/intro.js"></script>
+<script src="/assets/vendor/screenfull/screenfull.js"></script>
+<script src="/assets/vendor/slidepanel/jquery-slidePanel.js"></script>
+
+
+<!-- Scripts -->
+<script src="/assets/js/core.js"></script>
+<script src="/assets/js/site.js"></script>
+
+<script src="/assets/js/sections/menu.js"></script>
+<script src="/assets/js/sections/menubar.js"></script>
+<script src="/assets/js/sections/sidebar.js"></script>
+
+<script src="/assets/js/configs/config-colors.js"></script>
+<script src="/assets/js/configs/config-tour.js"></script>
+
+<script src="/assets/js/components/asscrollable.js"></script>
+<script src="/assets/js/components/animsition.js"></script>
+<script src="/assets/js/components/slidepanel.js"></script>
+<script src="/assets/js/components/switchery.js"></script>
+
+<script>
+    (function(document, window, $) {
+
+        $(document).ready(function() {
+            Site.run();
+
+            if ($('.list-group[data-plugin="nav-tabs"]').length) {
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+                    $(e.target).addClass('active').siblings().removeClass(
+                            'active');
+                });
+            }
+        });
+
+    })(document, window, jQuery);
+</script>

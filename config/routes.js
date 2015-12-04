@@ -79,7 +79,7 @@ module.exports = function (app, passport) {
 
   // Project routes
     app.param('classroomId', classroom.load);
-    app.get('/classrooms',auth.requiresLogin, classroom.list);
+    app.get('/classrooms',auth.requiresLogin, classroom.index);
     app.get('/classroom/new',auth.requiresLogin, classroom.new);
     app.post('/classroom/new',auth.requiresLogin, classroom.new);
 

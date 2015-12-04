@@ -11,8 +11,8 @@ exports.load = function(req, res, next, id) {
     });
 };
 
-exports.list = function(req, res){
-
+exports.index = function(req, res){
+  res.render('classroom/index');
 };
 
 exports.new = function(req, res){
