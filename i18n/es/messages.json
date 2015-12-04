@@ -16,9 +16,13 @@
   "user:password:current": "Contraseña actual",
   "user:password:confirm": "Confirmar contraseña",
 
+  "administration:panel": "Panel de administración",
   "new:project": "Nuevo proyecto",
   "new:project:name": "Nombre del proyecto",
   "new:project:file": "Archivo comprimido",
+  "projects": "Proyectos",
+  "projects:my": "Mis proyectos",
+  "projects:new": "Añadir proyecto",
 
   "players": "Jugadores",
 
@@ -27,6 +31,10 @@
 
   "classroom": "Clase",
   "classrooms": "Clases",
+  "classrooms:my": "Mis clases",
+  "classroom:new": "Añadir clase",
+
+  "dashboard": "Dashboard",
 
   "error:404:title": "Página no encontrada",
   "error:404:description": "You seem to be trying to find his way home",
@@ -34,6 +42,7 @@
 
   "submit": "Enviar",
   "save": "Guardar",
+
 
 
   "": ""
