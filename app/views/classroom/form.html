@@ -1,0 +1,274 @@
+{% extends "../layouts/default.html" %}
+
+{% block content %}
+
+{% if classroom.isNew %}
+    {% set action = '/classroom/new' %}
+{% else %}
+    {% set action = '/classroom/' + classroom._id %}
+{% endif %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Parámetros</h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" action="{{action}}" method="post" role="form">
+                    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                    {% if not classroom.isNew %}
+                        <input type="hidden" name="_method" value="PUT">
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">{{gettext('classroom:name')}}</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="name" value="{{classroom.name}}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">{{gettext('classroom:education_level')}}</label>
+                        <div class="col-sm-9">
+                            <select data-plugin="selectpicker" name="education_level">
+                                {% for education_level in classroom.getEducationLevels() %}
+                                <option value="{{education_level}}" {% if classroom.education_level == education_level %} selected {% endif %}>
+                                    {{gettext('education_level:'+education_level)}}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary">{{gettext('save')}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Alumnos</h3>
+            </div>
+            <div class="panel-body">
+                <div class="hidden popover-list-content">
+                    <ul class="nav nav-tabs nav-tabs-line" data-plugin="nav-tabs" role="tablist">
+                        <li class="active" role="presentation">
+                            <a data-toggle="tab" href=".icon-list.animals" role="tab">{{gettext('animals')}}</a>
+                        </li>
+                        <li role="presentation">
+                            <a data-toggle="tab" href=".icon-list.objects" role="tab">{{gettext('toys')}}</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="icon-list animals tab-pane active">
+                            <a class="avatar avatar-online margin-left icons an-1" style="width: 30px;height: 30px;" href="javascript:;"></a>
+                            <a class="avatar avatar-online margin-left icons an-2" style="width: 30px;height: 30px;" href="javascript:;"></a>
+                            <a class="avatar avatar-online margin-left icons an-3" style="width: 30px;height: 30px;" href="javascript:;"></a>
+                            <a class="avatar avatar-online margin-left icons an-4" style="width: 30px;height: 30px;" href="javascript:;"></a>
+                            <a class="avatar avatar-online margin-left icons an-5" style="width: 30px;height: 30px;" href="javascript:;"></a>
+                            <a class="avatar avatar-online margin-left icons an-6" style="width: 30px;height: 30px;" href="javascript:;"></a>
+                            <a class="avatar avatar-online margin-left icons an-7" style="width: 30px;height: 30px;" href="javascript:;"></a>
+                            <a class="avatar avatar-online margin-left icons an-8" style="width: 30px;height: 30px;" href="javascript:;"></a>
+                            <a class="avatar avatar-online margin-left icons an-9" style="width: 30px;height: 30px;" href="javascript:;"></a>
+                            <a class="avatar avatar-online margin-left icons an-10" style="width: 30px;height: 30px;" href="javascript:;"></a>
+                        </div>
+                        <div class="icon-list objects tab-pane">
+                            {% set iconCount = 100 %}
+                            {% set iconCountAsArray = Array(iconCount) %}
+                            {% for x, y in iconCountAsArray %}
+                                {% if x > 0 %}
+                                <a class="avatar avatar-online margin-left icons icon-{% if x < 10 %}0{% endif %}{{x}}" href="javascript:;" style="text-decoration:none;font-size: 25px;color: #358fe4;background: #e4eaec;border-radius: 100%;padding: 3px;text-align: center;height: 30px;width: 30px;"></a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal import from my classrooms -->
+                <div class="modal fade modal-slide-from-bottom" id="modal-import-classrooms"
+                     aria-hidden="true" role="dialog"
+                     tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Modal Title</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h5>Mis clases</h5>
+                                        <div class="list-group list-group-dividered" style="border-right: 1px solid #f3f7f9;">
+                                            <a class="list-group-item active" href="javascript:;">
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        <span>
+                                                           <img data-toggle="tooltip" data-name="B" class="profile img-rounded" style="width: 30px;">
+                                                        </span>
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <div>Primaria C</div>
+                                                        <small>Primaria</small>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a class="list-group-item" href="javascript:;">
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        <span>
+                                                           <img data-toggle="tooltip" data-name="L" class="profile img-rounded" style="width: 30px;">
+                                                        </span>
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <div>3º de Infantil</div>
+                                                        <small>Infantil</small>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <h5>Estudiantes</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default margin-0" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Modal import from my classrooms -->
+                <!-- Modal import manually -->
+                <div class="modal fade modal-slide-from-bottom" id="modal-import-manual"
+                     aria-hidden="true" role="dialog"
+                     tabindex="-1">
+                    <div class="modal-dialog">
+                        <form class="modal-content" action="/player/new" method="post" role="form">
+                            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Importar estudiantes manualmente</h4>
+                            </div>
+                            <div class="modal-body">
+                                <ul class="list-group list-group-dividered list-group-full" id="toClone">
+                                    <li class="list-group-item row">
+                                        <div class="col-xs-1">
+                                            <div class="img-circle" style="width: 30px;height: 30px;background-color: #e4eaec;"></div>
+                                        </div>
+                                        <div class="col-xs-10">
+                                            <input type="text" class="form-control" required="required" autofocus="autofocus" placeholder="{{gettext('user:name')}}" name="player[name][]">
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <a class="btn btn-sm btn-icon btn-pure btn-default" onclick="javascript:$(this).closest('.list-group-item').remove();"><i class="fa fa-times"></i></a>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <button type="button" class="btn btn-outline btn-primary btn-sm add-more" data-clone="#toClone li:first" data-clone-container="#toClone">
+                                    <i class="icon fa fa-plus"></i> Añadir
+                                </button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default margin-0" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- End Modal import manually -->
+                <table class="table toggle-circle" id="table-filtering">
+                    <thead>
+                    <tr>
+                        <th data-sort-ignore="true"></th>
+                        <th>{{gettext('user:name')}}</th>
+                    </tr>
+                    </thead>
+                    <div class="form-inline padding-bottom-15">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-outline btn-default dropdown-toggle" id="exampleIconsDropdown" data-toggle="dropdown" aria-expanded="false">
+                                        Importar estudiantes
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li role="presentation">
+                                            <a href="javascript:void(0)" role="menuitem"><i class="icon fa fa-file-excel-o" aria-hidden="true"></i> Importar archivo excel</a>
+                                        </li>
+                                        <li role="presentation">
+                                            <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-import-classrooms" role="menuitem"><i class="icon fa fa-list-ul" aria-hidden="true"></i> Importar desde mis clases</a>
+                                        </li>
+                                        <li role="presentation">
+                                            <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-import-manual" role="menuitem"><i class="icon fa fa-plus" aria-hidden="true"></i> Crear manualmente</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <div class="form-group">
+                                    <input id="filteringSearch" type="text" placeholder="Search" class="form-control" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <tbody>
+                    {% for i in players %}
+                    <tr>
+                        <td>
+                            <a class="popover-list avatar avatar-online margin-left icons an-{{loop.index}}" style="width: 30px;height: 30px;" href="javascript:;"></a>
+                        </td>
+                        <td>Miguel Angel Gutierrez Moreno</td>
+                        <td>
+                            <a class="btn btn-sm btn-icon btn-pure btn-default"><i class="fa fa-pencil"></i></a>
+                            <a class="btn btn-sm btn-icon btn-pure btn-default"><i class="fa fa-times"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <div class="text-right">
+                                <ul class="pagination"></ul>
+                            </div>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<link href="/images/toys/style.css" rel="stylesheet">
+
+<style>
+    .icon-list{
+        padding: 5px;
+    }
+    .icon-list a{
+        margin: 4px;
+    }
+    .icons{
+        background-image: url('/images/animals.png');
+        background-color: #e4eaec;
+        background-size: 540px;
+        background-size: 450px;
+        background-size: 600px;
+    }
+    .an-1{  background-position: -6px -6px;  }
+    .an-2{  background-position: -74px -6px;  }
+    .an-3{  background-position: -141px -6px;  }
+    .an-4{  background-position: -176px -7px; background-size: 500px;  }
+    .an-5{  background-position: -316px -13px;  background-size: 660px;  }
+    .an-6{  background-position: -396px -13px;  background-size: 660px;  }
+    .an-7{  background-position: -312px -4px;  background-size: 450px;  }
+    .an-8{  background-position: -367px -7px;  background-size: 450px;  }
+    .an-9{  background-position: -373px -6px;  background-size: 400px;  }
+    .an-10{  background-position: 0px -44px;  background-size: 400px;  }
+</style>
+{% endblock %}

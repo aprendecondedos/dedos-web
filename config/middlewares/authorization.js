@@ -25,15 +25,17 @@ exports.user = {
 };
 
 /*
- *  Article authorization routing middleware
+ *  Classroom authorization routing middleware
  */
 
-exports.article = {
+exports.classroom = {
   hasAuthorization: function (req, res, next) {
-    if (req.article.user.id != req.user.id) {
+    console.log(req.user._id);
+    if(req.classroom.teachers.indexOf(req.user._id) == -1){
       req.flash('info', 'You are not authorized');
-      return res.redirect('/articles/' + req.article.id);
+      return res.redirect('/classrooms');
     }
+
     next();
   }
 };

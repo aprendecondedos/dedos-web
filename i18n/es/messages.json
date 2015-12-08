@@ -33,6 +33,11 @@
   "classrooms": "Clases",
   "classrooms:my": "Mis clases",
   "classroom:new": "Añadir clase",
+  "classroom:name": "Nombre de la clase",
+  "classroom:education_level": "Nivel educativo",
+
+  "education_level:infant": "Infantil",
+  "education_level:primary": "Primaria",
 
   "dashboard": "Dashboard",
 

@@ -24,7 +24,7 @@ if (fs.existsSync(envFile)) {
  */
 
 module.exports = {
-    db: 'mongodb://193.147.62.217:5858/dedos',
+    db: 'mongodb://192.168.1.168:27017/dedos',
     facebook: {
         clientID: process.env.FACEBOOK_CLIENTID,
         clientSecret: process.env.FACEBOOK_SECRET,

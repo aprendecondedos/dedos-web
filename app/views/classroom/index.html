@@ -1,55 +1,66 @@
 {% extends "../layouts/default.html" %}
 
+{% block actions %}
+<a class="btn btn-md btn-primary" href="/classroom/new">Añadir clase</a>
+{% endblock %}
+
 {% block content %}
-<div class="panel">
-    <div class="panel-body">
-        <ul class="list-group list-group-full">
-            <li class="list-group-item">
-                <img data-name="Primaria B" class="classroom img-rounded pull-left margin-right-20">
+
+<div class="row">
+{% for classroom in classrooms %}
+<div class="col-xlg-4 col-md-6">
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a href="/classroom/{{classroom.id}}">{{classroom.name}}</a>
+                <span class="panel-desc">{{gettext('education_level:'+classroom.education_level)}}</span>
+            </h3>
+            <div class="panel-actions">
+                <a href="/classroom/{{classroom.id}}/edit" type="button" class="panel-action" data-toggle="tooltip" data-original-title="Edit">
+                    <i class="icon fa fa-pencil margin-right-0" aria-hidden="true"></i>
+                </a>
+                <a type="button" class="panel-action warning-confirm" data-target="#delete_{{classroom.id}}" data-toggle="tooltip" data-original-title="Delete">
+                    <i class="icon fa fa-times margin-right-0" aria-hidden="true"></i>
+                </a>
+                <form id="delete_{{classroom.id}}" role="form" method="post" action="{{ '/classroom/' + classroom._id }}" class="hide">
+                    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit">delete</button>
+                </form>
+            </div>
+        </div>
+        <div class="panel-body">
+            <a href="/classroom/{{classroom.id}}">
+                <img data-name="{{classroom.name|last}}" class="classroom img-rounded pull-left margin-right-20" style="width: 80px;">
+            </a>
+            <div class="overflow-hidden">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-sm btn-icon btn-flat btn-default" data-toggle="tooltip" data-original-title="Edit">
-                        <i class="icon fa fa-pencil margin-right-0" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn btn-sm btn-icon btn-flat btn-default" data-toggle="tooltip" data-original-title="Delete">
-                        <i class="icon fa fa-times margin-right-0" aria-hidden="true"></i>
-                    </button>
-                </div>
-                <div class="overflow-hidden">
-                    <h3><a>Primaria B</a></h3>
-                    <p>Curabitur aliquet quam id dui posuere blandit. Sed porttitor lectus nibh. Pellentesque in ipsum id orci porta
-                        dapibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    </p>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <img data-name="Infantil C" class="classroom img-rounded pull-left margin-right-20">
-                <div class="pull-right">
-                    <div class="pull-left margin-right-20">
+                    <small>Administradores</small>
+                    <div>
+                        {% for teacher in classroom.teachers %}
                         <span class="avatar avatar-online margin-left-5" style="width: 30px;">
-                           <img data-name="David" class="profile">
+                           <img data-toggle="tooltip" data-original-title="{{teacher.name}}" data-name="{{teacher.name}}" class="profile">
                         </span>
-                        <span class="avatar avatar-online margin-left-5" style="width: 30px;">
-                           <img data-name="Jose" class="profile">
-                        </span>
-                        <span class="avatar avatar-online margin-left-5" style="width: 30px;">
-                           <img data-name="miguel" class="profile">
-                        </span>
+                        {% endfor %}
                     </div>
-                    <button type="button" class="btn btn-sm btn-icon btn-flat btn-default" data-toggle="tooltip" data-original-title="Edit">
-                        <i class="icon fa fa-pencil margin-right-0" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn btn-sm btn-icon btn-flat btn-default" data-toggle="tooltip" data-original-title="Delete">
-                        <i class="icon fa fa-times margin-right-0" aria-hidden="true"></i>
-                    </button>
                 </div>
-                <div class="overflow-hidden">
-                    <h3><a>A Bachi</a></h3>
-                    <p>Curabitur aliquet quam id dui posuere blandit. Sed porttitor lectus nibh. Pellentesque in ipsum id orci porta
-                        dapibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    </p>
+                <div class="inline-block margin-right-20">
+                    <small>Alumnos</small>
+                    <div class="margin-top-5">23</div>
                 </div>
-            </li>
-        </ul>
+                <div class="inline-block">
+                    <small>Creado</small>
+                    <div class="margin-top-5">{{ classroom.createdDate.toISOString()|date('d M, Y  H:i') }}</div>
+                </div>
+                <p class="hide">
+                    Curabitur aliquet quam id dui posuere blandit. Sed porttitor lectus nibh. Pellentesque in ipsum id orci porta
+                    dapibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                </p>
+            </div>
+        </div>
     </div>
 </div>
+{% endfor %}
+</div>
+
 {% endblock %}

@@ -18,8 +18,13 @@
   <link rel="stylesheet" href="/css/bootstrap.css">
   <link rel="stylesheet" href="/css/bootstrap-extend.css">
   <link rel="stylesheet" href="/css/site.css">
-
+  <!-- Scripts -->
   <link rel="stylesheet" href="/css/documents.css">
+  <link rel="stylesheet" href="/assets/vendor/bootstrap-select/bootstrap-select.min.css?v2.0.0">
+  <link rel="stylesheet" href="/assets/vendor/footable/footable.core.css?v2.0.0">
+  <link rel="stylesheet" href="/css/vendors/sweet-alert.css?v2.0.0">
+  <link rel="stylesheet" href="/assets/vendor/webui-popover/webui-popover.min.css?v2.0.0">
+  <link rel="stylesheet" href="/assets/vendor/jquery-strength/jquery-strength.min.css?v2.0.0">
 
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,500,300italic">
   {% endblock %}
@@ -30,7 +35,7 @@
   <script src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>
   <script src='https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js'></script>
   <![endif]-->
-    <script src="http://getbootstrapadmin.com/remark/global/vendor/breakpoints/breakpoints.min.js"></script>
+    <script src="/assets/vendor/breakpoints/breakpoints.min.js"></script>
     <script>
         Breakpoints();
     </script>
@@ -39,20 +44,27 @@
 {% block body %}
 <body class="site-menubar-unfold">
   {% include '../includes/header.html' %}
-    <div class="messages">
-      {% include '../includes/messages.html' %}
-    </div>
     <div class="site-menubar">
       {% include '../includes/menu.html' %}
     </div>
     <div class="page animsition">
-        <div class="page-header">
-            <h1 class="page-title">Blockquotes</h1>
-            <ol class="breadcrumb">
-                <li><a href="../index.html">Home</a></li>
-                <li class="active">Structure</li>
-            </ol>
+        <div class="messages">
+            {% include '../includes/messages.html' %}
         </div>
+        {% if title %}
+        <div class="page-header">
+            <h1 class="page-title">
+                <div class="pull-right">
+                {% block actions %}{% endblock %}
+                </div>
+                {{title}}
+            </h1>
+            <!--<ol class="breadcrumb">-->
+                <!--<li><a href="../index.html">Home</a></li>-->
+                <!--<li class="active">Structure</li>-->
+            <!--</ol>-->
+        </div>
+        {% endif %}
         <div class="page-content container-fluid">
             {% block content %}{% endblock %}
         </div>

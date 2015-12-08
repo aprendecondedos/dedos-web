@@ -2,11 +2,13 @@ var classroom = require('../app/controllers/classroom');
 var project = require('../app/controllers/project');
 var play = require('../app/controllers/play');
 var user = require('../app/controllers/user');
+var player = require('../app/controllers/player');
+var auth = require('../config/middlewares/authorization');
 
 /**
  * Route middlewares
  */
-var auth = require('../config/middlewares/authorization');
+var classroomAuth = [auth.requiresLogin, auth.classroom.hasAuthorization];
 
 module.exports = function (app, passport) {
 
@@ -77,12 +79,20 @@ module.exports = function (app, passport) {
     app.get('/user/settings',auth.requiresLogin, user.edit);
     app.post('/user/settings',auth.requiresLogin, user.edit);
 
-  // Project routes
+    // Classroom routes
     app.param('classroomId', classroom.load);
-    app.get('/classrooms',auth.requiresLogin, classroom.index);
-    app.get('/classroom/new',auth.requiresLogin, classroom.new);
-    app.post('/classroom/new',auth.requiresLogin, classroom.new);
 
+    app.get('/classrooms', auth.requiresLogin, classroom.index);
+    app.get('/classroom/new', auth.requiresLogin, classroom.new);
+    app.post('/classroom/new', auth.requiresLogin, classroom.new);
+    app.get('/classroom/:classroomId', classroomAuth, classroom.show);
+    app.get('/classroom/:classroomId/edit', classroomAuth, classroom.edit);
+    app.put('/classroom/:classroomId', classroomAuth, classroom.update);
+    app.delete('/classroom/:classroomId', classroomAuth, classroom.destroy);
+
+    // Player routes
+    app.get('/player/new', auth.requiresLogin, player.new);
+    app.post('/player/new', auth.requiresLogin, player.new);
 
 
     // Project routes

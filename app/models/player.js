@@ -1,9 +1,11 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+require('./user');
+var User = mongoose.model('User');
 
 var PlayerSchema = new Schema({
     name           : String,
-    picture        : String,
+    avatar         : String,
     projects       : [{type: Schema.Types.ObjectId, ref: 'Project'}],
     classes        : [{type: Schema.Types.ObjectId, ref: 'Class'}],
     createdBy      : {type: Schema.Types.ObjectId, ref: 'User'},
@@ -31,5 +33,4 @@ PlayerSchema.methods = {
     }
 };
 
-
-mongoose.model('Player', PlayerSchema);
+var Player = User.discriminator('Player', PlayerSchema);

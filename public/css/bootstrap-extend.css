@@ -685,7 +685,7 @@ textarea.form-control.no-resize {
   margin: 0 5px;
 }
 .input-search-close {
-  color: #000;
+  color: #000000;
   text-shadow: none;
   opacity: 0.2;
   filter: alpha(opacity=20);
@@ -695,7 +695,7 @@ textarea.form-control.no-resize {
 }
 .input-search-close:hover,
 .input-search-close:focus {
-  color: #000;
+  color: #000000;
   text-decoration: none;
   cursor: pointer;
   opacity: 0.5;
@@ -2546,7 +2546,7 @@ fieldset[disabled] .btn-pure.focus {
 }
 .dropdown-menu.bullet:after {
   top: -6px;
-  border-bottom-color: #fff;
+  border-bottom-color: #ffffff;
 }
 .dropdown-menu-right.bullet:before,
 .dropdown-menu-right.bullet:after {
@@ -2674,7 +2674,7 @@ fieldset[disabled] .btn-pure.focus {
 .dropup .dropdown-menu.bullet:after,
 .navbar-fixed-bottom .dropdown .dropdown-menu.bullet:after {
   bottom: -6px;
-  border-top-color: #fff;
+  border-top-color: #ffffff;
 }
 .dropdown-menu > .dropdown-header {
   padding: 8px 20px 6px;
@@ -5394,7 +5394,7 @@ label {
   background-color: #ffffff;
 }
 .modal.modal-just-me.in {
-  background: #fff;
+  background: #ffffff;
 }
 .modal.modal-just-me.in .modal-dialog {
   opacity: 1;

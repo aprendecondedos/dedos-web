@@ -4,7 +4,7 @@
 
 const nodemailer = require('nodemailer');
 var swig = require('swig');
-var i18n = require('../../i18n/i18n');
+var gettext = require('../../i18n/i18n').gettext;
 var config = require('../../config/config');
 var extend = require('util')._extend;
 var path = require('path');
@@ -41,7 +41,7 @@ module.exports = {
       register:  function (user, cb) {
         var obj = {
           to: user.email,
-          subject: i18n.gettext('mail:subject:user:register'),
+          subject: gettext('mail:subject:user:register'),
           html: renderTemplate('user/register', {
             name: user.name
           })

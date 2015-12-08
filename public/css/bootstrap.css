@@ -267,7 +267,7 @@ body {
   font-size: 14px;
   line-height: 1.57142857;
   color: #76838f;
-  background-color: #fff;
+  background-color: #ffffff;
 }
 input,
 button,
@@ -312,7 +312,7 @@ img {
 .img-thumbnail {
   padding: 4px;
   line-height: 1.57142857;
-  background-color: #fff;
+  background-color: #ffffff;
   border: 1px solid #e4eaec;
   border-radius: 3px;
   -webkit-transition: all 0.2s ease-in-out;
@@ -1472,7 +1472,7 @@ th {
   border-top: 2px solid #e4eaec;
 }
 .table .table {
-  background-color: #fff;
+  background-color: #ffffff;
 }
 .table-condensed > thead > tr > th,
 .table-condensed > tbody > tr > th,
@@ -2824,8 +2824,8 @@ tbody.collapse.in {
   list-style: none;
   font-size: 14px;
   text-align: left;
-  background-color: #fff;
-  border: 1px solid #ccc;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
   border: 1px solid #e4eaec;
   border-radius: 3px;
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
@@ -3335,7 +3335,7 @@ select.input-group-sm > .input-group-btn > .btn {
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
   color: #4e97d9;
-  background-color: #fff;
+  background-color: #ffffff;
   border: 1px solid #e4eaec;
   border-bottom-color: transparent;
   cursor: default;
@@ -3381,7 +3381,7 @@ select.input-group-sm > .input-group-btn > .btn {
   .nav-tabs.nav-justified > .active > a,
   .nav-tabs.nav-justified > .active > a:hover,
   .nav-tabs.nav-justified > .active > a:focus {
-    border-bottom-color: #fff;
+    border-bottom-color: #ffffff;
   }
 }
 .nav-pills > li {
@@ -3449,7 +3449,7 @@ select.input-group-sm > .input-group-btn > .btn {
   .nav-tabs-justified > .active > a,
   .nav-tabs-justified > .active > a:hover,
   .nav-tabs-justified > .active > a:focus {
-    border-bottom-color: #fff;
+    border-bottom-color: #ffffff;
   }
 }
 .tab-content > .tab-pane {
@@ -4298,7 +4298,7 @@ a.badge:focus {
   padding: 4px;
   margin-bottom: 22px;
   line-height: 1.57142857;
-  background-color: #fff;
+  background-color: #ffffff;
   border: 1px solid #e4eaec;
   border-radius: 3px;
   -webkit-transition: border 0.2s ease-in-out;
@@ -4425,7 +4425,7 @@ a.thumbnail.active {
   height: 100%;
   font-size: 12px;
   line-height: 22px;
-  color: #fff;
+  color: #ffffff;
   text-align: center;
   background-color: #62a8ea;
   -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
@@ -4536,7 +4536,7 @@ a.thumbnail.active {
   display: block;
   padding: 10px 15px;
   margin-bottom: -1px;
-  background-color: #fff;
+  background-color: #ffffff;
   border: 1px solid transparent;
 }
 .list-group-item:first-child {
@@ -4735,7 +4735,7 @@ button.list-group-item-danger.active:focus {
 }
 .panel {
   margin-bottom: 22px;
-  background-color: #fff;
+  background-color: #ffffff;
   border: 1px solid transparent;
   border-radius: 4px;
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
@@ -4990,7 +4990,7 @@ button.list-group-item-danger.active:focus {
   border-color: #62a8ea;
 }
 .panel-primary > .panel-heading {
-  color: #fff;
+  color: #ffffff;
   background-color: #62a8ea;
   border-color: #62a8ea;
 }
@@ -4999,7 +4999,7 @@ button.list-group-item-danger.active:focus {
 }
 .panel-primary > .panel-heading .badge {
   color: #62a8ea;
-  background-color: #fff;
+  background-color: #ffffff;
 }
 .panel-primary > .panel-footer + .panel-collapse > .panel-body {
   border-bottom-color: #62a8ea;
@@ -5129,14 +5129,14 @@ button.list-group-item-danger.active:focus {
   font-size: 21px;
   font-weight: 500;
   line-height: 1;
-  color: #000;
+  color: #000000;
   text-shadow: none;
   opacity: 0.2;
   filter: alpha(opacity=20);
 }
 .close:hover,
 .close:focus {
-  color: #000;
+  color: #000000;
   text-decoration: none;
   cursor: pointer;
   opacity: 0.5;
@@ -5191,8 +5191,8 @@ button.close {
 }
 .modal-content {
   position: relative;
-  background-color: #fff;
-  border: 1px solid #999;
+  background-color: #ffffff;
+  border: 1px solid #999999;
   border: 1px solid transparent;
   border-radius: 4px;
   -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
@@ -5207,7 +5207,7 @@ button.close {
   bottom: 0;
   left: 0;
   z-index: 1600;
-  background-color: #000;
+  background-color: #000000;
 }
 .modal-backdrop.fade {
   opacity: 0;
@@ -5609,7 +5609,7 @@ button.close {
   opacity: 0;
   filter: alpha(opacity=0);
   font-size: 16px;
-  color: #fff;
+  color: #ffffff;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
@@ -5632,7 +5632,7 @@ button.close {
 .carousel-control:hover,
 .carousel-control:focus {
   outline: 0;
-  color: #fff;
+  color: #ffffff;
   text-decoration: none;
   opacity: 0.9;
   filter: alpha(opacity=90);
@@ -5687,7 +5687,7 @@ button.close {
   height: 10px;
   margin: 1px;
   text-indent: -999px;
-  border: 1px solid #fff;
+  border: 1px solid #ffffff;
   border-radius: 10px;
   cursor: pointer;
   background-color: #000 \9;
@@ -5697,7 +5697,7 @@ button.close {
   margin: 0;
   width: 12px;
   height: 12px;
-  background-color: #fff;
+  background-color: #ffffff;
 }
 .carousel-caption {
   position: absolute;
@@ -5707,7 +5707,7 @@ button.close {
   z-index: 10;
   padding-top: 20px;
   padding-bottom: 20px;
-  color: #fff;
+  color: #ffffff;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
