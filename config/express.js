@@ -68,6 +68,9 @@ module.exports = function (app, passport) {
     app.engine('html', swig.renderFile);
     app.set('views', config.root + '/app/views');
     app.set('view engine', 'html');
+    swig.setFilter('length', function (input, idx) {
+        return input.length;
+    });
 
     // expose package.json to views
     app.use(function (req, res, next) {

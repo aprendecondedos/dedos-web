@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Classroom = mongoose.model('Classroom');
 var gettext = require('../../i18n/i18n').gettext;
 var extend = require('util')._extend;
+var wrap = require('co-express');
 
 exports.load = function(req, res, next, id) {
     Classroom.load(id, function (err, classroom) {
@@ -45,17 +46,25 @@ exports.new = function(req, res){
   }
 };
 
-exports.edit = function(req, res){
+exports.edit = wrap(function* (req, res){
+  var options = {
+    criteria: {
+      '_id': req.classroom._id
+    }
+  };
+  //var players = yield Classroom.list(options);
+
   res.render('classroom/form', {
     title: gettext('classroom:edit'),
-    classroom: req.classroom
+    classroom: req.classroom,
+    players: req.classroom.students
   });
-};
+});
 
 exports.show = function(req, res){
   res.render('classroom/show', {
     title: gettext('classroom:show'),
-    classroom: req.classroom
+    classroom: req.classroom,
   });
 };
 

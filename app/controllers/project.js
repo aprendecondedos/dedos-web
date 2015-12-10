@@ -34,7 +34,10 @@ exports.index = function(req, res){
 //var upload = multer().single('file_zip');
 var upload = lib.upload('file_zip');
 exports.new = function(req, res){
+
     if(req.method == 'POST') {
+      console.log('test');
+      return false;
         // Subida de archivos para creación del proyecto
         upload(req, res, function (err) {
 

@@ -18,11 +18,11 @@
 
   "administration:panel": "Panel de administración",
   "new:project": "Nuevo proyecto",
-  "new:project:name": "Nombre del proyecto",
   "new:project:file": "Archivo comprimido",
   "projects": "Proyectos",
   "projects:my": "Mis proyectos",
   "projects:new": "Añadir proyecto",
+  "project:name": "Nombre del proyecto",
 
   "players": "Jugadores",
 

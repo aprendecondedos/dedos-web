@@ -26,6 +26,17 @@ $(function(){
   $('body').scrollspy({
     target: '#articleAffix'
   });
+  // jQuery validation
+  // ---------
+  $('form[data-validation="true"]').formValidation({
+    framework: "bootstrap",
+    //button: {
+    //  selector: 'form[data-validation="true"] .btn.btn-primary',
+    //  disabled: 'disabled'
+    //},
+    icon: null
+  });
+
   // SweetAlert
   // ---------
   $('.warning-confirm').on("click", function() {

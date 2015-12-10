@@ -14,7 +14,7 @@
                 <h3 class="panel-title">Parámetros</h3>
             </div>
             <div class="panel-body">
-                <form class="form-horizontal" action="{{action}}" method="post" role="form">
+                <form data-validation="true" class="form-horizontal" action="{{action}}" method="post" role="form">
                     <input type="hidden" name="_csrf" value="{{ csrf_token }}">
                     {% if not classroom.isNew %}
                         <input type="hidden" name="_method" value="PUT">
@@ -23,7 +23,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">{{gettext('classroom:name')}}</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="name" value="{{classroom.name}}" />
+                            <input type="text" required class="form-control" name="name" value="{{classroom.name}}" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -59,6 +59,9 @@
                         <li role="presentation">
                             <a data-toggle="tab" href=".icon-list.objects" role="tab">{{gettext('toys')}}</a>
                         </li>
+                        <li role="presentation">
+                            <a data-toggle="tab" href=".icon-list.alphabet" role="tab">{{gettext('alphabet')}}</a>
+                        </li>
                     </ul>
                     <div class="tab-content">
                         <div class="icon-list animals tab-pane active">
@@ -80,6 +83,14 @@
                                 {% if x > 0 %}
                                 <a class="avatar avatar-online margin-left icons icon-{% if x < 10 %}0{% endif %}{{x}}" href="javascript:;" style="text-decoration:none;font-size: 25px;color: #358fe4;background: #e4eaec;border-radius: 100%;padding: 3px;text-align: center;height: 30px;width: 30px;"></a>
                                 {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="icon-list alphabet tab-pane">
+                            {% set iconCountAlphAsArray = Array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z') %}
+                            {% for x, y in iconCountAlphAsArray %}
+                            <a class="avatar avatar-online" style="width: 30px;">
+                                <img data-name="{{y}}" class="profile" style="width: 30px;">
+                            </a>
                             {% endfor %}
                         </div>
                     </div>
@@ -147,8 +158,11 @@
                      aria-hidden="true" role="dialog"
                      tabindex="-1">
                     <div class="modal-dialog">
-                        <form class="modal-content" action="/player/new" method="post" role="form">
+                        <form class="modal-content" action="/player/new" method="post" role="form" data-validation="true">
                             <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                            {% if not classroom.isNew %}
+                            <input type="hidden" name="classroom" value="{{req.classroom.id}}">
+                            {% endif %}
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
@@ -217,15 +231,15 @@
                         </div>
                     </div>
                     <tbody>
-                    {% for i in players %}
+                    {% for player in players %}
                     <tr>
                         <td>
                             <a class="popover-list avatar avatar-online margin-left icons an-{{loop.index}}" style="width: 30px;height: 30px;" href="javascript:;"></a>
                         </td>
-                        <td>Miguel Angel Gutierrez Moreno</td>
+                        <td>{{player.name}}</td>
                         <td>
-                            <a class="btn btn-sm btn-icon btn-pure btn-default"><i class="fa fa-pencil"></i></a>
-                            <a class="btn btn-sm btn-icon btn-pure btn-default"><i class="fa fa-times"></i></a>
+                            <a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-pencil"></i></a>
+                            <a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-times"></i></a>
                         </td>
                     </tr>
                     {% endfor %}

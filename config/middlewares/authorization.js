@@ -30,7 +30,6 @@ exports.user = {
 
 exports.classroom = {
   hasAuthorization: function (req, res, next) {
-    console.log(req.user._id);
     if(req.classroom.teachers.indexOf(req.user._id) == -1){
       req.flash('info', 'You are not authorized');
       return res.redirect('/classrooms');

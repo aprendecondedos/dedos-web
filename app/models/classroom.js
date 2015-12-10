@@ -1,10 +1,11 @@
+var util = require('util');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ClassroomSchema = new Schema({
   name            : String,
   education_level : String,
-  students        : [{type: Schema.Types.ObjectId, ref: 'Student'}],
+  students        : [{type: Schema.Types.ObjectId, ref: 'Player'}],
   teachers        : [{type: Schema.Types.ObjectId, ref: 'Teacher'}],
   createdDate    : {type: Date, default: Date.now},
   updatedDate    : {type: Date, default: Date.now}
@@ -33,7 +34,21 @@ ClassroomSchema.methods = {
 
   },
   addTeachers: function(teachers){
-    this.teachers.push(teachers);
+    if(util.isArray(teachers)){
+      this.teachers.concat(teachers);
+    } else {
+      this.teachers.push(teachers);
+    }
+  },
+  addStudents: function(players){
+    if(util.isArray(players)){
+      this.students = this.students.concat(players);
+    } else {
+      this.students.push(players);
+    }
+  },
+  setStudents: function(players){
+    this.students = players;
   },
   getEducationLevels: function(){
      return educationLevels;
@@ -56,7 +71,9 @@ ClassroomSchema.statics = {
 
     load: function (id, cb) {
         this.findOne({_id: id})
-            .exec(cb);
+          //.populate('teachers', 'name')
+          .populate({path: 'students', select: 'name', options: {sort: { _id: -1 } }}) // Order by name DESC
+          .exec(cb);
     },
     list: function (options, cb) {
       var criteria = options.criteria || {};
@@ -65,7 +82,8 @@ ClassroomSchema.statics = {
 
       return this.find(criteria)
         .populate('teachers', 'name')
-        .sort({ createdAt: -1 })
+        //.populate('students', 'name')
+        .sort({ createdDate: -1 })
         .limit(limit)
         .skip(limit * page)
         .exec(cb);

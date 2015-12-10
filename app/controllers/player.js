@@ -1,7 +1,7 @@
 var lib = require('../../lib/functions');
 var mongoose = require('mongoose');
 var Player = mongoose.model('Player');
-
+var Classroom = mongoose.model('Classroom');
 
 exports.load = function(req, res, next, id) {
     Player.load(id, function (err, user) {
@@ -19,6 +19,8 @@ exports.index = function(req, res){
 exports.new = function(req, res){
     if(req.method == 'POST') {
       var players = req.body.player;
+      var classroom_id = req.body.classroom;
+      var users = [];
       players.name.forEach(function(player_name){
         var user = new Player({name: player_name});
         user.save(function (err) {
@@ -28,9 +30,20 @@ exports.new = function(req, res){
               user: user
             });
           }
+          users.push(user);
         });
       });
-      return res.redirect('/');
+
+      // Si se está añadiendo en una clase
+      if(classroom_id){
+        Classroom.load(classroom_id, function(err_cr, classroom){
+          classroom.addStudents(users);
+          classroom.save();
+        });
+        return res.redirect(req.header('Referer'));
+      }
+
+      return res.redirect('');
     } else {
         res.render('user/signup', {
             user: new Player()
