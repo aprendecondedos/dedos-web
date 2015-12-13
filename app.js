@@ -49,34 +49,6 @@ app.set('views', path.join(__dirname, '/app/views'));
 app.set('view engine', 'html');
 
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-//app.use(cookieParser());
-app.use(require('less-middleware')(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(cookieParser('secret'));
-
-app.use(session({
-    resave: true,
-    cookie: { maxAge: 60000 },
-    secret: pkg.name,
-    saveUninitialized: true,
-    store: new mongoStore({
-        url: config.db,
-        collection : 'sessions'
-    })
-}));
-app.use(flash());
-
-// use passport session
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(helpers(pkg.name));
-
 // Bootstrap models
 
 fs.readdirSync(join(__dirname, 'app/models')).forEach(function (file) {

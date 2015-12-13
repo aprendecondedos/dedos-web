@@ -32,7 +32,7 @@ exports.index = function(req, res){
     res.render('index', data);
 };
 //var upload = multer().single('file_zip');
-var upload = lib.upload('file_zip');
+//var upload = lib.upload('file_zip');
 exports.new = function(req, res){
 
     if(req.method == 'POST') {
