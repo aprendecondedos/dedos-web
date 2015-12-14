@@ -32,12 +32,10 @@ exports.index = function(req, res){
     res.render('index', data);
 };
 //var upload = multer().single('file_zip');
-//var upload = lib.upload('file_zip');
 exports.new = function(req, res){
 
     if(req.method == 'POST') {
-      console.log('test');
-      return false;
+        var upload = lib.upload('file_upload');
         // Subida de archivos para creación del proyecto
         upload(req, res, function (err) {
 
@@ -200,7 +198,7 @@ exports.show = function (req, res){
     });
 };
 
-exports.list = function(req, res){
+exports.my = function(req, res){
 
 };
 

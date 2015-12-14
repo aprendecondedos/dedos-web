@@ -5,40 +5,42 @@
     {{ gettext("new:project") }}
 {% endblock %}
 {% block content %}
-<div class="panel">
-    <div class="panel-body container-fluid">
-        <form
-              enctype   =  "multipart/form-data"
-              action    =  "/project/new"
-              method    =  "post"
-              data-validation="true"
-              class="form-horizontal"
-                >
-            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
-            <div class="row">
-                <div class="col-md-6">
+
+{% if classroom.isNew %}
+    {% set action = '/project/new' %}
+{% else %}
+    {% set action = '/project/' + classroom._id %}
+{% endif %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-body container-fluid">
+                <form data-validation="true" enctype="multipart/form-data" class="form-horizontal" action="{{action}}" method="post" role="form">
+                    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
                     <div class="form-group">
                         <label class="col-sm-3 control-label">{{gettext('project:name')}}</label>
                         <div class="col-sm-9">
                             <input type="text" required class="form-control" name="name" value="{{project.name}}" />
                         </div>
                     </div>
-                </div>
+                    <label>{{ gettext("new:project:file") }}</label><br>
+                    <input type="file" name="file_upload" />
+                    <br>
+                    <p>
+                        <label>{{ gettext("players") }}</label><br>
+                        <label><input type="radio" name="players" value="1"> 1</label>
+                        <label><input type="radio" name="players" value="2"> 2</label>
+                        <label><input type="radio" name="players" value="3"> 3</label>
+                        <label><input type="radio" name="players" value="4"> 4</label>
+                    </p>
+                    <br>
+                    <h5>Parámetros</h5>
+                    <hr>
+                    <input type="submit" value="Enviar">
+                    <input type="text" class="maxlength-input form-control" data-plugin="maxlength" data-placement="bottom-right-inside" maxlength="35" value="This input has a limit of 35 chars" placeholder="This input has a limit of 35 chars.">
+                </form>
             </div>
-            <label>{{ gettext("new:project:file") }}</label><br>
-            <input type="file" name="file_zip" />
-            <br>
-            <p>
-                <label>{{ gettext("players") }}</label><br>
-                <label><input type="radio" name="players" value="1"> 1</label>
-                <label><input type="radio" name="players" value="2"> 2</label>
-                <label><input type="radio" name="players" value="3"> 3</label>
-                <label><input type="radio" name="players" value="4"> 4</label>
-            </p>
-            <br>
-            <input type="submit" value="Enviar">
-            <input type="text" class="maxlength-input form-control" data-plugin="maxlength" data-placement="bottom-right-inside" maxlength="35" value="This input has a limit of 35 chars" placeholder="This input has a limit of 35 chars.">
-        </form>
+        </div>
     </div>
 </div>
 {% endblock %}

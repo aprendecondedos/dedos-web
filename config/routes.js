@@ -1,3 +1,4 @@
+var lib = require('../lib/functions');
 var classroom = require('../app/controllers/classroom');
 var project = require('../app/controllers/project');
 var play = require('../app/controllers/play');
@@ -98,7 +99,8 @@ module.exports = function (app, passport) {
     // Project routes
     app.param('projectId', project.load);
 
-    app.get('/projects/my',auth.requiresLogin, project.list);
+    app.get('/projects/my',auth.requiresLogin, project.my);
+    app.get('/projects',auth.requiresLogin, project.index);
     app.get('/project/new',auth.requiresLogin, project.new);
     app.post('/project/new', auth.requiresLogin, project.new);
     app.get('/project/:projectId', auth.requiresLogin, project.show);
