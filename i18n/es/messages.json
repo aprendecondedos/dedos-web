@@ -17,12 +17,12 @@
   "user:password:confirm": "Confirmar contraseña",
 
   "administration:panel": "Panel de administración",
-  "new:project": "Nuevo proyecto",
-  "new:project:file": "Archivo comprimido",
+  "project:new": "Nuevo proyecto",
   "projects": "Proyectos",
   "projects:my": "Mis proyectos",
   "projects:new": "Añadir proyecto",
   "project:name": "Nombre del proyecto",
+  "project:file": "Archivo comprimido",
 
   "players": "Jugadores",
 
@@ -33,6 +33,7 @@
   "classrooms": "Clases",
   "classrooms:my": "Mis clases",
   "classroom:new": "Añadir clase",
+  "classroom:edit": "Editar clase",
   "classroom:name": "Nombre de la clase",
   "classroom:education_level": "Nivel educativo",
 
@@ -47,6 +48,10 @@
 
   "submit": "Enviar",
   "save": "Guardar",
+  "description": "Descripción",
+  "name": "Nombre",
+  "title": "Título",
+  "select:all": "Seleccionar todos",
 
 
 

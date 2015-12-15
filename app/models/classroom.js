@@ -82,7 +82,7 @@ ClassroomSchema.statics = {
 
       return this.find(criteria)
         .populate('teachers', 'name')
-        //.populate('students', 'name')
+        .populate('students', 'name')
         .sort({ createdDate: -1 })
         .limit(limit)
         .skip(limit * page)

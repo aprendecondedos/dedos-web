@@ -3,6 +3,7 @@ var lib = require('../../lib/functions');
 var fs = require('fs');
 var xml2js = require('xml2js');
 var parser = new xml2js.Parser({async: true});
+var gettext = require('../../i18n/i18n').gettext;
 
 var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
@@ -172,8 +173,10 @@ exports.new = function(req, res){
         });
 
     } else {
-        var data = {};
-        return res.render('project/new', data);
+        return res.render('project/new', {
+          title: gettext('project:new'),
+          project: new Project()
+        });
     }
 };
 

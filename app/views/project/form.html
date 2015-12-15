@@ -6,10 +6,10 @@
 {% endblock %}
 {% block content %}
 
-{% if classroom.isNew %}
+{% if project.isNew %}
     {% set action = '/project/new' %}
 {% else %}
-    {% set action = '/project/' + classroom._id %}
+    {% set action = '/project/' + project._id %}
 {% endif %}
 <div class="row">
     <div class="col-md-6">
@@ -23,24 +23,41 @@
                             <input type="text" required class="form-control" name="name" value="{{project.name}}" />
                         </div>
                     </div>
-                    <label>{{ gettext("new:project:file") }}</label><br>
-                    <input type="file" name="file_upload" />
-                    <br>
-                    <p>
-                        <label>{{ gettext("players") }}</label><br>
-                        <label><input type="radio" name="players" value="1"> 1</label>
-                        <label><input type="radio" name="players" value="2"> 2</label>
-                        <label><input type="radio" name="players" value="3"> 3</label>
-                        <label><input type="radio" name="players" value="4"> 4</label>
-                    </p>
-                    <br>
-                    <h5>Parámetros</h5>
-                    <hr>
-                    <input type="submit" value="Enviar">
-                    <input type="text" class="maxlength-input form-control" data-plugin="maxlength" data-placement="bottom-right-inside" maxlength="35" value="This input has a limit of 35 chars" placeholder="This input has a limit of 35 chars.">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">{{gettext('project:file')}}</label>
+                        <div class="col-sm-9">
+                            <div class="input-group input-group-file">
+                                <input type="text" class="form-control" readonly="">
+                                <span class="input-group-btn">
+                                  <span class="btn btn-success btn-file">
+                                    <i class="icon fa fa-upload" aria-hidden="true"></i>
+                                    <input type="file" name="file_upload" required>
+                                  </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">{{gettext('description')}}</label>
+                        <div class="col-sm-9">
+                            <textarea class="maxlength-textarea form-control" data-plugin="maxlength" data-placement="bottom-right-inside" maxlength="100" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary">{{gettext('submit')}}</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
+    <!-- Classroom / students -->
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-body container-fluid">
+            {% include "../player/admin/list.html" with players %}
+            </div>
+        </div>
+    </div>
+    <!-- Classroom / students end -->
 </div>
 {% endblock %}

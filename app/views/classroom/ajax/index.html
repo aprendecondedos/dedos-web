@@ -1,0 +1,64 @@
+<script>
+    $('[data-name].classroom').initial({
+        charCount: 1
+    });
+    $('[data-name].profile').initial({
+        charCount: 2
+    });
+    $(".check-all").change(function () {
+        var container = $(this).data('container-check');
+        $(container).find("input:checkbox").prop('checked', $(this).prop("checked"));
+    });
+</script>
+<div class="row">
+    <div class="col-md-5">
+        <h5>Mis clases</h5>
+        <div class="list-group list-group-dividered" style="border-right: 1px solid #f3f7f9;">
+            {% set students_class = {} %}
+            {% for classroom in classrooms %}
+            {% set students_class[loop.index] = classroom.students %}
+            <a class="list-group-item {% if loop.first %}active{% endif %}" href="#tab-{{loop.index}}" role="tab" data-toggle="tab" href="javascript:;">
+                <div class="media">
+                    <div class="media-left">
+                        <span>
+                           <img data-name="{{classroom.name|last}}" class="classroom img-rounded" style="width: 30px;">
+                        </span>
+                    </div>
+                    <div class="media-body">
+                        <div>{{classroom.name}}</div>
+                        <small>{{gettext('education_level:'+classroom.education_level)}}</small>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-7 tab-content">
+        <h5>Estudiantes</h5>
+        {% for classroom_index in students_class %}
+        <div class="tab-pane {% if loop.first %}active{% endif %}" id="tab-{{loop.index}}">
+        <ul id="check-{{loop.index}}" class="list-group list-group-dividered list-group-full">
+            <li class="list-group-item padding-0">
+                <div class="checkbox-custom checkbox-primary">
+                    <input type="checkbox" class="check-all" id="checkbox-{{loop.index}}" data-container-check="#check-{{loop.index}}">
+                    <label class="text-muted" for="checkbox-{{loop.index}}">{{gettext('select:all')}}</label>
+                </div>
+            </li>
+            {% for student in classroom_index %}
+            <li data-user="{{student.id}}" class="list-group-item">
+                <div class="checkbox-custom checkbox-primary margin-0">
+                    <input type="checkbox" name="user[{{student.id}}]" id="user[{{student.id}}]" class="check-all" data-container-check="#check-container">
+                    <label for="user[{{student.id}}]">
+                        <span class="margin-right-10 margin-left-5">
+                           <img data-name="{{student.name}}" class="profile img-circle" style="width: 30px;">
+                        </span>
+                        {{student.name}}
+                    </label>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        </div>
+        {% endfor %}
+    </div>
+</div>

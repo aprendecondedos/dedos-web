@@ -1,0 +1,185 @@
+<script>
+    $(function(){
+        $('#modal-import-classrooms').on('shown.bs.modal', function(){
+            var $m_body = $(this).find('.modal-body');
+            $.ajax({
+                url: "/classrooms",
+                context: document,
+                success: function(html){
+                    $m_body.html( html );
+                }
+            })
+            .done(function( html ) {
+//                $m_body.html( html );
+            });
+        });
+    });
+</script>
+<div class="hidden popover-list-content">
+    <ul class="nav nav-tabs nav-tabs-line" data-plugin="nav-tabs" role="tablist">
+        <li class="active" role="presentation">
+            <a data-toggle="tab" href=".icon-list.animals" role="tab">{{gettext('animals')}}</a>
+        </li>
+        <li role="presentation">
+            <a data-toggle="tab" href=".icon-list.objects" role="tab">{{gettext('toys')}}</a>
+        </li>
+        <li role="presentation">
+            <a data-toggle="tab" href=".icon-list.alphabet" role="tab">{{gettext('alphabet')}}</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="icon-list animals tab-pane active">
+            <a class="avatar avatar-online margin-left icons an-1" style="width: 30px;height: 30px;" href="javascript:;"></a>
+            <a class="avatar avatar-online margin-left icons an-2" style="width: 30px;height: 30px;" href="javascript:;"></a>
+            <a class="avatar avatar-online margin-left icons an-3" style="width: 30px;height: 30px;" href="javascript:;"></a>
+            <a class="avatar avatar-online margin-left icons an-4" style="width: 30px;height: 30px;" href="javascript:;"></a>
+            <a class="avatar avatar-online margin-left icons an-5" style="width: 30px;height: 30px;" href="javascript:;"></a>
+            <a class="avatar avatar-online margin-left icons an-6" style="width: 30px;height: 30px;" href="javascript:;"></a>
+            <a class="avatar avatar-online margin-left icons an-7" style="width: 30px;height: 30px;" href="javascript:;"></a>
+            <a class="avatar avatar-online margin-left icons an-8" style="width: 30px;height: 30px;" href="javascript:;"></a>
+            <a class="avatar avatar-online margin-left icons an-9" style="width: 30px;height: 30px;" href="javascript:;"></a>
+            <a class="avatar avatar-online margin-left icons an-10" style="width: 30px;height: 30px;" href="javascript:;"></a>
+        </div>
+        <div class="icon-list objects tab-pane">
+            {% set iconCount = 100 %}
+            {% set iconCountAsArray = Array(iconCount) %}
+            {% for x, y in iconCountAsArray %}
+            {% if x > 0 %}
+            <a class="avatar avatar-online margin-left icons icon-{% if x < 10 %}0{% endif %}{{x}}" href="javascript:;" style="text-decoration:none;font-size: 25px;color: #358fe4;background: #e4eaec;border-radius: 100%;padding: 3px;text-align: center;height: 30px;width: 30px;"></a>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="icon-list alphabet tab-pane">
+            {% set iconCountAlphAsArray = Array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z') %}
+            {% for x, y in iconCountAlphAsArray %}
+            <a class="avatar avatar-online" style="width: 30px;">
+                <img data-name="{{y}}" class="profile" style="width: 30px;">
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Modal import from my classrooms -->
+<div class="modal fade modal-slide-from-bottom" id="modal-import-classrooms"
+     aria-hidden="true" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">{{gettext('classrooms:my')}}</h4>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default margin-0" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Modal import from my classrooms -->
+<!-- Modal import manually -->
+<div class="modal fade modal-slide-from-bottom" id="modal-import-manual"
+     aria-hidden="true" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog">
+        <form class="modal-content" action="/player/new" method="post" role="form" data-validation="true">
+            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+            {% if not classroom.isNew %}
+            <input type="hidden" name="classroom" value="{{req.classroom.id}}">
+            {% endif %}
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">Importar estudiantes manualmente</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group list-group-dividered list-group-full" id="toClone">
+                    <li class="list-group-item row">
+                        <div class="col-xs-1">
+                            <div class="img-circle" style="width: 30px;height: 30px;background-color: #e4eaec;"></div>
+                        </div>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" required="required" autofocus="autofocus" placeholder="{{gettext('user:name')}}" name="player[name][]">
+                        </div>
+                        <div class="col-xs-1">
+                            <a class="btn btn-sm btn-icon btn-pure btn-default" onclick="javascript:$(this).closest('.list-group-item').remove();"><i class="fa fa-times"></i></a>
+                        </div>
+                    </li>
+                </ul>
+                <button type="button" class="btn btn-outline btn-primary btn-sm add-more" data-clone="#toClone li:first" data-clone-container="#toClone">
+                    <i class="icon fa fa-plus"></i> Añadir
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default margin-0" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- End Modal import manually -->
+<table class="table toggle-circle" id="table-filtering">
+    <thead>
+    <tr>
+        <th data-sort-ignore="true"></th>
+        <th>{{gettext('user:name')}}</th>
+    </tr>
+    </thead>
+    <div class="form-inline padding-bottom-15">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-outline btn-default dropdown-toggle" id="exampleIconsDropdown" data-toggle="dropdown" aria-expanded="false">
+                        Importar estudiantes
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li role="presentation">
+                            <a href="javascript:void(0)" role="menuitem"><i class="icon fa fa-file-excel-o" aria-hidden="true"></i> Importar archivo excel</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-import-classrooms" role="menuitem"><i class="icon fa fa-list-ul" aria-hidden="true"></i> Importar desde mis clases</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-import-manual" role="menuitem"><i class="icon fa fa-plus" aria-hidden="true"></i> Crear manualmente</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 text-right">
+                <div class="form-group">
+                    <input id="filteringSearch" type="text" placeholder="Search" class="form-control" autocomplete="off">
+                </div>
+            </div>
+        </div>
+    </div>
+    <tbody>
+    {% for player in players %}
+    <tr>
+        <td>
+            <a class="popover-list avatar avatar-online margin-left icons an-{{loop.index}}" style="width: 30px;height: 30px;" href="javascript:;"></a>
+        </td>
+        <td>{{player.name}}</td>
+        <td>
+            <a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-pencil"></i></a>
+            <a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-times"></i></a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="5">
+            <div class="text-right">
+                <ul class="pagination"></ul>
+            </div>
+        </td>
+    </tr>
+    </tfoot>
+</table>

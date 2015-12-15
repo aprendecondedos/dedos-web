@@ -14,6 +14,7 @@ exports.load = function(req, res, next, id) {
 };
 
 exports.index = function(req, res){
+
   var options = {
     criteria: {
       teachers: req.user._id
@@ -21,8 +22,12 @@ exports.index = function(req, res){
   };
   Classroom.list(options, function(err, classrooms) {
     if (err) return res.render('500');
-
-      res.render('classroom/index', {
+      var view = 'classroom/index';
+      // Detectamos si viene de una petición AJAX
+      if(req.xhr){
+        view = 'classroom/ajax/index';
+      }
+      res.render(view, {
       title: gettext('classrooms:my'),
       classrooms: classrooms
     });
