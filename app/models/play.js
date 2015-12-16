@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var util = require('util');
 
-// Activity model
-var ActivitySchema = new Schema({
+// Play model
+var PlaySchema = new Schema({
     project_id   : { type: Schema.Types.ObjectId, ref: 'Project' },
     objectives   : [{type: Schema.Types.ObjectId, ref: 'Objective' }],
     elements     : [{type: Schema.Types.ObjectId, ref: 'Element' }]
@@ -11,7 +11,7 @@ var ActivitySchema = new Schema({
 /**
  * Hooks
  */
-ActivitySchema.pre('save', function (next) {
+PlaySchema.pre('save', function (next) {
     next();
 });
 /**
@@ -19,7 +19,7 @@ ActivitySchema.pre('save', function (next) {
  *
  * @type {{}}
  */
-ActivitySchema.methods = {
+PlaySchema.methods = {
 
     setObjectives: function(objectives) {
         if (util.isArray(objectives)) {
@@ -39,23 +39,22 @@ ActivitySchema.methods = {
  * Statics
  */
 
-ActivitySchema.statics = {
+PlaySchema.statics = {
 
     /**
-     * Buscar proyecto por id
+     * Buscar proyecto por id de project
      *
      * @param {ObjectId} id
      * @param {Function} cb
      * @api private
      */
 
-    load: function (options) {
-        const criteria = options.criteria || {_id: options};
-        return this.findOne(criteria)
+    load: function (id, cb) {
+        this.findOne({_id: id})
             .populate('objectives')
             .populate('elements')
-            .exec();
+            .exec(cb);
     }
-};
+}
 
-mongoose.model('Activity', ActivitySchema);
+mongoose.model('Play', PlaySchema);

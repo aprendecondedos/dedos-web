@@ -8,6 +8,7 @@ var ProjectSchema = mongoose.Schema({
     name        : String,
     project     : String,
     data        : String,
+    path        : String,
     resolution  : {
         x: Number,
         y: Number
@@ -48,12 +49,13 @@ ProjectSchema.statics = {
      * @api private
      */
 
-    load: function (id, cb) {
-        this.findOne({_id: id})
+    load: function (options) {
+        const criteria = options.criteria || {_id: options};
+        return this.findOne(criteria)
             //.populate('user', 'name email username')
             //.populate('comments.user')
             .populate('activities')
-            .exec(cb);
+            .exec();
     },
     /**
      * Listar proyectos y filtrarlos

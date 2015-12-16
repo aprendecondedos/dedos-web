@@ -95,7 +95,6 @@ module.exports = function (app, passport) {
     app.get('/player/new', auth.requiresLogin, player.new);
     app.post('/player/new', auth.requiresLogin, player.new);
 
-
     // Project routes
     app.param('projectId', project.load);
 
@@ -113,7 +112,14 @@ module.exports = function (app, passport) {
     });
 
     // Play routes
-    app.get('/play/:id', play.show);
-    app.get('/play/:id/admin', play.admin);
+    app.param('playId', play.load);
+    app.param('activityId', play.activity.load);
+
+    app.get('/play/:playId',auth.requiresLogin, play.index);
+    app.get('/play/:playId/activity/:activityId',auth.requiresLogin, play.activity.index);
+
+    //// Play routes
+    //app.get('/play/:id', play.show);
+    //app.get('/play/:id/admin', play.admin);
 
 };

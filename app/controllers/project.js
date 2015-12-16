@@ -4,6 +4,7 @@ var fs = require('fs');
 var xml2js = require('xml2js');
 var parser = new xml2js.Parser({async: true});
 var gettext = require('../../i18n/i18n').gettext;
+var wrap = require('co-express');
 
 var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
@@ -17,14 +18,11 @@ var Token = mongoose.model('Token');
  * Load
  */
 
-exports.load = function (req, res, next, id){
-    Project.load(id, function (err, project) {
-        if (err) return next(err);
-        if (!project) return next(new Error('not found'));
-        req.project = project;
-        next();
-    });
-};
+exports.load = wrap(function* (req, res, next, id){
+  req.project = yield Project.load(id);
+  if (!req.project) return next(new Error('not found'));
+  next();
+});
 
 exports.index = function(req, res){
     var data = {
@@ -36,10 +34,10 @@ exports.index = function(req, res){
 exports.new = function(req, res){
 
     if(req.method == 'POST') {
+        var project_prop = req.body;
         var upload = lib.upload('file_upload');
         // Subida de archivos para creación del proyecto
         upload(req, res, function (err) {
-
             var xml = '',
                 image_array = [],
                 original_path = req.file.path,
@@ -56,8 +54,11 @@ exports.new = function(req, res){
                     } else {
                         image_array.push(zipEntry.entryName); // Imagenes encontradas
                     }
+                } else {
+                  console.log(zipEntry.entryName);
                 }
             });
+          //console.log(xml.replace('.xml'));
             // extraer todos los archivos a una ruta específica
             zip.extractAllTo(new_path, true);
             fs.unlink('./' + original_path);
@@ -67,8 +68,9 @@ exports.new = function(req, res){
             var xml_data = fs.readFileSync(xml_file);
 
             var project = new Project({
-                name: req.body.name,
+                name: project_prop.name,
                 project: project_id,
+                path: '/uploads/'+project_id+xml_file
             });
 
             parser.parseString(xml_data);
@@ -125,13 +127,13 @@ exports.new = function(req, res){
                             var area = new Area({
                                 element_id  : area_data.$.id,
                                 type        : area_data.$.type,
-                                position: area_data.pos.pop().$,
+                                position    : area_data.pos.pop().$,
+                                size        : area_data.size.pop().$,
                                 bg          : area_data.bg.pop().$.url
                             });
-                            area.save();
-                            elements.push(area);
 
                             // Set tokens (cards)
+                            var tokens = [];
                             area_data.Tokenlist.forEach(function(tokens_data){
                                 if(typeof tokens_data != 'object') return;
 
@@ -140,6 +142,7 @@ exports.new = function(req, res){
                                         element_id  : token_data.$.id,
                                         type: token_data.$.type,
                                         position: token_data.pos.pop().$,
+                                        size: token_data.size.pop().$,
                                         clickable: token_data.clickable.pop(),
                                         rotatable: token_data.rotatable.pop(),
                                         resizable: token_data.resizable.pop(),
@@ -153,9 +156,13 @@ exports.new = function(req, res){
                                         token.text = token_data.content[0].text[0]
                                     }
                                     token.save();
+                                    tokens.push(token);
                                     elements.push(token);
                                 });
                             });
+                            area.setTokens(tokens);
+                            area.save();
+                            elements.push(area);
                         });
                     });
                     activity.setElements(elements);
@@ -187,13 +194,13 @@ exports.new = function(req, res){
 exports.show = function (req, res){
 
     var activities = req.project.activities;
-    activities.forEach(function(act) {
-        //var p = Activity.load(act._id);
-        Activity.load(act._id, function (err, activity) {
-            console.log(activity.elements);
-        });
-
-    });
+    //activities.forEach(function(act) {
+    //    //var p = Activity.load(act._id);
+    //    Activity.load(act._id, function (err, activity) {
+    //        console.log(activity.elements);
+    //    });
+    //
+    //});
     res.render('project/show', {
         title: req.project.name,
         project: req.project,

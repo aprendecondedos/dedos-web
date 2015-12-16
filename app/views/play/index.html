@@ -1,0 +1,91 @@
+{% extends '../layouts/play.html' %}
+
+{% block content %}
+<script>
+$(window).on('resize', loadElements);
+//$(document).on('ready', loadElements);
+function loadElements(){
+    var win = $(this),
+        elements = $('.element'),
+        orig = {
+            width: {{project.resolution.x}},
+            height: {{project.resolution.y}},
+        },
+        res = {
+            width: $('.play-table').innerWidth(),
+            height: $('.play-table').height()
+        },
+        coefficient = resolutionAdjust(orig, res);
+
+    elements.hide();
+    elements.each(function(){
+        $(this).css({
+            'left': ($(this).data('position').x)*coefficient.x,
+            'top': ($(this).data('position').y)*coefficient.y,
+            'width': ($(this).data('size').width)*coefficient.x,
+            'height': ($(this).data('size').height)*coefficient.y
+//            'transform': 'translate('+$(this).data('position-x')+'px, '+ $(this).data('position-y') + 'px)'
+        });
+        $(this).fadeIn('fast');
+    });
+}
+function resolutionAdjust(orig, new_res) {
+    return {
+        x: (new_res.width*1)/orig.width,
+        y: (new_res.height*1)/orig.height
+    }
+}
+</script>
+<style>
+    .element{
+        position: absolute;
+    }
+    .area{
+        background-color: #f0f1f1;
+        border: 2px dashed #8c8c8c;
+    }
+    .token{
+        background-color: #fff;
+        -webkit-border-radius: 6px;
+        -moz-border-radius: 6px;
+        border-radius: 6px;
+        padding: 10px;
+        border: 1px solid #8c8c8c;
+    }
+</style>
+{{project.name}}
+<div>
+    {% for activity in project.activities %}
+    <a class="margin-right-20 btn btn-sm btn-primary" href="/play/{{project.project}}/activity/{{activity.id}}">Actividad {{loop.index}}</a>
+    {% endfor %}
+</div>
+<div style="position: relative;">
+    {% for area in areas %}
+    <div class="element area" data-position="{{ area.position|json_encode }}" data-size="{{ area.size|json_encode }}">
+        {% for token in area.tokens %}
+        <div class="element token" style="display: none;width: 200px;" data-position="{{ token.position|json_encode }}" data-size="{{ token.size|json_encode }}" data-position-x="{{token.position.x}}" data-position-y="{{token.position.y}}">
+            {% if token.type == 'txt' %}
+                {% include 'tokens/txt.html' %}
+            {% elseif token.type == 'img' %}
+                {% include 'tokens/img.html' %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+    <!--{% for element in activity.elements %}-->
+    <!--{{element.__t.Area}}-->
+    <!--{% if element.__t == 'Area' %}-->
+    <!--<div class="element">-->
+        <!--{% for token in element.tokens %}-->
+        <!--{{token.type}}-->
+        <!--<div class="token" style="display: none;" data-position-x="{{element.position.x}}" data-position-y="{{element.position.y}}">-->
+            <!--{{element.type}}-->
+        <!--</div>-->
+        <!--{% endfor %}-->
+    <!--</div>-->
+    <!--{% endif %}-->
+    <!--{% endfor %}-->
+</div>
+{% endblock %}

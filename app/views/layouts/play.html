@@ -1,0 +1,17 @@
+{% extends 'default.html' %}
+
+{% block body %}
+<body class="page-walled-garden layout-full page-dark">
+<div class="page animsition">
+    <div class="page-content" style="height: 100%;">
+        <div class="row" style="height: 100%;">
+            <div class="col-md-2" style="height: 100%;">
+                Sidebar con players
+            </div>
+            <div class="col-md-10 play-table" style="height: 100%;border: 1px dashed #ccc;">{% block content %}{% endblock %}</div>
+        </div>
+    </div>
+</div>
+{% include '../includes/foot.html' %}
+</body>
+{% endblock %}
