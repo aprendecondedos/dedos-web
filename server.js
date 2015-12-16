@@ -10,6 +10,7 @@ var passport = require('passport');
 var config = require('./config/config');
 
 var app = express();
+var server = require('http').Server(app);
 var port = process.env.PORT || 3000;
 
 // Connect to mongodb
@@ -35,12 +36,17 @@ require('./config/express')(app, passport);
 
 // Bootstrap routes
 require('./config/routes')(app, passport);
+
+
+
 // Errors handlers
 require('./config/errors')(app);
 
-app.listen(port);
+server.listen(port);
 console.log('Express app started on port ' + port);
 
+// Socket routes
+require('./config/socket')(server, app, passport);
 /**
  * Expose
  */

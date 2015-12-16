@@ -40,9 +40,10 @@ exports.new = function(req, res){
         upload(req, res, function (err) {
             var xml = '',
                 image_array = [],
+                screenshots_array = [],
                 original_path = req.file.path,
                 project_id = lib.unique_id(),
-                new_path = './uploads/'+ project_id;
+                new_path = './public/uploads/'+ project_id;
 
             // Extracción del zip
             var zip = new AdmZip(original_path);
@@ -50,7 +51,9 @@ exports.new = function(req, res){
             zip.getEntries().forEach(function (zipEntry) {
                 if (zipEntry.isDirectory == false) {
                     if (zipEntry.name.indexOf('.xml') != -1) {
-                        xml = zipEntry.entryName; // Archivo XML
+                      xml = zipEntry.entryName; // Archivo XML
+                    } else if(zipEntry.entryName.indexOf('/screenshots/') != -1){
+                      screenshots_array.push(zipEntry.name);
                     } else {
                         image_array.push(zipEntry.entryName); // Imagenes encontradas
                     }
@@ -58,7 +61,7 @@ exports.new = function(req, res){
                   console.log(zipEntry.entryName);
                 }
             });
-          //console.log(xml.replace('.xml'));
+
             // extraer todos los archivos a una ruta específica
             zip.extractAllTo(new_path, true);
             fs.unlink('./' + original_path);
@@ -70,7 +73,8 @@ exports.new = function(req, res){
             var project = new Project({
                 name: project_prop.name,
                 project: project_id,
-                path: '/uploads/'+project_id+xml_file
+                screenshots: screenshots_array,
+                path: '/uploads/'+project_id+'/'+xml.split('/')[0]
             });
 
             parser.parseString(xml_data);

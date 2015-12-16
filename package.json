@@ -10,6 +10,7 @@
   "dependencies": {
     "adm-zip": "^0.4.7",
     "body-parser": "^1.13.3",
+    "co-express": "^1.2.1",
     "compression": "^1.6.0",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^0.8.2",

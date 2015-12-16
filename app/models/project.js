@@ -8,6 +8,7 @@ var ProjectSchema = mongoose.Schema({
     name        : String,
     project     : String,
     data        : String,
+    screenshots : [],
     path        : String,
     resolution  : {
         x: Number,

@@ -57,7 +57,7 @@ exports.edit = wrap(function* (req, res){
       '_id': req.classroom._id
     }
   };
-  //var players = yield Classroom.list(options);
+  var players = yield Classroom.list(options);
 
   res.render('classroom/form', {
     title: gettext('classroom:edit'),

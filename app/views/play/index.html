@@ -2,8 +2,27 @@
 
 {% block content %}
 <script>
+$(function() {
+    var socket = io.connect('');
+    socket.on('news', function (data) {
+        console.log('QUE');
+        socket.emit('my other event', {my: 'data'});
+    });
+    $(document).on('click', '.token', function () {
+        var element_id = $(this).attr('id');
+        socket.emit('event:click:token', {id: element_id});
+    });
+    socket.on('connect', function () {
+        socket.on('event:token', function (data) {
+            console.log(data.id);
+            $('#'+data.id).find('.badge').text('2').show();
+        });
+    });
+});
+</script>
+<script>
 $(window).on('resize', loadElements);
-//$(document).on('ready', loadElements);
+
 function loadElements(){
     var win = $(this),
         elements = $('.element'),
@@ -63,7 +82,12 @@ function resolutionAdjust(orig, new_res) {
     {% for area in areas %}
     <div class="element area" data-position="{{ area.position|json_encode }}" data-size="{{ area.size|json_encode }}">
         {% for token in area.tokens %}
-        <div class="element token" style="display: none;width: 200px;" data-position="{{ token.position|json_encode }}" data-size="{{ token.size|json_encode }}" data-position-x="{{token.position.x}}" data-position-y="{{token.position.y}}">
+        <div class="element token" style="display: none;width: 200px;"
+             id="{{token.id}}"
+             data-position="{{ token.position|json_encode }}"
+             data-size="{{ token.size|json_encode }}"
+        >
+            <span class="badge badge-success" style="display:none;position: absolute;right: 10px;bottom: 10px;"></span>
             {% if token.type == 'txt' %}
                 {% include 'tokens/txt.html' %}
             {% elseif token.type == 'img' %}
@@ -73,19 +97,5 @@ function resolutionAdjust(orig, new_res) {
         {% endfor %}
     </div>
     {% endfor %}
-
-    <!--{% for element in activity.elements %}-->
-    <!--{{element.__t.Area}}-->
-    <!--{% if element.__t == 'Area' %}-->
-    <!--<div class="element">-->
-        <!--{% for token in element.tokens %}-->
-        <!--{{token.type}}-->
-        <!--<div class="token" style="display: none;" data-position-x="{{element.position.x}}" data-position-y="{{element.position.y}}">-->
-            <!--{{element.type}}-->
-        <!--</div>-->
-        <!--{% endfor %}-->
-    <!--</div>-->
-    <!--{% endif %}-->
-    <!--{% endfor %}-->
 </div>
 {% endblock %}
