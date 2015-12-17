@@ -17,6 +17,9 @@
             <div class="panel-body container-fluid">
                 <form data-validation="true" enctype="multipart/form-data" class="form-horizontal" action="{{action}}" method="post" role="form">
                     <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                    {% for player in players %}
+                    <input type="hidden" name="players[]" value="{{player.id}}">
+                    {% endfor %}
                     <div class="form-group">
                         <label class="col-sm-3 control-label">{{gettext('project:name')}}</label>
                         <div class="col-sm-9">

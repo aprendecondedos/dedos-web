@@ -31,7 +31,7 @@ exports.index = function(req, res){
     res.render('index', data);
 };
 //var upload = multer().single('file_zip');
-exports.new = function(req, res){
+exports.new = wrap(function* (req, res){
 
     if(req.method == 'POST') {
         var project_prop = req.body;
@@ -73,6 +73,7 @@ exports.new = function(req, res){
             var project = new Project({
                 name: project_prop.name,
                 project: project_id,
+                players: project_prop.players,
                 screenshots: screenshots_array,
                 path: '/uploads/'+project_id+'/'+xml.split('/')[0]
             });
@@ -88,7 +89,7 @@ exports.new = function(req, res){
                 var activities = [];
                 XML.Project.Activity.forEach(function(activity_data){
                     if(typeof activity_data != 'object') return;
-
+                  console.log(activity_data);
                     // Set activities
                     var activity = new Activity({ project_id: project.id });
 
@@ -184,12 +185,16 @@ exports.new = function(req, res){
         });
 
     } else {
+      var Classroom = mongoose.model('Classroom');
+      Classroom.load('566811d33cc23d29a6b7e8ac', function(err, classroom){
         return res.render('project/new', {
           title: gettext('project:new'),
-          project: new Project()
+          project: new Project(),
+          players: classroom.students
         });
+      });
     }
-};
+});
 
 /**
  * Show

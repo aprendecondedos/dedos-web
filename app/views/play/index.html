@@ -1,5 +1,16 @@
 {% extends '../layouts/play.html' %}
 
+{% block details %}
+{{project.name}}
+<div>
+    {% for activity in project.activities %}
+    <a class="margin-right-20 margin-bottom-15 btn btn-sm btn-primary {% if req.activity.id == activity.id %}btn-info{% endif %}" href="/play/{{project.project}}/activity/{{activity.id}}">
+        Actividad {{loop.index}}
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}
+
 {% block content %}
 <script>
 $(function() {
@@ -8,11 +19,20 @@ $(function() {
         console.log('QUE');
         socket.emit('my other event', {my: 'data'});
     });
-    $(document).on('click', '.token', function () {
+    $(document).on('click', '.token-clickable', function () {
         var element_id = $(this).attr('id');
         socket.emit('event:click:token', {id: element_id});
     });
+    $(document).on('click', '.select-player', function () {
+
+    });
     socket.on('connect', function () {
+        $('#modal-select-player').modal({
+            show: true,
+            keyboard: false,
+//            backdrop: 'static'
+        });
+//        socket.emit('player:connected', {id: element_id});
         socket.on('event:token', function (data) {
             console.log(data.id);
             $('#'+data.id).find('.badge').text('2').show();
@@ -43,7 +63,6 @@ function loadElements(){
             'top': ($(this).data('position').y)*coefficient.y,
             'width': ($(this).data('size').width)*coefficient.x,
             'height': ($(this).data('size').height)*coefficient.y
-//            'transform': 'translate('+$(this).data('position-x')+'px, '+ $(this).data('position-y') + 'px)'
         });
         $(this).fadeIn('fast');
     });
@@ -68,26 +87,68 @@ function resolutionAdjust(orig, new_res) {
         -webkit-border-radius: 6px;
         -moz-border-radius: 6px;
         border-radius: 6px;
+        background-color: #fff;
         padding: 10px;
         border: 1px solid #8c8c8c;
+        transition: all 0.3s ease;
+        /*border-bottom-color: #DEDEDE;*/
+        /*border-bottom: 3px solid;*/
+        border-radius: 8px;
+        margin: 0px 5px 10px 0px;
+        box-shadow: 0 2px 0 0 #AFAFAF;
+    }
+    .token-clickable{
+        cursor: pointer;
+    }
+    .token-clickable:hover{
+        transform: scale(1.1);
+    }
+    .token-clickable:active{
+        opacity: 0.8;
+        box-shadow: 0 0 0 0 #AFAFAF;
     }
 </style>
-{{project.name}}
-<div>
-    {% for activity in project.activities %}
-    <a class="margin-right-20 btn btn-sm btn-primary" href="/play/{{project.project}}/activity/{{activity.id}}">Actividad {{loop.index}}</a>
-    {% endfor %}
+<div class="modal fade modal-slide-from-bottom modal-primary" id="modal-select-player"
+     aria-hidden="true" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Selecciona tu jugador</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row list-group">
+                    {% for player in project.players %}
+                        <a class="col-md-6 list-group-item select-player" href="javascript:;">
+                            <div class="media">
+                                <div class="media-left">
+                                    <span class="avatar avatar-online">
+                                       <img data-name="{{player.name}}" class="profile">
+                                    </span>
+                                </div>
+                                <div class="media-body font-size-16" style="vertical-align: middle;">
+                                    {{player.name}}
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 <div style="position: relative;">
     {% for area in areas %}
     <div class="element area" data-position="{{ area.position|json_encode }}" data-size="{{ area.size|json_encode }}">
         {% for token in area.tokens %}
-        <div class="element token" style="display: none;width: 200px;"
+        <div class="element token {% if token.clickable %}token-clickable{% endif %}" style="display: none;width: 200px;"
              id="{{token.id}}"
              data-position="{{ token.position|json_encode }}"
              data-size="{{ token.size|json_encode }}"
         >
-            <span class="badge badge-success" style="display:none;position: absolute;right: 10px;bottom: 10px;"></span>
+            <span class="badge badge-primary badge-radius" style="display:none;position: absolute;right: 10px;bottom: 10px;box-shadow: 0 2px 0 0 #3E7CB5;"></span>
             {% if token.type == 'txt' %}
                 {% include 'tokens/txt.html' %}
             {% elseif token.type == 'img' %}

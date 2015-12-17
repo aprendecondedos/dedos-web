@@ -53,7 +53,7 @@ ProjectSchema.statics = {
     load: function (options) {
         const criteria = options.criteria || {_id: options};
         return this.findOne(criteria)
-            //.populate('user', 'name email username')
+            .populate('players', 'name')
             //.populate('comments.user')
             .populate('activities')
             .exec();

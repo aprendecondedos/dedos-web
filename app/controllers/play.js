@@ -14,7 +14,7 @@ exports.load = wrap(function* (req, res, next, id){
   };
   req.project = yield Project.load(options);
   if (!req.project) return next(new Error('Not found'));
-  //console.log(req.project);
+
   next();
 });
 
@@ -53,7 +53,7 @@ exports.activity = {
   }),
 
   index: wrap(function* (req, res){
-    //console.log(req.activity.elements[4]);
+    //console.log(req.activity);
     var options = {
       criteria:{
         //'_id': { $in: req.activity.elements},
@@ -62,15 +62,16 @@ exports.activity = {
     };
     //const area = yield Area.list(options);
     //console.log(req.activity.elements[1]);
-    console.log(req.activity.elements.area);
+    //console.log(req.activity.elements.area);
     var area = req.activity.elements.area;
+    console.log(req.project);
 
     res.render('play/index', {
       title: gettext('play'),
       project: req.project,
       activity: req.activity,
       areas: area,
-      players: Array.apply(null, Array(50)).map(String.prototype.valueOf, "hi")
+      //players: Array.apply(null, Array(50)).map(String.prototype.valueOf, "hi")
     });
   })
 };
