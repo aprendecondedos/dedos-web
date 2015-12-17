@@ -26,8 +26,14 @@
 
   "players": "Jugadores",
 
+  "students": "Estudiantes",
+  "student": "Estudiante",
+
   "mail:subject:user:register": "Bienvenido a dedos player",
   "mail:body:user:register": "",
+
+  "activities": "Actividades",
+  "activity": "Actividad",
 
   "classroom": "Clase",
   "classrooms": "Clases",
@@ -36,6 +42,8 @@
   "classroom:edit": "Editar clase",
   "classroom:name": "Nombre de la clase",
   "classroom:education_level": "Nivel educativo",
+  "classroom:students:add": "Añadir estudiantes",
+  "classroom:students:none": "No se han añadido estudiantes",
 
   "education_level:infant": "Infantil",
   "education_level:primary": "Primaria",
@@ -46,12 +54,14 @@
   "error:404:description": "You seem to be trying to find his way home",
   "error:button": "Ir al inicio",
 
+  "search": "Buscar",
   "submit": "Enviar",
   "save": "Guardar",
   "description": "Descripción",
   "name": "Nombre",
   "title": "Título",
   "select:all": "Seleccionar todos",
+  "loading": "Cargando",
 
 
 

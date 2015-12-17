@@ -1,13 +1,99 @@
 {% extends '../layouts/default.html' %}
 
 {% block content %}
-<h1>Proyecto: {{project.name}}</h1>
-{{project.project}}
-<br>
-<h2>Actividades</h2>
-<ul>
-    {% for activity in project.activities %}
-        <li>{{activity._id}}</li>
-    {% endfor %}
+<div>
+    <a class="btn btn-primary" href="/play/{{project.project}}">Jugar</a>
+</div>
+<hr>
+<ul class="nav-quick nav-quick-sm row">
+    <li class="col-sm-2 col-xs-4">
+        <a href="javascript:void(0)">
+            <i class="icon wb-settings" aria-hidden="true"></i> Settings
+        </a>
+    </li>
+    <li class="col-sm-2 col-xs-4">
+        <a href="javascript:void(0)">
+            <i class="icon wb-user" aria-hidden="true"></i> User list
+        </a>
+    </li>
+    <li class="col-sm-2 col-xs-4">
+        <a href="javascript:void(0)">
+            <i class="icon wb-wrench" aria-hidden="true"></i> Admin tools
+        </a>
+    </li>
+    <li class="col-sm-2 col-xs-4">
+        <a href="javascript:void(0)">
+            <i class="icon wb-upload" aria-hidden="true"></i> Upload
+        </a>
+    </li>
+    <li class="col-sm-2 col-xs-4">
+        <a href="javascript:void(0)">
+            <i class="icon wb-lock" aria-hidden="true"></i> Lock
+        </a>
+    </li>
+    <li class="col-sm-2 col-xs-4">
+        <a href="javascript:void(0)">
+            <i class="icon wb-search" aria-hidden="true"></i> Search
+        </a>
+    </li>
 </ul>
+<div class="row">
+    <!-- Activities list -->
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{gettext('activities')}}</h3>
+            </div>
+            <div class="panel-body">
+                <div class="list-group list-group-dividered list-group-full">
+                {% for activity in project.activities %}
+                    <div class="list-group-item" data-activity="{{activity.id}}">
+                        <div class="media-left">
+                            <div style="width: 200px;height: 100px;background: #e4eaec;"></div>
+                        </div>
+                        <div class="media-body">
+                            <h4>{{gettext('activity')}} {{loop.index}}</h4>
+                        </div>
+                        <!--<img src="{{project.path}}/screenshots/{{loop.index}}.dib" style="width: 100px;">-->
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Activities list end -->
+
+    <!-- Players list -->
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{gettext('students')}}</h3>
+            </div>
+            <div class="panel-body">
+                <div class="list-group list-group-dividered list-group-full">
+                {% for player in project.players %}
+                <div class="list-group-item">
+                    <span class="margin-right-10 margin-left-5">
+                       <img data-name="{{player.name}}" class="profile img-circle" style="width: 25px;">
+                    </span>
+                    {{player.name}}
+                    <div class="pull-right">
+                        {% if loop.index == 1 %}
+                        <span class="label label-default">Sin empezar</span>
+                        {% endif %}
+                        {% if loop.index == 2 %}
+                        <span class="label label-success">Terminado</span>
+                        {% endif %}
+                        {% if loop.index == 3 %}
+                        <span class="label label-warning"><i class="wb-eye"></i> Actividad 2</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Players list end -->
+</div>
 {% endblock %}

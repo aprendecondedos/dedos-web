@@ -46,7 +46,7 @@ exports.new = function(req, res){
     res.render('classroom/new', {
       title: gettext('classroom:new'),
       classroom: new Classroom(),
-      players: Array.apply(null, Array(50)).map(String.prototype.valueOf, "hi")
+      //players: Array.apply(null, Array(50)).map(String.prototype.valueOf, "hi")
     });
   }
 };

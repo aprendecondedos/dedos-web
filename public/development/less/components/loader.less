@@ -26,7 +26,7 @@
   &.loader-default {
     width: 1em;
     height: 1em;
-    background-color: @animsition-loading-spinner-bg;
+//    background-color: @animsition-loading-spinner-bg;
     border-radius: 100%;
 
     .animation(loader-default 1.0s infinite ease-in-out);
@@ -69,10 +69,13 @@
   &.loader-circle {
     width: 1em;
     height: 1em;
-    border-top: .125em solid fade(@animsition-loading-spinner-bg, 50%);
-    border-right: .125em solid fade(@animsition-loading-spinner-bg, 50%);
-    border-bottom: .125em solid fade(@animsition-loading-spinner-bg, 50%);
-    border-left: .125em solid @animsition-loading-spinner-bg;
+//    border-top: .125em solid fade(@animsition-loading-spinner-bg, 50%);
+//    border-right: .125em solid fade(@animsition-loading-spinner-bg, 50%);
+//    border-bottom: .125em solid fade(@animsition-loading-spinner-bg, 50%);
+//    border-left: .125em solid @animsition-loading-spinner-bg;
+
+    border: 2px solid @color-blue-600;
+    border-bottom-color: transparent;
     border-radius: 50%;
 
     .animation(loader-circle 1.1s infinite linear);

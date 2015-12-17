@@ -2,15 +2,14 @@
     $(function(){
         $('#modal-import-classrooms').on('shown.bs.modal', function(){
             var $m_body = $(this).find('.modal-body');
+            if($m_body.hasClass('loaded'))  return false;
+
             $.ajax({
                 url: "/classrooms",
                 context: document,
                 success: function(html){
-                    $m_body.html( html );
+                    $m_body.html( html).addClass('loaded');
                 }
-            })
-            .done(function( html ) {
-//                $m_body.html( html );
             });
         });
     });
@@ -72,7 +71,10 @@
                 <h4 class="modal-title">{{gettext('classrooms:my')}}</h4>
             </div>
             <div class="modal-body">
-
+                <div class="text-center">
+                    <div class="loader loader-circle"></div>
+                    <h3 class="text-muted">{{gettext('loading')}}...</h3>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default margin-0" data-dismiss="modal">Close</button>
@@ -136,7 +138,7 @@
             <div class="col-md-6">
                 <div class="dropdown">
                     <button type="button" class="btn btn-outline btn-default dropdown-toggle" id="exampleIconsDropdown" data-toggle="dropdown" aria-expanded="false">
-                        Importar estudiantes
+                        {{gettext('classroom:students:add')}}
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
@@ -154,7 +156,7 @@
             </div>
             <div class="col-md-6 text-right">
                 <div class="form-group">
-                    <input id="filteringSearch" type="text" placeholder="Search" class="form-control" autocomplete="off">
+                    <input id="filteringSearch" type="text" placeholder="{{gettext('search')}}" class="form-control" autocomplete="off">
                 </div>
             </div>
         </div>
