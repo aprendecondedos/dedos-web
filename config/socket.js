@@ -1,5 +1,4 @@
-module.exports = function (server, app, passport) {
-  var io = require("socket.io")(server);
+module.exports = function (io) {
 
   io.on("connection", function(socket){
     console.log('a user connected');
@@ -9,7 +8,9 @@ module.exports = function (server, app, passport) {
       // TODO añadirlo en una sala (room) por proyecto
       //socket.in('CLASSID').emit('event:click:tokens', data);
     });
-    socket.on('my other event', function (data) {
+    //socket.join('5672d3afe96e72e8437ee5c9');
+    socket.on('player:connected', function (data) {
+      io.sockets.to(data.room).emit('player:connectedx', data);
       console.log(data);
     });
   });

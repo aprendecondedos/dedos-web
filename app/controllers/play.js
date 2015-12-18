@@ -66,6 +66,9 @@ exports.activity = {
     var area = req.activity.elements.area;
     console.log(req.project);
 
+    // Socket emit
+    //req.socket.emit('player:connected', { name: req.user.name });
+
     res.render('play/index', {
       title: gettext('play'),
       project: req.project,

@@ -11,7 +11,7 @@ var auth = require('../config/middlewares/authorization');
  */
 var classroomAuth = [auth.requiresLogin, auth.classroom.hasAuthorization];
 
-module.exports = function (app, passport) {
+module.exports = function (app, passport, io) {
 
     app.get('/', auth.requiresLogin, project.new);
 
@@ -115,8 +115,8 @@ module.exports = function (app, passport) {
     app.param('playId', play.load);
     app.param('activityId', play.activity.load);
 
-    app.get('/play/:playId',auth.requiresLogin, play.index);
-    app.get('/play/:playId/activity/:activityId',auth.requiresLogin, play.activity.index);
+    app.get('/play/:playId',[], play.index);
+    app.get('/play/:playId/activity/:activityId',[], play.activity.index);
 
     //// Play routes
     //app.get('/play/:id', play.show);

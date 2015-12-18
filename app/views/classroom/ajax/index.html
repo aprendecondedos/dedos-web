@@ -15,7 +15,7 @@
         <ul class="list-group list-group-bordered list-group-dividered" style="border-right: 1px solid #f3f7f9;">
             {% set students_class = {} %}
             {% for classroom in classrooms %}
-            {% set students_class[loop.index] = classroom.students %}
+            {% set students_class[loop.index] = classroom.players %}
             <li class="list-group-item {% if loop.first %}active{% endif %}" data-target="#tab-{{loop.index}}" role="tab" data-toggle="tab" style="border-width: 1px 0 0 0;cursor: pointer;">
                 <div class="media">
                     <div class="media-left">
@@ -31,7 +31,7 @@
             </li>
             {% endfor %}
         </ul>
-        <a href="/classroom/new"><i class="wb-plus"></i> Crear clase</a>
+        <a href="/classroom/new"><i class="wb-plus"></i> {{gettext('classroom:create')}}</a>
     </div>
     <div class="col-md-7 tab-content">
         <h5>{{gettext('students')}}</h5>
@@ -43,24 +43,28 @@
             {% else %}
             <li class="list-group-item padding-0">
                 <div class="checkbox-custom checkbox-primary">
-                    <input type="checkbox" class="check-all" id="checkbox-{{loop.index}}" data-container-check="#check-{{loop.index}}">
+                    <input type="checkbox" class="check-all uncheck" id="checkbox-{{loop.index}}" data-container-check="#check-{{loop.index}}">
                     <label class="text-muted" for="checkbox-{{loop.index}}">{{gettext('select:all')}}</label>
                 </div>
             </li>
-            {% endif %}
-            {% for student in classroom_index %}
-            <li data-user="{{student.id}}" class="list-group-item">
-                <div class="checkbox-custom checkbox-primary margin-0">
-                    <input type="checkbox" name="user[{{student.id}}]" id="user[{{student.id}}]" class="check-all" data-container-check="#check-container">
-                    <label for="user[{{student.id}}]">
-                        <span class="margin-right-10 margin-left-5">
-                           <img data-name="{{student.name}}" class="profile img-circle" style="width: 25px;">
-                        </span>
-                        {{student.name}}
-                    </label>
-                </div>
+            <li style="list-style: none;">
+                <ul class="list-group list-group-full max-height-350">
+                    {% for student in classroom_index %}
+                    <li data-user="{{student.id}}" class="list-group-item">
+                        <div class="checkbox-custom checkbox-primary margin-0">
+                            <input type="checkbox" value="{{student.id}}" id="user[{{classroom_index.length}}-{{student.id}}]" class="check-all" data-container-check="#check-container">
+                            <label for="user[{{classroom_index.length}}-{{student.id}}]" class="show">
+                                <span class="margin-right-10 margin-left-5">
+                                   <img data-name="{{student.name}}" class="profile img-circle" style="width: 25px;">
+                                </span>
+                                <span class="student-name">{{student.name}}</span>
+                            </label>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
             </li>
-            {% endfor %}
+            {% endif %}
         </ul>
         </div>
         {% endfor %}

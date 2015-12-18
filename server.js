@@ -34,9 +34,16 @@ require('./config/passport')(passport, config);
 // Bootstrap application settings
 require('./config/express')(app, passport);
 
-// Bootstrap routes
-require('./config/routes')(app, passport);
+var io = require("socket.io")(server);
+// Socket routes
+require('./config/socket')(io);
+app.use(function (req, res, next) {
+  req.socket = io;
+  next();
+});
 
+// Bootstrap routes
+require('./config/routes')(app, passport, io);
 
 
 // Errors handlers
@@ -45,8 +52,7 @@ require('./config/errors')(app);
 server.listen(port);
 console.log('Express app started on port ' + port);
 
-// Socket routes
-require('./config/socket')(server, app, passport);
+
 /**
  * Expose
  */

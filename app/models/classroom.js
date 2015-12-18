@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 var ClassroomSchema = new Schema({
   name            : String,
   education_level : String,
-  students        : [{type: Schema.Types.ObjectId, ref: 'Player'}],
+  players        : [{type: Schema.Types.ObjectId, ref: 'Player'}],
   teachers        : [{type: Schema.Types.ObjectId, ref: 'Teacher'}],
   createdDate    : {type: Date, default: Date.now},
   updatedDate    : {type: Date, default: Date.now}
@@ -72,7 +72,7 @@ ClassroomSchema.statics = {
     load: function (id, cb) {
         this.findOne({_id: id})
           //.populate('teachers', 'name')
-          .populate({path: 'students', select: 'name', options: {sort: { _id: -1 } }}) // Order by name DESC
+          .populate({path: 'players', select: 'name', options: {sort: { _id: -1 } }}) // Order by name DESC
           .exec(cb);
     },
     list: function (options, cb) {
@@ -82,7 +82,7 @@ ClassroomSchema.statics = {
 
       return this.find(criteria)
         .populate('teachers', 'name')
-        .populate('students', 'name')
+        .populate('players', 'name')
         .sort({ createdDate: -1 })
         .limit(limit)
         .skip(limit * page)

@@ -1,6 +1,7 @@
 <script>
     $(function(){
-        $('#modal-import-classrooms').on('shown.bs.modal', function(){
+        var $classroom_import = $('#modal-import-classrooms');
+        $classroom_import.on('shown.bs.modal', function(){
             var $m_body = $(this).find('.modal-body');
             if($m_body.hasClass('loaded'))  return false;
 
@@ -11,6 +12,32 @@
                     $m_body.html( html).addClass('loaded');
                 }
             });
+        });
+        $classroom_import.find('.submit').click(function(){
+            var checkboxes = $classroom_import.find('input[type="checkbox"]:checked');
+            checkboxes.not('.uncheck').closest('li').each(function(){
+                var self = $(this);
+                var user = ({
+                    id: self.find('input[type="checkbox"]').val(),
+                    avatar: self.find('.profile').attr('src'),
+                    name: self.find('.student-name').text()
+                });
+                self.hide();
+                $('.players-list tbody').prepend('<tr data-user="'+user.id+'"> ' +
+                        '<td> ' +
+                        '<a class="popover-list avatar avatar-online margin-left icons" style="width: 30px;height: 30px;" href="javascript:;">' +
+                        '<img src="'+user.avatar+'">' +
+                        '</a> ' +
+                        '</td> ' +
+                        '<td>'+user.name+'</td> ' +
+                        '<td> ' +
+                        '<input type="hidden" name="players[]" value="'+user.id+'">' +
+                        '<a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-pencil"></i></a> ' +
+                        '<a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-times"></i></a> ' +
+                        '</td> ' +
+                        '</tr>');
+            });
+            checkboxes.prop('checked', false);
         });
     });
 </script>
@@ -77,8 +104,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default margin-0" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-default margin-0" data-dismiss="modal">{{gettext('close')}}</button>
+                <button type="button" class="btn btn-primary submit" data-dismiss="modal">{{gettext('add')}}</button>
             </div>
         </div>
     </div>
@@ -89,44 +116,45 @@
      aria-hidden="true" role="dialog"
      tabindex="-1">
     <div class="modal-dialog">
-        <form class="modal-content" action="/player/new" method="post" role="form" data-validation="true">
-            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
-            {% if not classroom.isNew %}
-            <input type="hidden" name="classroom" value="{{req.classroom.id}}">
-            {% endif %}
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-                <h4 class="modal-title">Importar estudiantes manualmente</h4>
-            </div>
-            <div class="modal-body">
-                <ul class="list-group list-group-dividered list-group-full" id="toClone">
-                    <li class="list-group-item row">
-                        <div class="col-xs-1">
-                            <div class="img-circle" style="width: 30px;height: 30px;background-color: #e4eaec;"></div>
-                        </div>
-                        <div class="col-xs-10">
-                            <input type="text" class="form-control" required="required" autofocus="autofocus" placeholder="{{gettext('user:name')}}" name="player[name][]">
-                        </div>
-                        <div class="col-xs-1">
-                            <a class="btn btn-sm btn-icon btn-pure btn-default" onclick="javascript:$(this).closest('.list-group-item').remove();"><i class="fa fa-times"></i></a>
-                        </div>
-                    </li>
-                </ul>
-                <button type="button" class="btn btn-outline btn-primary btn-sm add-more" data-clone="#toClone li:first" data-clone-container="#toClone">
-                    <i class="icon fa fa-plus"></i> Añadir
-                </button>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default margin-0" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save changes</button>
-            </div>
-        </form>
+        <div class="modal-content">
+        <!--<form class="modal-content" action="/player/new" method="post" role="form" data-validation="true">-->
+        {% if not classroom.isNew %}
+        <input type="hidden" name="classroom" value="{{req.classroom.id}}">
+        {% endif %}
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            <h4 class="modal-title">Importar estudiantes manualmente</h4>
+        </div>
+        <div class="modal-body">
+            <ul class="list-group list-group-dividered list-group-full" id="toClone">
+                <li class="list-group-item row">
+                    <div class="col-xs-1">
+                        <div class="img-circle" style="width: 30px;height: 30px;background-color: #e4eaec;"></div>
+                    </div>
+                    <div class="col-xs-10">
+                        <input type="text" class="form-control" required="required" autofocus="autofocus" placeholder="{{gettext('user:name')}}" name="player[name][]">
+                    </div>
+                    <div class="col-xs-1">
+                        <a class="btn btn-sm btn-icon btn-pure btn-default" onclick="javascript:$(this).closest('.list-group-item').remove();"><i class="fa fa-times"></i></a>
+                    </div>
+                </li>
+            </ul>
+            <button type="button" class="btn btn-outline btn-primary btn-sm add-more" data-clone="#toClone li:first" data-clone-container="#toClone">
+                <i class="icon fa fa-plus"></i> Añadir
+            </button>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default margin-0" data-dismiss="modal">{{gettext('close')}}</button>
+            <button type="button" class="btn btn-primary submit" data-dismiss="modal">{{gettext('create')}}</button>
+        </div>
+        <!--</form>-->
+        </div>
     </div>
 </div>
 <!-- End Modal import manually -->
-<table class="table toggle-circle" id="table-filtering">
+<table class="table toggle-circle players-list" id="table-filtering">
     <thead>
     <tr>
         <th data-sort-ignore="true"></th>
@@ -163,14 +191,15 @@
     </div>
     <tbody>
     {% for player in players %}
-    <tr>
+    <tr data-user="{{player.id}}">
         <td>
             <a class="popover-list avatar avatar-online margin-left icons an-{{loop.index}}" style="width: 30px;height: 30px;" href="javascript:;"></a>
         </td>
         <td>{{player.name}}</td>
         <td>
             <a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-pencil"></i></a>
-            <a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-times"></i></a>
+            <a class="btn btn-sm btn-icon btn-flat btn-default" onclick="javascript:$(this).closest('tr').remove();"><i class="fa fa-times"></i></a>
+            <input type="hidden" name="players[]" value="{{player.id}}">
         </td>
     </tr>
     {% endfor %}

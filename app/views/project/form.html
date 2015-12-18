@@ -11,45 +11,41 @@
 {% else %}
     {% set action = '/project/' + project._id %}
 {% endif %}
+<form data-validation="true" enctype="multipart/form-data" class="form-horizontal" action="{{action}}" method="post" role="form">
 <div class="row">
     <div class="col-md-6">
         <div class="panel">
             <div class="panel-body container-fluid">
-                <form data-validation="true" enctype="multipart/form-data" class="form-horizontal" action="{{action}}" method="post" role="form">
-                    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
-                    {% for player in players %}
-                    <input type="hidden" name="players[]" value="{{player.id}}">
-                    {% endfor %}
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">{{gettext('project:name')}}</label>
-                        <div class="col-sm-9">
-                            <input type="text" required class="form-control" name="name" value="{{project.name}}" />
+                <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">{{gettext('project:name')}}</label>
+                    <div class="col-sm-9">
+                        <input type="text" required class="form-control" name="name" value="{{project.name}}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">{{gettext('project:file')}}</label>
+                    <div class="col-sm-9">
+                        <div class="input-group input-group-file">
+                            <input type="text" class="form-control" readonly="">
+                            <span class="input-group-btn">
+                              <span class="btn btn-success btn-file">
+                                <i class="icon fa fa-upload" aria-hidden="true"></i>
+                                <input type="file" name="file_upload" required>
+                              </span>
+                            </span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">{{gettext('project:file')}}</label>
-                        <div class="col-sm-9">
-                            <div class="input-group input-group-file">
-                                <input type="text" class="form-control" readonly="">
-                                <span class="input-group-btn">
-                                  <span class="btn btn-success btn-file">
-                                    <i class="icon fa fa-upload" aria-hidden="true"></i>
-                                    <input type="file" name="file_upload" required>
-                                  </span>
-                                </span>
-                            </div>
-                        </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">{{gettext('description')}}</label>
+                    <div class="col-sm-9">
+                        <textarea class="maxlength-textarea form-control" data-plugin="maxlength" data-placement="bottom-right-inside" maxlength="100" rows="3"></textarea>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">{{gettext('description')}}</label>
-                        <div class="col-sm-9">
-                            <textarea class="maxlength-textarea form-control" data-plugin="maxlength" data-placement="bottom-right-inside" maxlength="100" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <button type="submit" class="btn btn-primary">{{gettext('submit')}}</button>
-                    </div>
-                </form>
+                </div>
+                <div class="text-right">
+                    <button type="submit" class="btn btn-primary">{{gettext('submit')}}</button>
+                </div>
             </div>
         </div>
     </div>
@@ -63,4 +59,5 @@
     </div>
     <!-- Classroom / students end -->
 </div>
+</form>
 {% endblock %}

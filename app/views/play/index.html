@@ -14,7 +14,6 @@
 {% block content %}
 <script>
 $(function() {
-    var socket = io.connect('');
     socket.on('news', function (data) {
         console.log('QUE');
         socket.emit('my other event', {my: 'data'});
@@ -24,9 +23,13 @@ $(function() {
         socket.emit('event:click:token', {id: element_id});
     });
     $(document).on('click', '.select-player', function () {
-
+        var element_id = $(this).data('user');
+        socket.emit('player:connected', {room: '{{project.id}}', id: element_id});
     });
     socket.on('connect', function () {
+        // El usuario se añade a la sala de la clase
+//        socket.join('{{project.id}}');
+
         $('#modal-select-player').modal({
             show: true,
             keyboard: false,
@@ -119,7 +122,7 @@ function resolutionAdjust(orig, new_res) {
             <div class="modal-body">
                 <div class="row list-group">
                     {% for player in project.players %}
-                        <a class="col-md-6 list-group-item select-player" href="javascript:;">
+                        <a class="col-md-6 list-group-item select-player" data-user="{{player.id}}" href="javascript:;">
                             <div class="media">
                                 <div class="media-left">
                                     <span class="avatar avatar-online">

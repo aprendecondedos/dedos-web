@@ -42,6 +42,7 @@
   "classroom:edit": "Editar clase",
   "classroom:name": "Nombre de la clase",
   "classroom:education_level": "Nivel educativo",
+  "classroom:create": "Crear clase",
   "classroom:students:add": "Añadir estudiantes",
   "classroom:students:none": "No se han añadido estudiantes",
 
@@ -57,12 +58,14 @@
   "search": "Buscar",
   "submit": "Enviar",
   "save": "Guardar",
+  "add": "Añadir",
+  "close": "Cerrar",
+  "cancel": "Cancelar",
   "description": "Descripción",
   "name": "Nombre",
   "title": "Título",
   "select:all": "Seleccionar todos",
   "loading": "Cargando",
-
 
 
   "": ""

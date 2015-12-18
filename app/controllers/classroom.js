@@ -62,7 +62,7 @@ exports.edit = wrap(function* (req, res){
   res.render('classroom/form', {
     title: gettext('classroom:edit'),
     classroom: req.classroom,
-    players: req.classroom.students
+    players: req.classroom.players
   });
 });
 
@@ -89,3 +89,4 @@ exports.destroy = function(req, res){
     res.redirect('/classrooms');
   });
 };
+

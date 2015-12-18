@@ -186,7 +186,7 @@ exports.new = wrap(function* (req, res){
 
     } else {
       var Classroom = mongoose.model('Classroom');
-      Classroom.load('5664c3fec217d1daeb77f0ee', function(err, classroom){
+      Classroom.load('566811d33cc23d29a6b7e8ac', function(err, classroom){
         return res.render('project/new', {
           title: gettext('project:new'),
           project: new Project(),
@@ -210,6 +210,10 @@ exports.show = function (req, res){
     //    });
     //
     //});
+
+    // Socket
+    //req.socket.join(req.project.id);
+
     res.render('project/show', {
         title: req.project.name,
         project: req.project,

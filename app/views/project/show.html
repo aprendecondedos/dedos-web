@@ -1,6 +1,15 @@
 {% extends '../layouts/default.html' %}
 
 {% block content %}
+<script>
+$(function(){
+    socket.on('player:connectedx', function (data) {
+        alert('h');
+//        socket.emit('my other event', {my: 'data'});
+    });
+});
+</script>
+
 <div>
     <a class="btn btn-primary" href="/play/{{project.project}}">Jugar</a>
 </div>
