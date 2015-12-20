@@ -12,6 +12,7 @@ var auth = require('../config/middlewares/authorization');
 var classroomAuth = [auth.requiresLogin, auth.classroom.hasAuthorization];
 
 module.exports = function (app, passport, io) {
+    //var project = require('../app/controllers/project')(io);
 
     app.get('/', auth.requiresLogin, project.new);
 
@@ -104,6 +105,8 @@ module.exports = function (app, passport, io) {
     app.post('/project/new', auth.requiresLogin, project.new);
     app.get('/project/:projectId', auth.requiresLogin, project.show);
     app.get('/project/:projectId/admin', auth.requiresLogin, project.admin);
+  var test = require('../app/controllers/test')(io);
+    app.get('/project/:projectId/test', auth.requiresLogin, test.test);
     //app.get('/project/:id/admin', lib.upload([{name: 'file_zip'}]), lib.test(), project.admin);
 
     // Other routes
@@ -116,6 +119,7 @@ module.exports = function (app, passport, io) {
     app.param('activityId', play.activity.load);
 
     app.get('/play/:playId',[], play.index);
+    app.post('/play/:playId/player', play.player);
     app.get('/play/:playId/activity/:activityId',[], play.activity.index);
 
     //// Play routes

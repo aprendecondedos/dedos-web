@@ -19,11 +19,9 @@ exports.load = wrap(function* (req, res, next, id){
 });
 
 exports.index = function(req, res){
-  //console.log(req.project.activities[0].project_id);
   res.render('play/index', {
     title: gettext('play'),
-    project: req.project,
-    players: Array.apply(null, Array(50)).map(String.prototype.valueOf, "hi")
+    project: req.project
   });
 };
 
@@ -73,10 +71,23 @@ exports.activity = {
       title: gettext('play'),
       project: req.project,
       activity: req.activity,
-      areas: area,
+      areas: area
       //players: Array.apply(null, Array(50)).map(String.prototype.valueOf, "hi")
     });
   })
+};
+
+exports.player = function(req, res){
+  // Solo se ejecuta por ajax
+  if(req.xhr && req.body){
+    switch (req.body.type){
+      case 'select':
+        req.session.player = req.body.player_id;
+        break;
+    }
+
+    res.sendStatus(200);
+  }
 };
 
 exports.admin = function(){

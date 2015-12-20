@@ -1,4 +1,7 @@
 {% extends '../layouts/play.html' %}
+{% block players %}
+    {% include 'players.html' %}
+{% endblock %}
 
 {% block details %}
 {{project.name}}
@@ -13,28 +16,66 @@
 
 {% block content %}
 <script>
-$(function() {
-    socket.on('news', function (data) {
-        console.log('QUE');
-        socket.emit('my other event', {my: 'data'});
+    $.ajaxSetup({
+        headers: {"X-CSRF-Token": "{{csrf_token}}" }
     });
+
+$(function() {
+    var $user = '';
+    var $select_player = $('#modal-select-player');
     $(document).on('click', '.token-clickable', function () {
         var element_id = $(this).attr('id');
         socket.emit('event:click:token', {id: element_id});
     });
     $(document).on('click', '.select-player', function () {
-        var element_id = $(this).data('user');
-        socket.emit('player:connected', {room: '{{project.id}}', id: element_id});
+        var user_id = $(this).data('user');
+//        socket.emit('project:join', '{{project.id}}');
+        $.ajax({
+            type: "POST",
+            url: "/play/{{project.project}}/player",
+            data: {
+                type: 'select',
+                player_id: user_id
+            },
+            success: function(html){
+                $m_body.html( html).addClass('loaded');
+            }
+        });
+        socket.emit('server project:player:connected', {room: '{{project.id}}', id: user_id});
     });
+
+    $select_player.modal({
+        show: true,
+        keyboard: false,
+//            backdrop: 'static'
+    });
+    socket.on('disconnect', function () {
+        var element_id = $(this).data('user');
+//        socket.emit('project:player:disconnected', {room: '{{project.id}}'});
+//        socket.emit('project:leave', '{{project.id}}');
+
+    });
+    window.onbeforeunload = function(e) {
+        alert('usuario fuera');
+        socket.disconnect();
+    };
+
     socket.on('connect', function () {
+
+        socket.on('client project:player:connected', function(data){
+            $select_player.modal('hide');
+            $('#'+data.id).fadeIn();
+            console.log(data._doc.name);
+        });
+
         // El usuario se añade a la sala de la clase
 //        socket.join('{{project.id}}');
+//        $('#modal-select-player').modal({
+//            show: true,
+//            keyboard: false,
+////            backdrop: 'static'
+//        });
 
-        $('#modal-select-player').modal({
-            show: true,
-            keyboard: false,
-//            backdrop: 'static'
-        });
 //        socket.emit('player:connected', {id: element_id});
         socket.on('event:token', function (data) {
             console.log(data.id);

@@ -190,7 +190,7 @@ exports.new = wrap(function* (req, res){
         return res.render('project/new', {
           title: gettext('project:new'),
           project: new Project(),
-          players: classroom.students
+          players: classroom.players
         });
       });
     }
@@ -212,7 +212,15 @@ exports.show = function (req, res){
     //});
 
     // Socket
-    //req.socket.join(req.project.id);
+    var socketio = req.app.get('socket.io');
+    socketio.on('connection', function(socket){
+      //console.log(io.sockets.manager.roomClients[socket.id]);
+      //socket.join('admin/'+req.project.id);
+    });
+    //var socketio = req.app.get('socket.io');
+    //socketio.of('/admin-'+req.project.id);
+
+    //socketio.emit('testing', {'ejeje': 'pep'});
 
     res.render('project/show', {
         title: req.project.name,
@@ -228,3 +236,5 @@ exports.my = function(req, res){
 exports.admin = function(){
 
 };
+
+//module.exports = function(io){ return exports; };

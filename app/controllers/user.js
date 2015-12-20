@@ -85,6 +85,12 @@ exports.session = login;
  */
 
 function login (req, res) {
+    //if (req.body.remember) {
+    //  req.session.cookie.maxAge = 1000 * 60 * 3;
+    //} else {
+    //  req.session.cookie.expires = false;
+    //}
+
     const redirectTo = req.session.returnTo
         ? req.session.returnTo
         : '/';

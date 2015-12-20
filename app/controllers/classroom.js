@@ -69,7 +69,7 @@ exports.edit = wrap(function* (req, res){
 exports.show = function(req, res){
   res.render('classroom/show', {
     title: gettext('classroom:show'),
-    classroom: req.classroom,
+    classroom: req.classroom
   });
 };
 

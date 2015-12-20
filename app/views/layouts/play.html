@@ -6,7 +6,7 @@
     <div class="page-content" style="height: 100%;">
         <div class="row" style="height: 100%;">
             <div class="col-md-2" style="height: 100%;">
-                Sidebar con players
+                {% block players %}{% endblock %}
             </div>
             {% block details %}{% endblock %}
             <div class="col-md-10 play-table" style="height: 100%;border: 1px dashed #ccc;padding-top: 15px; padding-bottom: 15px;">{% block content %}{% endblock %}</div>

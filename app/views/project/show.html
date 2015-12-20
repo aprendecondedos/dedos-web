@@ -3,9 +3,33 @@
 {% block content %}
 <script>
 $(function(){
-    socket.on('player:connectedx', function (data) {
+    socket.on('player:connected', function (data) {
         alert('h');
 //        socket.emit('my other event', {my: 'data'});
+    });
+    socket.on('testing', function (data) {
+        alert('HA LLEGADO');
+    });
+
+//    var admin = io( '127.0.0.1:3000/admin-{{project.id}}' );
+//    admin.on('connect', function () {
+//        admin.on('client:project:player:connected', function (data) {
+//            alert('ROOM');
+//            $('#'+data.id).attr('class', 'avatar avatar-'+ data.status);
+//        });
+//    });
+
+    socket.on('connect', function () {
+        socket.emit('project:join', '{{project.id}}');
+        socket.on('client project:player:disconnected', function (data) {
+//            alert('Desconectedo');
+            $('#'+data.id).attr('class', 'avatar avatar-'+ data.status);
+        });
+        socket.on('client project:player:connected', function (data) {
+            console.log(data);
+//            alert('who');
+            $('#'+data.id).attr('class', 'avatar avatar-'+ data.status);
+        });
     });
 });
 </script>
@@ -82,20 +106,25 @@ $(function(){
                 <div class="list-group list-group-dividered list-group-full">
                 {% for player in project.players %}
                 <div class="list-group-item">
-                    <span class="margin-right-10 margin-left-5">
-                       <img data-name="{{player.name}}" class="profile img-circle" style="width: 25px;">
-                    </span>
-                    {{player.name}}
-                    <div class="pull-right">
-                        {% if loop.index == 1 %}
-                        <span class="label label-default">Sin empezar</span>
-                        {% endif %}
-                        {% if loop.index == 2 %}
-                        <span class="label label-success">Terminado</span>
-                        {% endif %}
-                        {% if loop.index == 3 %}
-                        <span class="label label-warning"><i class="wb-eye"></i> Actividad 2</span>
-                        {% endif %}
+                    <div class="media-left margin-right-10 margin-left-5">
+                        <span id="{{player.id}}" class="avatar avatar-off" style="width: 25px">
+                           <img data-name="{{player.name}}" class="profile img-circle">
+                            <i></i>
+                        </span>
+                    </div>
+                    <div class="media-body">
+                        {{player.name}}
+                        <div class="pull-right">
+                            {% if loop.index == 1 %}
+                            <span class="label label-default">Sin empezar</span>
+                            {% endif %}
+                            {% if loop.index == 2 %}
+                            <span class="label label-success">Terminado</span>
+                            {% endif %}
+                            {% if loop.index == 3 %}
+                            <span class="label label-warning"><i class="wb-eye"></i> Actividad 2</span>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
                 {% endfor %}

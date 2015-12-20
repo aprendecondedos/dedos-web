@@ -99,9 +99,13 @@ module.exports = function (app, passport) {
         resave: true,
         saveUninitialized: true,
         secret: pkg.name,
+        cookie : {
+          maxAge: 3600000
+        },
         store: new mongoStore({
             url: config.db,
             collection : 'sessions'
+            //ttl: 14 * 24 * 60 * 60 // = 14 days. Default
         })
     }));
 
