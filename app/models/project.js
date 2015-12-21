@@ -2,7 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var fs = require('fs');
 var util = require('util');
-var Activity = mongoose.model('Activity');
 
 // Project model
 var ProjectSchema = mongoose.Schema({
@@ -18,7 +17,7 @@ var ProjectSchema = mongoose.Schema({
     players        : [{
         avatar  : String,
         user    : {type: Schema.Types.ObjectId, ref: 'User'},
-        online  : { type : Boolean, default : false },
+        online  : { type : Boolean, default : false }
     }],
     activities  : [{type: Schema.Types.ObjectId, ref: 'Activity'}],
     classroom : {type: Schema.Types.ObjectId, ref: 'Classroom'},

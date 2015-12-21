@@ -1,10 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var util = require('util');
-var Selection = mongoose.model('Selection');
-var Pair = mongoose.model('Pair');
-var Area = mongoose.model('Area');
-var Token = mongoose.model('Token');
 
 // Activity model
 var ActivitySchema = new Schema({

@@ -16,10 +16,6 @@
 
 {% block content %}
 <script>
-    $.ajaxSetup({
-        headers: {"X-CSRF-Token": "{{csrf_token}}" }
-    });
-
 $(function() {
     var $user = '';
     var $select_player = $('#modal-select-player');

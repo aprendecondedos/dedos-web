@@ -1,7 +1,9 @@
 var lib = require('../../lib/functions');
+var wrap = require('co-express');
 var mongoose = require('mongoose');
 var Player = mongoose.model('Player');
 var Classroom = mongoose.model('Classroom');
+var XLSX = require('xlsx');
 
 exports.load = function(req, res, next, id) {
     Player.load(id, function (err, user) {
@@ -16,40 +18,41 @@ exports.index = function(req, res){
 
 };
 
-exports.new = function(req, res){
+exports.new = wrap(function*(req, res){
     if(req.method == 'POST') {
-      var players = req.body.player;
-      var classroom_id = req.body.classroom;
-      var users = [];
-      players.name.forEach(function(player_name){
-        var user = new Player({name: player_name});
-        user.save(function (err) {
-          if (err) {
-            return res.render('user/signup', {
-              errors: lib.errors(err.errors || err.message),
-              user: user
-            });
-          }
-          users.push(user);
-        });
-      });
+      var players = req.body.players_name;
+      var player_names = [];
 
-      // Si se está añadiendo en una clase
-      if(classroom_id){
-        Classroom.load(classroom_id, function(err_cr, classroom){
-          classroom.addStudents(users);
-          classroom.save();
+      if(req.file){
+        var upload = lib.upload('file_upload');
+        var players = [];
+        // Subida de archivos para creación del proyecto
+        upload(req, res, function (err) {
+          var workbook = XLSX.readFile(req.file.path);
+          var result = {};
+          workbook.SheetNames.forEach(function(sheetName) {
+            var roa = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+            if(roa.length > 0){
+              result[sheetName] = roa;
+            }
+          });
+          console.log(result);
         });
-        return res.redirect(req.header('Referer'));
       }
 
-      return res.redirect('');
+      players.forEach(function(player_name){
+        player_names.push({name: player_name});
+      });
+      var users = yield Player.create(player_names);
+      if(req.xhr) {
+        res.json(users);
+      }
     } else {
-        res.render('user/signup', {
-            user: new Player()
-        });
+      res.render('user/signup', {
+        user: new Player()
+      });
     }
-};
+});
 
 exports.edit = function (req, res) {
 

@@ -1,6 +1,9 @@
 <script>
     $(function(){
-        var $classroom_import = $('#modal-import-classrooms');
+        var $classroom_import = $('#modal-import-classrooms'),
+            $users_import = $('#modal-import-manual'),
+            $file_import = $('#modal-import-file');
+
         $classroom_import.on('shown.bs.modal', function(){
             var $m_body = $(this).find('.modal-body');
             if($m_body.hasClass('loaded'))  return false;
@@ -13,6 +16,7 @@
                 }
             });
         });
+
         $classroom_import.find('.submit').click(function(){
             var checkboxes = $classroom_import.find('input[type="checkbox"]:checked');
             checkboxes.not('.uncheck').closest('li').each(function(){
@@ -38,6 +42,48 @@
                         '</tr>');
             });
             checkboxes.prop('checked', false);
+        });
+
+        $users_import.find('.submit').click(function(){
+            var $m_body = $(this).closest('.modal-content').find('.modal-body');
+            $.ajax({
+                url: "/player/new",
+                type: "POST",
+                dataType: "json",
+                data: $m_body.find('.input-name').serialize(),
+                success: function(users){
+                    $.each(users, function(i, user){
+                        $('.players-list tbody').prepend('<tr data-user="'+user._id+'"> ' +
+                        '<td> ' +
+                        '<a class="popover-list avatar avatar-online margin-left icons" style="width: 30px;height: 30px;" href="javascript:;">' +
+                        '<img src="'+user.avatar+'">' +
+                        '</a> ' +
+                        '</td> ' +
+                        '<td>'+user.name+'</td> ' +
+                        '<td> ' +
+                        '<input type="hidden" name="players[]" value="'+user._id+'">' +
+                        '<a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-pencil"></i></a> ' +
+                        '<a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-times"></i></a> ' +
+                        '</td> ' +
+                        '</tr>');
+                    });
+                }
+            });
+        });
+
+        $file_import.find('.submit').click(function(){
+            var fd = new FormData();
+            fd.append('file_upload', document.getElementById("file_upload").files[0]);
+            $.ajax({
+                url: "/player/new",
+                type: "POST",
+                data: fd,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,   // tell jQuery not to set contentType
+                success: function(data){
+                    console.log(data);
+                }
+            });
         });
     });
 </script>
@@ -85,6 +131,73 @@
         </div>
     </div>
 </div>
+<!-- Modal import from excel -->
+<div class="modal fade modal-slide-from-bottom" id="modal-import-file"
+     aria-hidden="true" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">{{gettext('classrooms:my')}}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="nav-tabs-horizontal">
+                    <ul class="nav nav-tabs nav-tabs-line" data-plugin="nav-tabs" role="tablist">
+                        <li class="active" role="presentation"><a data-toggle="tab" href="#exampleTabsLineOne" aria-controls="exampleTabsLineOne" role="tab" aria-expanded="true">Cargar archivo</a></li>
+                        <li role="presentation" class=""><a data-toggle="tab" href="#exampleTabsLineTwo" aria-controls="exampleTabsLineTwo" role="tab" aria-expanded="false">Confirmación</a></li>
+                    </ul>
+                    <div class="tab-content padding-top-20">
+                        <div class="tab-pane active" id="exampleTabsLineOne" role="tabpanel">
+                            <!-- -->
+                            <div style="
+    background: #f3f7f9;
+    border: 2px dashed #76838f;
+    height: 200px;
+    display: table;
+    width: 100%;
+    position: relative;
+">
+                                <div style="
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+">
+                                    <div>
+                                        <i class="wb-plus font-size-40"></i><h4>Añadir archivo excel o csv</h4>
+                                    </div>
+                                    <input type="file" name="file_upload" id="file_upload" style="
+    cursor: pointer;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    opacity: 0;
+">
+                                </div>
+                            </div>
+                            <!-- -->
+                        </div>
+                        <div class="tab-pane" id="exampleTabsLineTwo" role="tabpanel">
+                            Sole, latinas incurreret optari vivatur, porro delectu epicurus cadere impedit
+                            fit ferreum concludaturque varias, omnium gloriosis vivendo
+                            via filio contentam expeteretur fonte expectata, quosque
+                            praetor quid iucunditatis fortitudinem esse.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default margin-0" data-dismiss="modal">{{gettext('close')}}</button>
+                <button type="button" class="btn btn-primary submit" data-dismiss="modal">{{gettext('add')}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Modal import from excel -->
 <!-- Modal import from my classrooms -->
 <div class="modal fade modal-slide-from-bottom" id="modal-import-classrooms"
      aria-hidden="true" role="dialog"
@@ -134,7 +247,7 @@
                         <div class="img-circle" style="width: 30px;height: 30px;background-color: #e4eaec;"></div>
                     </div>
                     <div class="col-xs-10">
-                        <input type="text" class="form-control" required="required" autofocus="autofocus" placeholder="{{gettext('user:name')}}" name="player[name][]">
+                        <input type="text" class="form-control input-name" required="required" autofocus placeholder="{{gettext('user:name')}}" name="players_name[]">
                     </div>
                     <div class="col-xs-1">
                         <a class="btn btn-sm btn-icon btn-pure btn-default" onclick="javascript:$(this).closest('.list-group-item').remove();"><i class="fa fa-times"></i></a>
@@ -142,7 +255,7 @@
                 </li>
             </ul>
             <button type="button" class="btn btn-outline btn-primary btn-sm add-more" data-clone="#toClone li:first" data-clone-container="#toClone">
-                <i class="icon fa fa-plus"></i> Añadir
+                <i class="icon fa fa-plus"></i> {{gettext('add')}}
             </button>
         </div>
         <div class="modal-footer">
@@ -171,7 +284,7 @@
                     </button>
                     <ul class="dropdown-menu" role="menu">
                         <li role="presentation">
-                            <a href="javascript:void(0)" role="menuitem"><i class="icon fa fa-file-excel-o" aria-hidden="true"></i> Importar archivo excel</a>
+                            <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-import-file"  role="menuitem"><i class="icon fa fa-file-excel-o" aria-hidden="true"></i> Importar archivo excel</a>
                         </li>
                         <li role="presentation">
                             <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-import-classrooms" role="menuitem"><i class="icon fa fa-list-ul" aria-hidden="true"></i> Importar desde mis clases</a>
