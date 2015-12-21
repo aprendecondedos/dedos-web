@@ -65,7 +65,7 @@ exports.activity = {
     console.log(req.project);
 
     // Socket emit
-    //req.socket.emit('player:connected', { name: req.user.name });
+    //req.socket.emit('player:connected', { name: 'testing' });
 
     res.render('play/index', {
       title: gettext('play'),

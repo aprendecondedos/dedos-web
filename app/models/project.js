@@ -2,21 +2,26 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var fs = require('fs');
 var util = require('util');
+var Activity = mongoose.model('Activity');
 
 // Project model
 var ProjectSchema = mongoose.Schema({
     name        : String,
     project     : String,
-    data        : String,
+    description : String,
     screenshots : [],
     path        : String,
     resolution  : {
         x: Number,
         y: Number
     },
-    players     : [{type: Schema.Types.ObjectId, ref: 'User' }],
+    players        : [{
+        avatar  : String,
+        user    : {type: Schema.Types.ObjectId, ref: 'User'},
+        online  : { type : Boolean, default : false },
+    }],
     activities  : [{type: Schema.Types.ObjectId, ref: 'Activity'}],
-    classroomId : {type: Schema.Types.ObjectId, ref: 'Classroom'},
+    classroom : {type: Schema.Types.ObjectId, ref: 'Classroom'},
     // Propiedades extra del proyectos
     properties  : {
         numPlayers     : Number
@@ -33,6 +38,42 @@ ProjectSchema.methods = {
             this.activities = activities;
             return this;
         }
+    },
+    saveFromXML: function(XML_data){
+      var self = this;
+      var activities = [];
+      XML_data.Activity.forEach(function(activity_data){
+        if(typeof activity_data != 'object') return;
+
+        var activity = new Activity({ project: self.id });
+        activity.saveFromXML(activity_data);
+        activities.push(activity);
+      });
+      this.setActivities(activities);
+      return this;
+    },
+  setActivitiesFromXML: function(XML_data){
+      var self = this;
+      var activities = [];
+      XML_data.Activity.forEach(function(activity_data){
+        if(typeof activity_data != 'object') return;
+
+        var activity = new Activity({ project: self.id });
+        activity.saveFromXML();
+        activity.setObjectivesFromXML(activity_data.Objectives);
+        activity.setElementsFromXML(activity_data.Arealist);
+        //activity.save();
+        activities.push(activity);
+      });
+      this.setActivities(activities);
+      return this;
+    },
+    addPlayer: function(user_id, data){
+      this.players.push({
+        avatar: data.avatar,
+        user: user_id
+      });
+      return this;
     }
 };
 

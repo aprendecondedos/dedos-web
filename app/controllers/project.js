@@ -73,25 +73,33 @@ exports.new = wrap(function* (req, res){
             var project = new Project({
                 name: project_prop.name,
                 project: project_id,
+                description: project_prop.description,
                 players: project_prop.players,
                 screenshots: screenshots_array,
                 path: '/uploads/'+project_id+'/'+xml.split('/')[0]
             });
+            if(project_prop.players) {
+              project_prop.players.forEach(function (user) {
+                project.addPlayer(project_prop.players, {});
+              });
+            }
 
             parser.parseString(xml_data);
             parser.on('error', function (err) {
                 console.log(err);
             });
             parser.on('end', function (XML) {
-                // Guardamos la resolución del proyecto
-                project.resolution = XML.Project.resolution.pop().$;
+              // Guardamos la resolución del proyecto
+              project.resolution = XML.Project.resolution.pop().$;
+              project
+                .saveFromXML(XML.Project)
+                .save();
+              res.send(200);
 
-                var activities = [];
                 XML.Project.Activity.forEach(function(activity_data){
                     if(typeof activity_data != 'object') return;
-                  console.log(activity_data);
                     // Set activities
-                    var activity = new Activity({ project_id: project.id });
+                    var activity = new Activity({ project: project.id });
 
                     // Set objectives
                     var objectives = [];
@@ -185,14 +193,10 @@ exports.new = wrap(function* (req, res){
         });
 
     } else {
-      var Classroom = mongoose.model('Classroom');
-      Classroom.load('566811d33cc23d29a6b7e8ac', function(err, classroom){
-        return res.render('project/new', {
-          title: gettext('project:new'),
-          project: new Project(),
-          players: classroom.players
+        res.render('project/new', {
+            title: gettext('project:new'),
+            project: new Project()
         });
-      });
     }
 });
 

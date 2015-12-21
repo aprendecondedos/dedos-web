@@ -20,7 +20,8 @@ exports.player = {
     //var user = yield User.load(data.id);
     this.join(data.room);
     this.player_id = data.id;
-
+    this.id = data.room+"-"+data.id;
+console.log(this);
     data.status = 'online';
     var io = this.server;
     User.load(data.id, function(err, user){

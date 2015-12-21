@@ -35,7 +35,7 @@ $(function(){
 </script>
 
 <div>
-    <a class="btn btn-primary" href="/play/{{project.project}}">Jugar</a>
+    <a class="btn btn-primary" href="/play/{{project.project}}">Jugar {{project.project}}</a>
 </div>
 <hr>
 <ul class="nav-quick nav-quick-sm row">
@@ -82,12 +82,25 @@ $(function(){
                 {% for activity in project.activities %}
                     <div class="list-group-item" data-activity="{{activity.id}}">
                         <div class="media-left">
-                            <div style="width: 200px;height: 100px;background: #e4eaec;"></div>
+                            <div style="background-image: url('{{project.path}}/screenshots/{{project.screenshots[loop.index]}}');width: 200px;height: 100px;background-size: cover;border: 1px solid #e4eaec;border-radius: 4px;"></div>
                         </div>
                         <div class="media-body">
                             <h4>{{gettext('activity')}} {{loop.index}}</h4>
                         </div>
-                        <!--<img src="{{project.path}}/screenshots/{{loop.index}}.dib" style="width: 100px;">-->
+                        <div class="row margin-bottom-10 margin-top-10">
+                            <div class="col-md-6" style="border-right: 1px solid #e4eaec;">
+                                Correcto
+                                <div class="check">
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                Incorrecto
+                                <div class="uncheck">
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 {% endfor %}
                 </div>

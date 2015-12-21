@@ -43,12 +43,13 @@ $(function() {
         });
         socket.emit('server project:player:connected', {room: '{{project.id}}', id: user_id});
     });
-
+    {% if not req.session.player %}
     $select_player.modal({
         show: true,
         keyboard: false,
-//            backdrop: 'static'
+            backdrop: 'static'
     });
+    {% endif %}
     socket.on('disconnect', function () {
         var element_id = $(this).data('user');
 //        socket.emit('project:player:disconnected', {room: '{{project.id}}'});
@@ -63,6 +64,7 @@ $(function() {
     socket.on('connect', function () {
 
         socket.on('client project:player:connected', function(data){
+            console.log(socket.id);
             $select_player.modal('hide');
             $('#'+data.id).fadeIn();
             console.log(data._doc.name);

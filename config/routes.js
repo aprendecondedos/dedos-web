@@ -105,8 +105,6 @@ module.exports = function (app, passport, io) {
     app.post('/project/new', auth.requiresLogin, project.new);
     app.get('/project/:projectId', auth.requiresLogin, project.show);
     app.get('/project/:projectId/admin', auth.requiresLogin, project.admin);
-  var test = require('../app/controllers/test')(io);
-    app.get('/project/:projectId/test', auth.requiresLogin, test.test);
     //app.get('/project/:id/admin', lib.upload([{name: 'file_zip'}]), lib.test(), project.admin);
 
     // Other routes

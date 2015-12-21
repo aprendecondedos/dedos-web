@@ -18,6 +18,7 @@ module.exports = function (io, app) {
     socket.on('server project:player:connected', project.player.connected);
 //console.log(io.sockets.adapter.rooms);
 
+
     var cookie = socket.request.headers.cookie;
 
 
