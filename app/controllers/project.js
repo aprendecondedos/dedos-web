@@ -95,7 +95,7 @@ exports.new = wrap(function* (req, res){
           if(typeof activity_data != 'object') return;
           console.log(activity_data);
           // Set activities
-          var activity = new Activity({ project_id: project.id });
+          var activity = new Activity({ project: project.id });
 
           // Set objectives
           var objectives = [];

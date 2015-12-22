@@ -33,9 +33,10 @@ exports.activity = {
     var options = {
       criteria: {
         _id: id,
-        project_id: req.project.id
+        project: req.project.id
       }
     };
+
     req.activity = yield Activity.load(options);
     var area_options = {
       criteria:{
@@ -43,6 +44,7 @@ exports.activity = {
         '__t': 'Area'
       }
     };
+
     req.activity.elements.area = yield Area.list(area_options);
 
     if (!req.activity) return next(new Error('Not found'));
