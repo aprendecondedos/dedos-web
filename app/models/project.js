@@ -14,7 +14,7 @@ var ProjectSchema = mongoose.Schema({
         x: Number,
         y: Number
     },
-    players        : [{
+    players     : [{
         avatar  : String,
         user    : {type: Schema.Types.ObjectId, ref: 'User'},
         online  : { type : Boolean, default : false }
@@ -93,10 +93,10 @@ ProjectSchema.statics = {
     load: function (options) {
         const criteria = options.criteria || {_id: options};
         return this.findOne(criteria)
-            .populate('players', 'name')
-            //.populate('comments.user')
-            .populate('activities')
-            .exec();
+          .populate('players.user')
+          //.populate('comments.user')
+          .populate('activities')
+          .exec();
     },
     /**
      * Listar proyectos y filtrarlos

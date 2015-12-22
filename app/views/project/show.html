@@ -82,7 +82,7 @@ $(function(){
                 {% for activity in project.activities %}
                     <div class="list-group-item" data-activity="{{activity.id}}">
                         <div class="media-left">
-                            <div style="background-image: url('{{project.path}}/screenshots/{{project.screenshots[loop.index]}}');width: 200px;height: 100px;background-size: cover;border: 1px solid #e4eaec;border-radius: 4px;"></div>
+                            <div style="background-image: url('{{project.path}}/screenshots/{{project.screenshots[loop.index-1]}}');width: 200px;height: 100px;background-size: cover;border: 1px solid #e4eaec;border-radius: 4px;"></div>
                         </div>
                         <div class="media-body">
                             <h4>{{gettext('activity')}} {{loop.index}}</h4>
@@ -120,13 +120,13 @@ $(function(){
                 {% for player in project.players %}
                 <div class="list-group-item">
                     <div class="media-left margin-right-10 margin-left-5">
-                        <span id="{{player.id}}" class="avatar avatar-off" style="width: 25px">
-                           <img data-name="{{player.name}}" class="profile img-circle">
+                        <span id="{{player.user.id}}" class="avatar avatar-off" style="width: 25px">
+                           <img data-name="{{player.user.name}}" class="profile img-circle">
                             <i></i>
                         </span>
                     </div>
                     <div class="media-body">
-                        {{player.name}}
+                        {{player.user.name}}
                         <div class="pull-right">
                             {% if loop.index == 1 %}
                             <span class="label label-default">Sin empezar</span>

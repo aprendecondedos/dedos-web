@@ -39,6 +39,7 @@ exports.new = wrap(function*(req, res){
           console.log(result);
         });
       }
+      return true;
 
       players.forEach(function(player_name){
         player_names.push({name: player_name});

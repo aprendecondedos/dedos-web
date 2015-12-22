@@ -161,15 +161,15 @@ function resolutionAdjust(orig, new_res) {
             <div class="modal-body">
                 <div class="row list-group">
                     {% for player in project.players %}
-                        <a class="col-md-6 list-group-item select-player" data-user="{{player.id}}" href="javascript:;">
+                        <a class="col-md-6 list-group-item select-player" data-user="{{player.user.id}}" href="javascript:;">
                             <div class="media">
                                 <div class="media-left">
                                     <span class="avatar avatar-online">
-                                       <img data-name="{{player.name}}" class="profile">
+                                       <img data-name="{{player.user.name}}" class="profile">
                                     </span>
                                 </div>
                                 <div class="media-body font-size-16" style="vertical-align: middle;">
-                                    {{player.name}}
+                                    {{player.user.name}}
                                 </div>
                             </div>
                         </a>

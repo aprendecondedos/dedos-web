@@ -1,14 +1,14 @@
 <div class="list-group list-group-dividered list-group-full">
 {% for player in project.players %}
-<a class=" list-group-item select-player" id="{{player.id}}" href="javascript:;" style="display: none;">
+<a class=" list-group-item select-player" id="{{player.user.id}}" href="javascript:;" style="display: none;">
     <div class="media">
         <div class="media-left">
             <span class="avatar avatar-online">
-               <img data-name="{{player.name}}" class="profile">
+               <img data-name="{{player.user.name}}" class="profile">
             </span>
         </div>
         <div class="media-body font-size-16" style="vertical-align: middle;">
-            {{player.name}}
+            {{player.user.name}}
         </div>
     </div>
 </a>

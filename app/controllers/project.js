@@ -72,15 +72,16 @@ exports.new = wrap(function* (req, res){
       var project = new Project({
         name: project_prop.name,
         project: project_id,
-        players: project_prop.players,
         screenshots: screenshots_array,
         path: '/uploads/'+project_id+'/'+xml.split('/')[0]
       });
+      // Añadiendo los jugadores
       if(project_prop.players) {
         project_prop.players.forEach(function (user) {
-          project.addPlayer(project_prop.players, {});
+          project.addPlayer(user, {});
         });
       }
+
       parser.parseString(xml_data);
       parser.on('error', function (err) {
         console.log(err);

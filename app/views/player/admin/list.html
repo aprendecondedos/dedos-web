@@ -74,10 +74,28 @@
         $file_import.find('.submit').click(function(){
             var fd = new FormData();
             fd.append('file_upload', document.getElementById("file_upload").files[0]);
+            $file_import.find('.progress').hide();
             $.ajax({
                 url: "/player/new",
                 type: "POST",
                 data: fd,
+                xhr: function() {  // custom xhr
+                    myXhr = $.ajaxSettings.xhr();
+                    $file_import.find('.progress').show();
+                    if(myXhr.upload){ // check if upload property exists
+                        myXhr.upload.addEventListener('progress',function(evt){
+                            if (evt.lengthComputable) {
+                                var percentComplete = evt.loaded / evt.total;
+                                $file_import.find('.progress-bar').css('width', percentComplete*100+'%');
+                                console.log(percentComplete);
+                            } else {
+                                // Unable to compute progress information since the total size is unknown
+                                console.log('unable to complete');
+                            }
+                        }, false); // for handling the progress of the upload
+                    }
+                    return myXhr;
+                },
                 processData: false,  // tell jQuery not to process the data
                 contentType: false,   // tell jQuery not to set contentType
                 success: function(data){
@@ -167,6 +185,11 @@
 ">
                                     <div>
                                         <i class="wb-plus font-size-40"></i><h4>Añadir archivo excel o csv</h4>
+                                        <div class="progress progress-xs" style="width: 50%;margin: 0 auto;display: none;">
+                                            <div class="progress-bar progress-bar-indicating active" style="width: 0%;" role="progressbar">
+                                                <span class="sr-only">0% Complete</span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <input type="file" name="file_upload" id="file_upload" style="
     cursor: pointer;
@@ -192,7 +215,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default margin-0" data-dismiss="modal">{{gettext('close')}}</button>
-                <button type="button" class="btn btn-primary submit" data-dismiss="modal">{{gettext('add')}}</button>
+                <button type="button" class="btn btn-primary submit">{{gettext('add')}}</button>
             </div>
         </div>
     </div>
@@ -304,15 +327,15 @@
     </div>
     <tbody>
     {% for player in players %}
-    <tr data-user="{{player.id}}">
+    <tr data-user="{{player.user.id}}">
         <td>
             <a class="popover-list avatar avatar-online margin-left icons an-{{loop.index}}" style="width: 30px;height: 30px;" href="javascript:;"></a>
         </td>
-        <td>{{player.name}}</td>
+        <td>{{player.user.name}}</td>
         <td>
             <a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-pencil"></i></a>
             <a class="btn btn-sm btn-icon btn-flat btn-default" onclick="javascript:$(this).closest('tr').remove();"><i class="fa fa-times"></i></a>
-            <input type="hidden" name="players[]" value="{{player.id}}">
+            <input type="hidden" name="players[]" value="{{player.user.id}}">
         </td>
     </tr>
     {% endfor %}
