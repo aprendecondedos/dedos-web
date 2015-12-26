@@ -50,14 +50,14 @@
             <li style="list-style: none;">
                 <ul class="list-group list-group-full max-height-350">
                     {% for student in classroom_index %}
-                    <li data-user="{{student.id}}" class="list-group-item">
+                    <li data-user="{{student.user.id}}" class="list-group-item">
                         <div class="checkbox-custom checkbox-primary margin-0">
-                            <input type="checkbox" value="{{student.id}}" id="user[{{classroom_index.length}}-{{student.id}}]" class="check-all" data-container-check="#check-container">
-                            <label for="user[{{classroom_index.length}}-{{student.id}}]" class="show">
+                            <input type="checkbox" value="{{student.user.id}}" id="user[{{classroom_index.length}}-{{student.user.id}}]" class="check-all" data-container-check="#check-container">
+                            <label for="user[{{classroom_index.length}}-{{student.user.id}}]" class="show">
                                 <span class="margin-right-10 margin-left-5">
-                                   <img data-name="{{student.name}}" class="profile img-circle" style="width: 25px;">
+                                   <img data-name="{{student.user.name}}" class="profile img-circle" style="width: 25px;">
                                 </span>
-                                <span class="student-name">{{student.name}}</span>
+                                <span class="student-name">{{student.user.name}}</span>
                             </label>
                         </div>
                     </li>

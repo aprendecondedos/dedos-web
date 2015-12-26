@@ -35,7 +35,7 @@
                         '</td> ' +
                         '<td>'+user.name+'</td> ' +
                         '<td> ' +
-                        '<input type="hidden" name="players[]" value="'+user.id+'">' +
+                        '<input type="hidden" name="players['+user.id+'][id]" value="'+user.id+'">' +
                         '<a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-pencil"></i></a> ' +
                         '<a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-times"></i></a> ' +
                         '</td> ' +
@@ -61,7 +61,7 @@
                         '</td> ' +
                         '<td>'+user.name+'</td> ' +
                         '<td> ' +
-                        '<input type="hidden" name="players[]" value="'+user._id+'">' +
+                        '<input type="hidden" name="players['+user._id+'][id]" value="'+user._id+'">' +
                         '<a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-pencil"></i></a> ' +
                         '<a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-times"></i></a> ' +
                         '</td> ' +
@@ -71,12 +71,12 @@
             });
         });
 
-        $file_import.find('.submit').click(function(){
+        $file_import.find('#file_upload').change(function(){
             var fd = new FormData();
             fd.append('file_upload', document.getElementById("file_upload").files[0]);
             $file_import.find('.progress').hide();
             $.ajax({
-                url: "/player/new",
+                url: "/player/import",
                 type: "POST",
                 data: fd,
                 xhr: function() {  // custom xhr
@@ -98,8 +98,8 @@
                 },
                 processData: false,  // tell jQuery not to process the data
                 contentType: false,   // tell jQuery not to set contentType
-                success: function(data){
-                    console.log(data);
+                success: function(html){
+                    $('.user-list-document').html(html);
                 }
             });
         });
@@ -168,7 +168,7 @@
                         <li role="presentation" class=""><a data-toggle="tab" href="#exampleTabsLineTwo" aria-controls="exampleTabsLineTwo" role="tab" aria-expanded="false">Confirmación</a></li>
                     </ul>
                     <div class="tab-content padding-top-20">
-                        <div class="tab-pane active" id="exampleTabsLineOne" role="tabpanel">
+                        <div class="tab-pane active margin-bottom-20" id="exampleTabsLineOne" role="tabpanel">
                             <!-- -->
                             <div style="
     background: #f3f7f9;
@@ -204,19 +204,17 @@
                             <!-- -->
                         </div>
                         <div class="tab-pane" id="exampleTabsLineTwo" role="tabpanel">
-                            Sole, latinas incurreret optari vivatur, porro delectu epicurus cadere impedit
-                            fit ferreum concludaturque varias, omnium gloriosis vivendo
-                            via filio contentam expeteretur fonte expectata, quosque
-                            praetor quid iucunditatis fortitudinem esse.
+                            <div class="user-list-document"></div>
+                            <div class="modal-footer margin-top-20" style="padding-bottom: 0">
+                                <button type="button" class="btn btn-default margin-0" data-dismiss="modal">{{gettext('close')}}</button>
+                                <button type="button" class="btn btn-primary submit">{{gettext('add')}}</button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default margin-0" data-dismiss="modal">{{gettext('close')}}</button>
-                <button type="button" class="btn btn-primary submit">{{gettext('add')}}</button>
-            </div>
+
         </div>
     </div>
 </div>
@@ -335,7 +333,8 @@
         <td>
             <a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-pencil"></i></a>
             <a class="btn btn-sm btn-icon btn-flat btn-default" onclick="javascript:$(this).closest('tr').remove();"><i class="fa fa-times"></i></a>
-            <input type="hidden" name="players[]" value="{{player.user.id}}">
+            <input type="hidden" name="players[{{player.user.id}}][avatar]" value="">
+            <input type="hidden" name="players[{{player.user.id}}][id]" value="{{player.user.id}}">
         </td>
     </tr>
     {% endfor %}

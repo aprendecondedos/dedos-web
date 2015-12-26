@@ -39,11 +39,11 @@ $(function() {
         });
         socket.emit('server project:player:connected', {room: '{{project.id}}', id: user_id});
     });
-    {% if not req.session.player %}
+    {% if player.project != req.project.id %}
     $select_player.modal({
         show: true,
         keyboard: false,
-            backdrop: 'static'
+//        backdrop: 'static'
     });
     {% endif %}
     socket.on('disconnect', function () {
@@ -52,10 +52,6 @@ $(function() {
 //        socket.emit('project:leave', '{{project.id}}');
 
     });
-    window.onbeforeunload = function(e) {
-        alert('usuario fuera');
-        socket.disconnect();
-    };
 
     socket.on('connect', function () {
 
@@ -79,6 +75,11 @@ $(function() {
             console.log(data.id);
             $('#'+data.id).find('.badge').text('2').show();
         });
+    });
+
+    $(window).bind('beforeunload', function(){
+        socket.emit('server project:player:disconnected', {room: '{{project.id}}', player: {{player|json|raw}}});
+        socket.disconnect();
     });
 });
 </script>

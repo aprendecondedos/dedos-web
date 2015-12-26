@@ -23,24 +23,6 @@ exports.new = wrap(function*(req, res){
       var players = req.body.players_name;
       var player_names = [];
 
-      if(req.file){
-        var upload = lib.upload('file_upload');
-        var players = [];
-        // Subida de archivos para creación del proyecto
-        upload(req, res, function (err) {
-          var workbook = XLSX.readFile(req.file.path);
-          var result = {};
-          workbook.SheetNames.forEach(function(sheetName) {
-            var roa = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
-            if(roa.length > 0){
-              result[sheetName] = roa;
-            }
-          });
-          console.log(result);
-        });
-      }
-      return true;
-
       players.forEach(function(player_name){
         player_names.push({name: player_name});
       });
@@ -54,6 +36,28 @@ exports.new = wrap(function*(req, res){
       });
     }
 });
+
+exports.import = function(req, res){
+  if(req.file){
+    var upload = lib.upload('file_upload');
+    var players = [];
+    // Subida de archivos para creación del proyecto
+    upload(req, res, function (err) {
+      var workbook = XLSX.readFile(req.file.path);
+      var result = {};
+
+      workbook.SheetNames.forEach(function(sheetName) {
+        var roa = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header:1});
+        if(roa.length > 0){
+          result[sheetName] = roa;
+        }
+      });
+      res.render('player/admin/excel_list', {
+        sheets: result
+      });
+    });
+  }
+};
 
 exports.edit = function (req, res) {
 

@@ -37,8 +37,18 @@ exports.index = function(req, res){
 exports.new = function(req, res){
   if(req.method == 'POST'){
     var classroom = new Classroom(req.body);
+    var players = req.body.players;
     // Se añade al profesor
     classroom.addTeachers(req.user);
+    // Tambien los estudiantes/jugadores
+    if(players) {
+      var users = [];
+      for(player in players){
+        users.push(players[player]);
+      }
+      classroom.setPlayers(users);
+    }
+
     classroom.save();
 
     res.redirect('/classrooms');
@@ -76,7 +86,16 @@ exports.show = function(req, res){
 exports.update = function(req, res){
   delete req.body.user;
   var classroom = req.classroom;
+  var players = req.body.players;
   classroom = extend(classroom, req.body);
+  if(players) {
+    var users = [];
+    for(player in players){
+      users.push(players[player]);
+    }
+    classroom.setPlayers(users);
+  }
+
   classroom.save();
 
   res.redirect('/classrooms');

@@ -21,7 +21,7 @@ exports.player = {
     this.join(data.room);
     this.player_id = data.id;
     this.id = data.room+"-"+data.id;
-console.log(this);
+
     data.status = 'online';
     var io = this.server;
     User.load(data.id, function(err, user){
@@ -29,8 +29,11 @@ console.log(this);
       io.sockets.in(data.room).emit('client project:player:connected', data);
     });
   },
-  disconnected: function(data){
+  disconnected: wrap(function*(data){
+
+    yield Project.update({_id: data.room, 'players.user': data.player.player}, {$set: {'players.$.online': false}});
+
     this.server.sockets.in(data.room).emit('client project:player:disconnected', data);
-    //this.leave(room);
-  }
+    this.leave(data.room);
+  })
 };

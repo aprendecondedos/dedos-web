@@ -14,7 +14,7 @@ module.exports = function (io, app) {
     //console.log(socket);
     // Project sockets
     socket.on('project:join', project.join);
-    socket.on('project:player:disconnected', project.player.disconnected);
+    socket.on('server project:player:disconnected', project.player.disconnected);
     socket.on('server project:player:connected', project.player.connected);
 //console.log(io.sockets.adapter.rooms);
 

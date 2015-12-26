@@ -20,7 +20,7 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">{{gettext('project:name')}}</label>
                     <div class="col-sm-9">
-                        <input type="text" required class="form-control" name="name" value="{{project.name}}" />
+                        <input type="text" required class="form-control" name="name" value="{{project.name}}" placeholder="{{gettext('project:name:example')}}" />
                     </div>
                 </div>
                 <div class="form-group">
@@ -37,10 +37,33 @@
                         </div>
                     </div>
                 </div>
+                <hr>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">{{gettext('education_level')}}</label>
+                    <div class="col-sm-9">
+                        <select data-plugin="selectpicker" name="education_level">
+                            {% for education_level in classroom.getEducationLevels() %}
+                            <option value="{{education_level}}" {% if classroom.education_level == education_level %} selected {% endif %}>
+                                {{gettext('education_level:'+education_level)}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">{{gettext('project:subject')}}</label>
+                    <div class="col-sm-9">
+                        <select multiple data-plugin="selectpicker" multiple data-selected-text-format="count">
+                            {% for subject in project.getSubjects() %}
+                            <option data-icon="{{subject.icon}}">{{gettext(subject.name)}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="col-sm-3 control-label">{{gettext('description')}}</label>
                     <div class="col-sm-9">
-                        <textarea name="description" class="maxlength-textarea form-control" data-plugin="maxlength" data-placement="bottom-right-inside" maxlength="100" rows="3"></textarea>
+                        <textarea name="description" value="{{project.description}}" placeholder="{{gettext('project:description:example')}}" class="maxlength-textarea form-control" data-plugin="maxlength" data-placement="bottom-right-inside" maxlength="100" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="text-right">

@@ -13,6 +13,7 @@ exports.load = wrap(function* (req, res, next, id){
     }
   };
   req.project = yield Project.load(options);
+
   if (!req.project) return next(new Error('Not found'));
 
   next();
@@ -53,18 +54,15 @@ exports.activity = {
   }),
 
   index: wrap(function* (req, res){
-    //console.log(req.activity);
-    var options = {
-      criteria:{
-        //'_id': { $in: req.activity.elements},
-        '__t': 'Area'
-      }
-    };
-    //const area = yield Area.list(options);
-    //console.log(req.activity.elements[1]);
-    //console.log(req.activity.elements.area);
+
     var area = req.activity.elements.area;
-    console.log(req.project);
+    var player_session = {};
+    if(req.session.player) {
+      player_session = req.session.player.filter(function (player) {
+        return player.project == req.project.id ? player : '';
+      });
+      player_session = player_session.pop();
+    }
 
     // Socket emit
     //req.socket.emit('player:connected', { name: 'testing' });
@@ -72,6 +70,7 @@ exports.activity = {
     res.render('play/index', {
       title: gettext('play'),
       project: req.project,
+      player: player_session,
       activity: req.activity,
       areas: area
       //players: Array.apply(null, Array(50)).map(String.prototype.valueOf, "hi")
@@ -79,18 +78,26 @@ exports.activity = {
   })
 };
 
-exports.player = function(req, res){
+exports.player = wrap(function*(req, res){
   // Solo se ejecuta por ajax
   if(req.xhr && req.body){
     switch (req.body.type){
       case 'select':
-        req.session.player = req.body.player_id;
+        yield Project.update({_id: req.project.id, 'players.user': req.body.player_id}, {$set: {'players.$.online': true}});
+
+        var player = {
+          project: req.project.id,
+          player: req.body.player_id
+        };
+        if(!req.session.player) req.session.player = [];
+
+        req.session.player.push(player);
         break;
     }
 
     res.sendStatus(200);
   }
-};
+});
 
 exports.admin = function(){
 

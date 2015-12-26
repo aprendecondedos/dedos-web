@@ -1,0 +1,38 @@
+{% extends '../layouts/default.html' %}
+
+{% block head %}
+{% parent %}
+<link href="/assets/css/apps/projects.min.css?v2.1.0" type="text/css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="row app-projects">
+    {% for project in projects %}
+    <div class="col-md-4 margin-bottom-20">
+        <div class="panel">
+            <figure class="overlay overlay-hover animation-hover" style="background: #f3f7f9;padding: 10px;">
+                <img class="caption-figure" src="{{project.path}}/screenshots/{{project.screenshots[loop.index-1]}}">
+                <figcaption class="overlay-panel overlay-background overlay-fade text-center vertical-align">
+                    <div class="btn-group">
+                        <div class="dropdown pull-left">
+                            <button type="button" class="btn btn-icon btn-pure btn-default dropdown-toggle" title="Setting">
+                                <i class="icon wb-settings" aria-hidden="true"></i>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="">{{gettext('copy')}}</a></li>
+                                <li><a href="">{{gettext('rename')}}</a></li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btn btn-icon btn-pure btn-default" title="Delete"
+                                data-tag="project-delete"><i class="icon wb-trash" aria-hidden="true"></i></button>
+                    </div>
+                    <a class="btn btn-outline btn-default project-button" href="/project/{{project.id}}">{{gettext('project:view')}}</a>
+                </figcaption>
+            </figure>
+            <div class="time pull-right">{{ project.createdDate.toISOString()|date('d M, Y') }}</div>
+            <div class="text-truncate">{{project.name}}</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

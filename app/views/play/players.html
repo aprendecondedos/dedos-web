@@ -1,14 +1,16 @@
 <div class="list-group list-group-dividered list-group-full">
-{% for player in project.players %}
-<a class=" list-group-item select-player" id="{{player.user.id}}" href="javascript:;" style="display: none;">
+<h3>Activdad 3</h3>
+{% for user in project.players %}
+<a class=" list-group-item select-player" id="{{user.user.id}}" href="javascript:;"
+   style="display: {% if player.player == user.user.id %}block{% else %}none{% endif %};">
     <div class="media">
         <div class="media-left">
             <span class="avatar avatar-online">
-               <img data-name="{{player.user.name}}" class="profile">
+               <img data-name="{{user.user.name}}" class="profile">
             </span>
         </div>
         <div class="media-body font-size-16" style="vertical-align: middle;">
-            {{player.user.name}}
+            {{user.user.name}}
         </div>
     </div>
 </a>

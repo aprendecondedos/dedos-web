@@ -95,6 +95,7 @@ module.exports = function (app, passport, io) {
     // Player routes
     app.get('/player/new', auth.requiresLogin, player.new);
     app.post('/player/new', auth.requiresLogin, player.new);
+    app.post('/player/import', auth.requiresLogin, player.import);
 
     // Project routes
     app.param('projectId', project.load);

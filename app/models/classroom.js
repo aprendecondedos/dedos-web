@@ -5,7 +5,10 @@ var Schema = mongoose.Schema;
 var ClassroomSchema = new Schema({
   name            : String,
   education_level : String,
-  players        : [{type: Schema.Types.ObjectId, ref: 'Player'}],
+  players     : [{
+    avatar: String,
+    user: {type: Schema.Types.ObjectId, ref: 'User'}
+  }],
   teachers        : [{type: Schema.Types.ObjectId, ref: 'Teacher'}],
   createdDate    : {type: Date, default: Date.now},
   updatedDate    : {type: Date, default: Date.now}
@@ -40,6 +43,21 @@ ClassroomSchema.methods = {
       this.teachers.push(teachers);
     }
   },
+  addPlayer: function(user){
+    this.players.push({
+      avatar: user.avatar,
+      user: user.id
+    });
+    return this;
+  },
+  setPlayers: function(users){
+    var self = this;
+    this.players = [];
+    users.forEach(function(user){
+      self.addPlayer(user);
+    });
+    return this;
+  },
   addStudents: function(players){
     if(util.isArray(players)){
       this.students = this.students.concat(players);
@@ -72,7 +90,7 @@ ClassroomSchema.statics = {
     load: function (id, cb) {
         this.findOne({_id: id})
           //.populate('teachers', 'name')
-          .populate({path: 'players', select: 'name', options: {sort: { _id: -1 } }}) // Order by name DESC
+          .populate({path: 'players.user', select: 'name', options: {sort: { _id: -1 } }}) // Order by name DESC
           .exec(cb);
     },
     list: function (options, cb) {
@@ -82,7 +100,7 @@ ClassroomSchema.statics = {
 
       return this.find(criteria)
         .populate('teachers', 'name')
-        .populate('players', 'name')
+        .populate('players.user', 'name')
         .sort({ createdDate: -1 })
         .limit(limit)
         .skip(limit * page)

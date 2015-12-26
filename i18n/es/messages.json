@@ -21,7 +21,10 @@
   "projects": "Proyectos",
   "projects:my": "Mis proyectos",
   "projects:new": "Añadir proyecto",
+  "project:view": "Ver proyecto",
   "project:name": "Nombre del proyecto",
+  "project:name:example": "ej: Los animales del Zoo",
+  "project:description:example": "ej: En este proyecto trataremos de descubrir los animales que pertenecen al Zoo",
   "project:file": "Archivo comprimido",
 
   "players": "Jugadores",
@@ -41,15 +44,17 @@
   "classroom:new": "Añadir clase",
   "classroom:edit": "Editar clase",
   "classroom:name": "Nombre de la clase",
-  "classroom:education_level": "Nivel educativo",
   "classroom:create": "Crear clase",
   "classroom:students:add": "Añadir estudiantes",
   "classroom:students:none": "No se han añadido estudiantes",
 
+  "education_level": "Nivel educativo",
   "education_level:infant": "Infantil",
   "education_level:primary": "Primaria",
 
-  "dashboard": "Dashboard",
+  "dashboard": "Inicio",
+  "analytics": "Estadísticas",
+  "settings": "Configuración",
 
   "error:404:title": "Página no encontrada",
   "error:404:description": "You seem to be trying to find his way home",
@@ -65,9 +70,16 @@
   "description": "Descripción",
   "name": "Nombre",
   "title": "Título",
+  "copy": "Copiar",
+  "rename": "Renombrar",
   "select:all": "Seleccionar todos",
   "loading": "Cargando",
 
+  "subject:maths": "Matemáticas",
+  "subject:nat_sciences": "Ciencias naturales",
+  "subject:spanish_language": "Lengua Castellana y Literatura",
+  "subject:social_sciences": "Ciencias Sociales",
+  "subject:english_language": "Inglés",
 
   "": ""
 }

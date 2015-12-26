@@ -75,11 +75,14 @@ exports.new = wrap(function* (req, res){
         screenshots: screenshots_array,
         path: '/uploads/'+project_id+'/'+xml.split('/')[0]
       });
+      var players =  project_prop.players;
       // Añadiendo los jugadores
-      if(project_prop.players) {
-        project_prop.players.forEach(function (user) {
-          project.addPlayer(user, {});
-        });
+      if(players) {
+        var users = [];
+        for(player in players){
+          users.push(players[player]);
+        }
+        project.setPlayers(users);
       }
 
       parser.parseString(xml_data);
@@ -229,12 +232,19 @@ exports.show = function (req, res){
     });
 };
 
-exports.my = function(req, res){
+exports.my = wrap(function* (req, res){
+  var options = {
+    criteria: {
 
-};
+    }
+  };
+  var projects = yield Project.list(options);
+  res.render('project/index', {
+    title: gettext('projects:my'),
+    projects: projects
+  });
+});
 
 exports.admin = function(){
 
 };
-
-//module.exports = function(io){ return exports; };

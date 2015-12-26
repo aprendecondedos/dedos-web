@@ -7,9 +7,6 @@ $(function(){
         alert('h');
 //        socket.emit('my other event', {my: 'data'});
     });
-    socket.on('testing', function (data) {
-        alert('HA LLEGADO');
-    });
 
 //    var admin = io( '127.0.0.1:3000/admin-{{project.id}}' );
 //    admin.on('connect', function () {
@@ -41,22 +38,22 @@ $(function(){
 <ul class="nav-quick nav-quick-sm row">
     <li class="col-sm-2 col-xs-4">
         <a href="javascript:void(0)">
-            <i class="icon wb-settings" aria-hidden="true"></i> Settings
+            <i class="icon wb-layout" aria-hidden="true"></i> {{gettext('dashboard')}}
         </a>
     </li>
     <li class="col-sm-2 col-xs-4">
         <a href="javascript:void(0)">
-            <i class="icon wb-user" aria-hidden="true"></i> User list
+            <i class="icon wb-pie-chart" aria-hidden="true"></i> {{gettext('analytics')}}
         </a>
     </li>
     <li class="col-sm-2 col-xs-4">
         <a href="javascript:void(0)">
-            <i class="icon wb-wrench" aria-hidden="true"></i> Admin tools
+            <i class="icon wb-users" aria-hidden="true"></i> {{gettext('students')}}
         </a>
     </li>
     <li class="col-sm-2 col-xs-4">
         <a href="javascript:void(0)">
-            <i class="icon wb-upload" aria-hidden="true"></i> Upload
+            <i class="icon wb-settings" aria-hidden="true"></i> {{gettext('settings')}}
         </a>
     </li>
     <li class="col-sm-2 col-xs-4">
@@ -120,7 +117,7 @@ $(function(){
                 {% for player in project.players %}
                 <div class="list-group-item">
                     <div class="media-left margin-right-10 margin-left-5">
-                        <span id="{{player.user.id}}" class="avatar avatar-off" style="width: 25px">
+                        <span id="{{player.user.id}}" class="avatar avatar-{% if player.online %}online{% else %}off{% endif %}" style="width: 25px">
                            <img data-name="{{player.user.name}}" class="profile img-circle">
                             <i></i>
                         </span>

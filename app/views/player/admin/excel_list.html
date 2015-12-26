@@ -1,0 +1,29 @@
+{% for sheet in sheets %}
+<span class="label label-outline label-primary">{{loop.key}}</span>
+<table class="table table-hover" data-selectable="selectable" data-row-selectable="true">
+    {% for row in sheet %}
+    {% if loop.first %}
+    <thead>
+        <tr>
+            <th class="width-50"></th>
+        {% for col in row %}
+            <th>{{col}}</th>
+        {% endfor %}
+        </tr>
+    </thead>
+    {% else %}
+    <tr>
+        <td>
+            <span class="checkbox-custom checkbox-primary" style="padding-top: 0;min-height: 20px;">
+                <input class="selectable-item" type="checkbox" id="row-{{loop.index}}" value="{{loop.index}}" checked>
+                <label for="row-{{loop.index}}"></label>
+            </span>
+        </td>
+    {% for col in row %}
+        <td>{{col}}</td>
+    {% endfor %}
+    </tr>
+    {% endif %}
+    {% endfor %}
+</table>
+{% endfor %}
