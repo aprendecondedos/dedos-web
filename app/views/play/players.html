@@ -1,8 +1,8 @@
-<div class="list-group list-group-dividered list-group-full">
+<ul class="list-group list-group-dividered">
 <h3>Activdad 3</h3>
 {% for user in project.players %}
-<a class=" list-group-item select-player" id="{{user.user.id}}" href="javascript:;"
-   style="display: {% if player.player == user.user.id %}block{% else %}none{% endif %};">
+<li class="list-group-item" id="{{user.user.id}}" href="javascript:;"
+   style="display: {% if user.online %}block{% else %}none{% endif %};">
     <div class="media">
         <div class="media-left">
             <span class="avatar avatar-online">
@@ -13,6 +13,6 @@
             {{user.user.name}}
         </div>
     </div>
-</a>
+</li>
 {% endfor %}
-</div>
+</ul>

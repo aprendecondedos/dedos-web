@@ -6,15 +6,15 @@ var Classroom = mongoose.model('Classroom');
 var XLSX = require('xlsx');
 
 exports.load = function(req, res, next, id) {
-    Player.load(id, function (err, user) {
-        if (err) return next(err);
-        if (!user) return next(new Error('Failed to load User'));
-        req.user = user;
-        next();
-    });
+  Player.load(id, function(err, user) {
+    if (err) { return next(err); }
+    if (!user) { return next(new Error('Failed to load User'));}
+    req.user = user;
+    next();
+  });
 };
 
-exports.index = function(req, res){
+exports.index = function(req, res) {
 
 };
 
@@ -69,7 +69,7 @@ exports.edit = function (req, res) {
 
 };
 
-exports.signin = function () {};
+exports.signin = function() {};
 /**
  * Auth callback
  */
@@ -80,13 +80,13 @@ exports.authCallback = login;
  * Show login form
  */
 
-exports.login = function (req, res) {
-    res.render('user/login');
+exports.login = function(req, res) {
+  res.render('user/login');
 };
 
-exports.logout = function(req, res){
-    req.logout();
-    res.redirect('/login');
+exports.logout = function(req, res) {
+  req.logout();
+  res.redirect('/login');
 };
 
 /**
@@ -99,10 +99,10 @@ exports.session = login;
  * Login
  */
 
-function login (req, res) {
-    const redirectTo = req.session.returnTo
-        ? req.session.returnTo
-        : '/';
-    delete req.session.returnTo;
-    res.redirect(redirectTo);
+function login(req, res) {
+  const redirectTo = req.session.returnTo ?
+    req.session.returnTo
+    : '/';
+  delete req.session.returnTo;
+  res.redirect(redirectTo);
 }

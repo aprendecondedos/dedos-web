@@ -3,6 +3,9 @@
 {% block body %}
 <body class="page-walled-garden layout-full page-dark">
 <div class="page animsition">
+    {% if player.user %}
+        {% include '../includes/menu_play.html' %}
+    {% endif %}
     <div class="page-content" style="height: 100%;">
         <div class="row" style="height: 100%;">
             <div class="col-md-2" style="height: 100%;">

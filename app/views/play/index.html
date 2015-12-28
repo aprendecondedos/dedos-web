@@ -34,12 +34,12 @@ $(function() {
                 player_id: user_id
             },
             success: function(html){
-                $m_body.html( html).addClass('loaded');
+//                $m_body.html( html).addClass('loaded');
             }
         });
         socket.emit('server project:player:connected', {room: '{{project.id}}', id: user_id});
     });
-    {% if player.project != req.project.id %}
+    {% if player.project != req.project.id or not player.user %}
     $select_player.modal({
         show: true,
         keyboard: false,
@@ -47,10 +47,7 @@ $(function() {
     });
     {% endif %}
     socket.on('disconnect', function () {
-        var element_id = $(this).data('user');
-//        socket.emit('project:player:disconnected', {room: '{{project.id}}'});
-//        socket.emit('project:leave', '{{project.id}}');
-
+        socket.emit('server project:player:disconnected', {room: '{{project.id}}', player: {{player|json|raw}}});
     });
 
     socket.on('connect', function () {
@@ -77,10 +74,10 @@ $(function() {
         });
     });
 
-    $(window).bind('beforeunload', function(){
-        socket.emit('server project:player:disconnected', {room: '{{project.id}}', player: {{player|json|raw}}});
-        socket.disconnect();
-    });
+//    $(window).bind('beforeunload', function(){
+//        socket.emit('server project:player:disconnected', {room: '{{project.id}}', player: {{player|json|raw}}});
+//        socket.disconnect();
+//    });
 });
 </script>
 <script>

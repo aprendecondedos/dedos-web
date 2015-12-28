@@ -14,23 +14,23 @@ exports.load = wrap(function* (req, res, next, id){
   };
   req.project = yield Project.load(options);
 
-  if (!req.project) return next(new Error('Not found'));
+  if (!req.project) { return next(new Error('Not found')); }
 
   next();
 });
 
-exports.index = function(req, res){
+exports.index = function(req, res) {
   res.render('play/index', {
     title: gettext('play'),
     project: req.project
   });
 };
 
-exports.new = function(){
+exports.new = function() {
 
 };
 exports.activity = {
-  load: wrap(function* (req, res, next, id){
+  load: wrap(function*(req, res, next, id) {
     var options = {
       criteria: {
         _id: id,
@@ -53,12 +53,12 @@ exports.activity = {
     next();
   }),
 
-  index: wrap(function* (req, res){
+  index: wrap(function*(req, res) {
 
     var area = req.activity.elements.area;
     var player_session = {};
-    if(req.session.player) {
-      player_session = req.session.player.filter(function (player) {
+    if (req.session.player) {
+      player_session = req.session.player.filter(function(player) {
         return player.project == req.project.id ? player : '';
       });
       player_session = player_session.pop();
@@ -78,20 +78,25 @@ exports.activity = {
   })
 };
 
-exports.player = wrap(function*(req, res){
+exports.player = wrap(function*(req, res) {
   // Solo se ejecuta por ajax
-  if(req.xhr && req.body){
+  if (req.xhr && req.body) {
     switch (req.body.type){
       case 'select':
         yield Project.update({_id: req.project.id, 'players.user': req.body.player_id}, {$set: {'players.$.online': true}});
+        var player = yield Player.load(req.body.player_id);
 
-        var player = {
+        var player_data = {
           project: req.project.id,
-          player: req.body.player_id
+          user: {
+            id: player._id,
+            name: player.name,
+            avatar: req.body.avatar
+          }
         };
-        if(!req.session.player) req.session.player = [];
-
-        req.session.player.push(player);
+        if (!req.session.player) { req.session.player = []; }
+console.log(req.session.player);
+        req.session.player.push(player_data);
         break;
     }
 
@@ -99,6 +104,6 @@ exports.player = wrap(function*(req, res){
   }
 });
 
-exports.admin = function(){
+exports.admin = function() {
 
 };
