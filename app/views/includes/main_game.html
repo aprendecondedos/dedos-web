@@ -1,0 +1,172 @@
+<script>
+    $(function() {
+        <!-- -->
+        Play({
+            project: '{{project.id}}',
+            room: '{{project.id}}',
+            user: {
+                id: '{{player.user.id}}',
+                name: '{{player.user.name}}'
+            }
+        });
+//        $.play({
+//            modals: {
+//                select_player: '#modal-select-player'
+//            }
+//        });
+        <!-- -->
+
+        var $user = '';
+        var $select_player = $('#modal-select-player');
+        var $play = $('.play');
+
+        $(document).on('click', '.token-clickable', function () {
+            var element_id = $(this).attr('id');
+            socket.emit('event:click:token', {id: element_id});
+        });
+        $(document).on('click', '.select-player', function () {
+            var user_id = $(this).data('user');
+//        socket.emit('project:join', '{{project.id}}');
+            $.ajax({
+                type: "POST",
+                url: "/play/{{project.project}}/player",
+                data: {
+                    type: 'select',
+                    player_id: user_id
+                },
+                success: function(data){
+                    console.log(data);
+                    socket.emit('server project:player:connected', {room: '{{project.id}}', player: data});
+                }
+            });
+        });
+
+        {% if player.project != req.project.id or not player.user %}
+        $select_player.modal({
+            show: true,
+            keyboard: false,
+//        backdrop: 'static'
+        });
+        {% endif %}
+    socket.on('disconnect', function() {
+//        socket.emit('server project:player:disconnected', {room: '{{project.id}}', player: {{player|json|raw}}});
+    });
+    {% if player %}
+        socket.emit('server project:player:connected', {room: '{{project.id}}', player: {{player|json|raw}}});
+    {% endif %}
+    socket.on('connect', function() {
+        {% if player %}
+            socket.emit('server project:player:connected', {room: '{{project.id}}', player: {{player|json|raw}}});
+        {% endif %}
+        socket.on('client project:player:connected', function(data){
+            console.log(data);
+            console.log(socket.id);
+            $select_player.modal('hide');
+            $('#'+data.id).fadeIn();
+        });
+    });
+
+    //    $(window).bind('beforeunload', function(){
+    //        socket.emit('server project:player:disconnected', {room: '{{project.id}}', player: {{player|json|raw}}});
+    //        socket.disconnect();
+    //    });
+    });
+</script>
+<script>
+    $(document).ajaxSuccess(loadElements);
+    $(window).on('resize', loadElements);
+
+    function loadElements(){
+        var win = $(this),
+                elements = $('.element'),
+                orig = {
+                width: {{project.resolution.x}},
+                height: {{project.resolution.y}},
+    },
+    res = {
+        width: $('.play-table').innerWidth(),
+        height: $('.play-table').height()
+    },
+            coefficient = resolutionAdjust(orig, res);
+
+    elements.hide();
+    elements.each(function(){
+        $(this).css({
+            'left': ($(this).data('position').x)*coefficient.x,
+            'top': ($(this).data('position').y)*coefficient.y,
+            'width': ($(this).data('size').width)*coefficient.x,
+            'height': ($(this).data('size').height)*coefficient.y
+        });
+        $(this).fadeIn('fast');
+    });
+    }
+    function resolutionAdjust(orig, new_res) {
+        return {
+            x: (new_res.width*1)/orig.width,
+            y: (new_res.height*1)/orig.height
+        }
+    }
+</script>
+<style>
+    .element{
+        position: absolute;
+    }
+    .area{
+        background-color: #f0f1f1;
+        border: 2px dashed #8c8c8c;
+    }
+    .token{
+        background-color: #fff;
+        -webkit-border-radius: 6px;
+        -moz-border-radius: 6px;
+        border-radius: 6px;
+        background-color: #fff;
+        padding: 10px;
+        border: 1px solid #8c8c8c;
+        transition: all 0.3s ease;
+        /*border-bottom-color: #DEDEDE;*/
+        /*border-bottom: 3px solid;*/
+        border-radius: 8px;
+        margin: 0px 5px 10px 0px;
+        box-shadow: 0 2px 0 0 #AFAFAF;
+    }
+    .token-clickable{
+        cursor: pointer;
+    }
+    .token-clickable:hover{
+        transform: scale(1.1);
+    }
+    .token-clickable:active{
+        opacity: 0.8;
+        box-shadow: 0 0 0 0 #AFAFAF;
+    }
+</style>
+<div class="modal fade modal-slide-from-bottom modal-primary" id="modal-select-player"
+     aria-hidden="true" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Selecciona tu jugador</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row list-group">
+                    {% for player in project.players %}
+                    <a class="col-md-6 list-group-item select-player" data-user="{{player.user.id}}" href="javascript:;">
+                        <div class="media">
+                            <div class="media-left">
+                                    <span class="avatar avatar-online">
+                                       <img data-name="{{player.user.name}}" class="profile">
+                                    </span>
+                            </div>
+                            <div class="media-body font-size-16" style="vertical-align: middle;">
+                                {{player.user.name}}
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

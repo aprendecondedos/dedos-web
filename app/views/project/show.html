@@ -18,15 +18,15 @@ $(function(){
 
     socket.on('connect', function () {
         socket.emit('project:join', '{{project.id}}');
-        socket.on('client project:player:disconnected', function (data) {
-//            alert('Desconectedo');
-            $('#'+data.id).attr('class', 'avatar avatar-'+ data.status);
-        });
-        socket.on('client project:player:connected', function (data) {
-            console.log(data);
-//            alert('who');
-            $('#'+data.id).attr('class', 'avatar avatar-'+ data.status);
-        });
+    });
+
+    socket.on('client project:player:connected', function (data) {
+        console.log(data);
+        $('#'+data.player.user.id).attr('class', 'avatar avatar-'+ data.status);
+    });
+    socket.on('client project:player:disconnected', function (data) {
+        console.log(data);
+        $('#'+data.player.user.id).attr('class', 'avatar avatar-off');
     });
 });
 </script>

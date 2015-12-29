@@ -1,5 +1,10 @@
 {% extends 'default.html' %}
 
+{% block head %}
+    {% parent %}
+    <script src="/js/play.js"></script>
+{% endblock %}
+
 {% block body %}
 <body class="page-walled-garden layout-full page-dark">
 <div class="page animsition">
@@ -7,14 +12,22 @@
         {% include '../includes/menu_play.html' %}
     {% endif %}
     <div class="page-content" style="height: 100%;">
-        <div class="row" style="height: 100%;">
-            <div class="col-md-2" style="height: 100%;">
-                {% block players %}{% endblock %}
-            </div>
-            {% block details %}{% endblock %}
-            <div class="col-md-10 play-table" style="height: 100%;border: 1px dashed #ccc;padding-top: 15px; padding-bottom: 15px;">{% block content %}{% endblock %}</div>
+
+        {{project.name}}
+        <div>
+            {% for activity in project.activities %}
+            <a class="select-activity margin-right-20 margin-bottom-15 btn btn-sm btn-primary {% if req.activity.id == activity.id %}btn-info{% endif %}" href="/play/{{project.project}}/activity/{{activity.id}}">
+                Actividad {{loop.index}}
+            </a>
+            {% endfor %}
         </div>
+
+        <div class="row play" style="height: 100%;">
+            {% block play %}{% endblock %}
+        </div>
+
     </div>
+    {% include '../includes/main_game.html' %}
 </div>
 {% include '../includes/foot.html' %}
 </body>

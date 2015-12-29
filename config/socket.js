@@ -10,12 +10,9 @@ module.exports = function(io, app) {
 
   io.on('connection', function(socket) {
     console.log('Connected ' + socket.id);
-    //console.log('Inicio');
-    //console.log(io);
-    //console.log("----------")
-    //console.log(socket);
+
     // Project sockets
-    socket.on('project:join', project.join);
+    socket.on('project:join', project.join_room);
     socket.on('server project:player:connected', project.player.connected);
     socket.on('server project:player:disconnected', project.player.disconnected);
     //console.log(io.sockets.adapter.rooms);
@@ -28,13 +25,12 @@ module.exports = function(io, app) {
       // TODO añadirlo en una sala (room) por proyecto
       //socket.in('CLASSID').emit('event:click:tokens', data);
     });
-    //socket.join('5672d3afe96e72e8437ee5c9');
-    socket.on('player:connected', function(data) {
-      io.sockets.to(data.room).emit('player:connectedx', data);
-      console.log(data);
-    });
     socket.on('disconnect', function() {
       console.log('Disconnected ' + socket.id);
+      if (socket.player) {
+        console.log(socket.player);
+        project.player.disconnected({room: socket.player.project, player: socket.player}, socket);
+      }
     });
   });
   //io.use(function (socket, next) {

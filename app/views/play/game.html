@@ -1,0 +1,20 @@
+<div class="game" style="position: relative;">
+    {% for area in areas %}
+    <div class="element area" data-position="{{ area.position|json_encode }}" data-size="{{ area.size|json_encode }}">
+        {% for token in area.tokens %}
+        <div class="element token {% if token.clickable %}token-clickable{% endif %}" style="display: none;width: 200px;"
+             id="{{token.id}}"
+             data-position="{{ token.position|json_encode }}"
+             data-size="{{ token.size|json_encode }}"
+                >
+            <span class="badge badge-primary badge-radius" style="display:none;position: absolute;right: 10px;bottom: 10px;box-shadow: 0 2px 0 0 #3E7CB5;"></span>
+            {% if token.type == 'txt' %}
+            {% include 'tokens/txt.html' %}
+            {% elseif token.type == 'img' %}
+            {% include 'tokens/img.html' %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>

@@ -6,11 +6,11 @@ var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
 var User = mongoose.model('Player');
 
-exports.join = function(room) {
-  console.log(room);
+exports.join_room = function(room) {
+  console.log('Sala: ' + room);
   this.join(room);
 };
-exports.leave = function(room) {
+exports.leave_room = function(room) {
   this.leave(room);
 };
 
@@ -21,27 +21,35 @@ exports.player = {
     //this.broadcast.emit('client:project:player:connected', data);
     //var user = yield User.load(data.id);
     this.join(data.room);
-    this.playerId = data.id;
+    this.player = data.player;
     this.id = data.room + '-' + data.id;
-
-    data.status = 'online';
     var io = this.server;
-    User.load(data.id, function(err, user) {
-      extend(data, user);
+    //yield Project.update({_id: data.room, 'players.user': data.player.user.id}, {$set: {'players.$.online': true}});
+    Project.update({_id: data.room, 'players.user': data.player.user.id}, {$set: {'players.$.online': true}}, function(){
+      console.log('Guardado');
+      data.status = 'online';
+      //io.sockets.emit('client project:player:connected', data);
       io.sockets.in(data.room).emit('client project:player:connected', data);
     });
   },
-  disconnected: wrap(function*(data) {
+  disconnected: function(data, socket) {
     if (data.player) {
-      yield Project.update(
+      var self = socket || this;
+      var io = self.server;
+
+      Project.update(
         {_id: data.room, 'players.user': data.player.user.id},
-        {$set: {'players.$.online': false}}
-      );
+        {$set: {'players.$.online': false}}, function() {
+          console.log('is OUT');
+          io.sockets.in(data.room)
+            .emit('client project:player:disconnected', data);
+          self.leave(data.room);
+      });
+      //yield Project.update(
+      //  {_id: data.room, 'players.user': data.player.user.id},
+      //  {$set: {'players.$.online': false}}
+      //);
 
-      this.server.sockets.in(data.room)
-        .emit('client project:player:disconnected', data);
-
-      this.leave(data.room);
     }
-  })
+  }
 };

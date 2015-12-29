@@ -119,7 +119,7 @@ module.exports = function (app, passport, io) {
 
   app.get('/play/:playId',[], play.index);
   app.post('/play/:playId/player', play.player);
-  app.get('/play/:playId/activity/:activityId',[], play.activity.index);
+  app.get('/play/:playId/activity/:activityId', auth.requiresPlayerLogin, play.activity.show);
 
   //// Play routes
   //app.get('/play/:id', play.show);
