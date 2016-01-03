@@ -14,9 +14,9 @@ var server = require('http').Server(app);
 var port = process.env.PORT || 3000;
 
 // Connect to mongodb
-var connect = function () {
-    var options = { server: { socketOptions: { keepAlive: 1 } } };
-    mongoose.connect(config.db, options);
+var connect = function() {
+  var options = {server: {socketOptions: {keepAlive: 1}}};
+  mongoose.connect(config.db, options);
 };
 connect();
 
@@ -24,8 +24,8 @@ mongoose.connection.on('error', console.log);
 mongoose.connection.on('disconnected', connect);
 
 // Bootstrap models
-fs.readdirSync(join(__dirname, 'app/models')).forEach(function (file) {
-    if (~file.indexOf('.js')) require(join(__dirname, 'app/models', file));
+fs.readdirSync(join(__dirname, 'app/models')).forEach(function(file) {
+  if (~file.indexOf('.js')) { require(join(__dirname, 'app/models', file)); }
 });
 
 // Bootstrap passport config
@@ -34,8 +34,8 @@ require('./config/passport')(passport, config);
 // Bootstrap application settings
 require('./config/express')(app, passport);
 
+var io = require('socket.io')(server);
 
-var io = require("socket.io")(server);
 // Socket routes
 require('./config/socket')(io, app);
 //app.set('socket.io', io);

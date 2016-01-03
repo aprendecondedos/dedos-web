@@ -23,8 +23,20 @@
                                 <li><a href="">{{gettext('rename')}}</a></li>
                             </ul>
                         </div>
-                        <button type="button" class="btn btn-icon btn-pure btn-default" title="Delete"
-                                data-tag="project-delete"><i class="icon wb-trash" aria-hidden="true"></i></button>
+                        <button type="button" data-target="#delete_{{project.id}}" class="btn btn-icon btn-pure btn-default warning-confirm" title="{{gettext('delete')}}"
+                                data-alert-title="{{gettext('project:delete')}}"
+                                data-alert-text="{{gettext('project:delete:text')}}"
+                                data-alert-confirmbtn="{{gettext('delete')}}"
+                                data-alert-title-success="{{gettext('project:deleted')}}"
+                                data-alert-text-success="{{gettext('project:deleted:text')}}"
+                            >
+                            <i class="icon wb-trash" aria-hidden="true"></i>
+                        </button>
+                        <form id="delete_{{project.id}}" role="form" method="post" action="{{ '/project/' + project._id }}" class="hide">
+                            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit">delete</button>
+                        </form>
                     </div>
                     <a class="btn btn-outline btn-default project-button" href="/project/{{project.id}}">{{gettext('project:view')}}</a>
                 </figcaption>

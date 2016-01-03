@@ -38,8 +38,9 @@
   this.Play = function() {
     // Opciones por defecto
     var defaults = {
+      id: '',
       project: '',
-      user: {
+      player: {
         id: '',
         name: ''
       },
@@ -57,23 +58,45 @@
     var $container = $(this.options.container);
     var $select_player = $(this.options.modals.select_player);
     var self = this;
-
+    /**
+     * Sockets
+     */
+    var sockets = {};
     /**
      * Actividad
      */
+
+    // Sockets
+    sockets.activity = {
+      join: 'server project:activity:join'
+    };
+    // Eventos
     $(document).on('click', '.select-activity', function(e) {
       e.preventDefault();
-      var url_data = $(this).attr('href');
+      //var url_data = $(this).attr('href');
+      var activity_id = this.id;
+      var activity_num = $(this).data('num');
+      var url_data = '/play/' + self.options.id + '/activity/' + activity_id;
       $.ajax({
         type: 'GET',
         url: url_data,
         success: function(html) {
           $container.html(html);
-          socket.emit('server project:activity:join', {room: self.options.room, id: self.options.user.id});
+          // SOCKET emit
+          socket.emit(sockets.activity.join, {
+            room: self.options.room,
+            activity: activity_id,
+            num: activity_num,
+            player: self.options.player
+          });
         }
       });
     });
 
+    $(document).on('click', '.token-clickable', function(e) {
+      var element_id = $(this).attr('id');
+      socket.emit('event:click:token', {id: element_id});
+    });
     console.log(this.options);
   };
 }());

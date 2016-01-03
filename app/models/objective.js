@@ -1,17 +1,15 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-
 var ObjectiveSchema = new Schema({
-    type           : String,
-
-    // MATH
+  activity: {type: Schema.Types.ObjectId, ref: 'Activity'},
+  type: String
 });
 /**
  * Hooks
  */
-ObjectiveSchema.pre('save', function (next) {
-    next();
+ObjectiveSchema.pre('save', function(next) {
+  next();
 });
 
 /**
@@ -20,13 +18,12 @@ ObjectiveSchema.pre('save', function (next) {
  * @type {{}}
  */
 ObjectiveSchema.methods = {
-    setProject: function(){
+  setProject: function() {
 
-    },
-    getProjects: function(){
+  },
+  getProjects: function() {
 
-    }
+  }
 };
-
 
 mongoose.model('Objective', ObjectiveSchema);

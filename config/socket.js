@@ -15,6 +15,7 @@ module.exports = function(io, app) {
     socket.on('project:join', project.join_room);
     socket.on('server project:player:connected', project.player.connected);
     socket.on('server project:player:disconnected', project.player.disconnected);
+    socket.on('server project:activity:join', project.activity.join);
     //console.log(io.sockets.adapter.rooms);
 
     var cookie = socket.request.headers.cookie;
@@ -25,6 +26,7 @@ module.exports = function(io, app) {
       // TODO añadirlo en una sala (room) por proyecto
       //socket.in('CLASSID').emit('event:click:tokens', data);
     });
+
     socket.on('disconnect', function() {
       console.log('Disconnected ' + socket.id);
       if (socket.player) {

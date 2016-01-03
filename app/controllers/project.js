@@ -18,31 +18,32 @@ var Token = mongoose.model('Token');
  * Load
  */
 
-exports.load = wrap(function* (req, res, next, id){
+exports.load = wrap(function*(req, res, next, id) {
   req.project = yield Project.load(id);
   if (!req.project) return next(new Error('not found'));
   next();
 });
 
-exports.index = function(req, res){
-    var data = {
-        title: 'Inicio'
-    };
-    res.render('index', data);
+exports.index = function(req, res) {
+  var data = {
+    title: 'Inicio'
+  };
+  res.render('index', data);
 };
 //var upload = multer().single('file_zip');
-exports.new = wrap(function* (req, res){
+exports.new = wrap(function*(req, res){
   if(req.method == 'POST') {
     var project_prop = req.body;
     var upload = lib.upload('file_upload');
+
     // Subida de archivos para creación del proyecto
     upload(req, res, function (err) {
-      var xml = '',
-        image_array = [],
-        screenshots_array = [],
-        original_path = req.file.path,
-        project_id = lib.unique_id(),
-        new_path = './public/uploads/'+ project_id;
+      var xml = '';
+      var image_array = [];
+      var screenshots_array = [];
+      var original_path = req.file.path;
+      var project_id = lib.unique_id();
+      var new_path = './public/uploads/' + project_id;
 
       // Extracción del zip
       var zip = new AdmZip(original_path);
@@ -51,7 +52,7 @@ exports.new = wrap(function* (req, res){
         if (zipEntry.isDirectory == false) {
           if (zipEntry.name.indexOf('.xml') != -1) {
             xml = zipEntry.entryName; // Archivo XML
-          } else if(zipEntry.entryName.indexOf('/screenshots/') != -1){
+          } else if (zipEntry.entryName.indexOf('/screenshots/') != -1) {
             screenshots_array.push(zipEntry.name);
           } else {
             image_array.push(zipEntry.entryName); // Imagenes encontradas
@@ -96,20 +97,20 @@ exports.new = wrap(function* (req, res){
         var activities = [];
         XML.Project.Activity.forEach(function(activity_data){
           if(typeof activity_data != 'object') return;
-          console.log(activity_data);
+
           // Set activities
-          var activity = new Activity({ project: project.id });
+          var activity = new Activity({project: project.id});
 
           // Set objectives
           var objectives = [];
           activity_data.Objectives.forEach(function(objectives_data) {
-            if(typeof objectives_data != 'object') return;
+            if (typeof objectives_data != 'object') { return; }
 
             objectives_data.obj.forEach(function(objective_data) {
 
-              if(objective_data.$.type == 'sel'){
+              if (objective_data.$.type == 'sel') {
                 var objective = new Selection(objective_data.$);
-              } else if(objective_data.$.type == 'pair'){
+              } else if (objective_data.$.type == 'pair') {
                 var objective = new Pair(objective_data.$);
 
                 // set targets
@@ -122,7 +123,8 @@ exports.new = wrap(function* (req, res){
                 objective.setTargets(targets);
               }
               //var objective = new Objective(objective_data.$);
-              if(objective) {
+              if (objective) {
+                objective.activity = activity._id;
                 objective.save();
                 objectives.push(objective);
               }
@@ -167,18 +169,20 @@ exports.new = wrap(function* (req, res){
                   } else if(token_data.$.type == 'txt') {
                     token.text = token_data.content[0].text[0]
                   }
+                  token.activity = activity._id;
                   token.save();
                   tokens.push(token);
                   elements.push(token);
                 });
               });
               area.setTokens(tokens);
+              area.activity = activity._id;
               area.save();
               elements.push(area);
             });
           });
-          activity.setElements(elements);
 
+          activity.setElements(elements);
           activity.save();
           activities.push(activity);
         });
@@ -186,15 +190,15 @@ exports.new = wrap(function* (req, res){
         project.save();
 
         // Redireccionar al proyecto
-        res.redirect('/project/'+ project._id);
+        res.redirect('/project/' + project._id);
       });
 
     });
 
   } else {
     res.render('project/new', {
-        title: gettext('project:new'),
-        project: new Project()
+      title: gettext('project:new'),
+      project: new Project()
     });
   }
 });
@@ -248,3 +252,17 @@ exports.my = wrap(function* (req, res){
 exports.admin = function(){
 
 };
+
+/**
+ * Eliminar un proyecto
+ */
+
+exports.destroy = wrap(function*(req, res) {
+  //const activities = req.project.activities;
+  //activities.forEach(function(activity) {
+  //  activity.remove();
+  //});
+  yield req.project.remove();
+  req.flash('success', 'Deleted successfully');
+  res.redirect('/projects/my');
+});

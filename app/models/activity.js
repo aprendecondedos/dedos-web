@@ -4,38 +4,47 @@ var util = require('util');
 
 // Activity model
 var ActivitySchema = new Schema({
-    project      : { type: Schema.Types.ObjectId, ref: 'Project' },
-    objectives   : [{type: Schema.Types.ObjectId, ref: 'Objective' }],
-    elements     : [{type: Schema.Types.ObjectId, ref: 'Element' }]
+  project: {type: Schema.Types.ObjectId, ref: 'Project'},
+  objectives: [{type: Schema.Types.ObjectId, ref: 'Objective'}],
+  elements: [{type: Schema.Types.ObjectId, ref: 'Element'}]
 });
+
 /**
  * Hooks
  */
-ActivitySchema.pre('save', function (next) {
-    next();
+ActivitySchema.pre('save', function(next) {
+  next();
 });
+
+ActivitySchema.pre('remove', function(next) {
+  var self = this;
+  this.model('Element').remove({activity: this._id}, function() {
+    self.model('Objective').remove({activity: self._id}, next);
+  });
+});
+
 /**
  * Methods
  *
  * @type {{}}
  */
 ActivitySchema.methods = {
-    saveFromXML: function(XML_data){
+  saveFromXML: function(XML_data) {
       this
         .setObjectivesFromXML(XML_data.Objectives)
         .setElementsFromXML(XML_data.Arealist)
         .save();
     },
-    setObjectivesFromXML: function(XML_data) {
+  setObjectivesFromXML: function(XML_data) {
       var objectives = [];
       XML_data.forEach(function(objectives_data) {
-        if(typeof objectives_data != 'object') return;
+        if (typeof objectives_data != 'object') return;
 
         objectives_data.obj.forEach(function(objective_data) {
 
-          if(objective_data.$.type == 'sel'){
+          if (objective_data.$.type == 'sel') {
             var objective = new Selection(objective_data.$);
-          } else if(objective_data.$.type == 'pair'){
+          } else if (objective_data.$.type == 'pair') {
             var objective = new Pair(objective_data.$);
 
             // set targets
@@ -48,7 +57,7 @@ ActivitySchema.methods = {
             objective.setTargets(targets);
           }
           //var objective = new Objective(objective_data.$);
-          if(objective) {
+          if (objective) {
             objective.save();
             objectives.push(objective);
           }
@@ -58,28 +67,28 @@ ActivitySchema.methods = {
       this.setObjectives(objectives);
       return this;
     },
-    setElementsFromXML: function(XML_data) {
+  setElementsFromXML: function(XML_data) {
       var elements = [];
       XML_data.forEach(function(area_list) {
-        if(typeof area_list != 'object') return;
+        if (typeof area_list != 'object') return;
 
-        area_list.Area.forEach(function(area_data){
+        area_list.Area.forEach(function(area_data) {
           var area = new Area({
-            element_id  : area_data.$.id,
-            type        : area_data.$.type,
-            position    : area_data.pos.pop().$,
-            size        : area_data.size.pop().$,
-            bg          : area_data.bg.pop().$.url
+            element_id: area_data.$.id,
+            type: area_data.$.type,
+            position: area_data.pos.pop().$,
+            size: area_data.size.pop().$,
+            bg: area_data.bg.pop().$.url
           });
 
           // Set tokens (cards)
           var tokens = [];
-          area_data.Tokenlist.forEach(function(tokens_data){
-            if(typeof tokens_data != 'object') return;
+          area_data.Tokenlist.forEach(function(tokens_data) {
+            if (typeof tokens_data != 'object') return;
 
             tokens_data.Token.forEach(function(token_data) {
               var token = new Token({
-                element_id  : token_data.$.id,
+                element_id: token_data.$.id,
                 type: token_data.$.type,
                 position: token_data.pos.pop().$,
                 size: token_data.size.pop().$,
@@ -90,10 +99,10 @@ ActivitySchema.methods = {
                 feedback: token_data.content[0].feedback.pop()
               });
 
-              if(token_data.$.type == 'img') {
+              if (token_data.$.type == 'img') {
                 token.setUrls(token_data.content[0].urlList[0].url);
-              } else if(token_data.$.type == 'txt') {
-                token.text = token_data.content[0].text[0]
+              } else if (token_data.$.type == 'txt') {
+                token.text = token_data.content[0].text[0];
               }
               token.save();
               tokens.push(token);
@@ -109,18 +118,18 @@ ActivitySchema.methods = {
       this.setElements(elements);
       return this;
     },
-    setObjectives: function(objectives) {
-        if (util.isArray(objectives)) {
-            this.objectives = objectives;
-            return this;
-        }
-    },
-    setElements: function(elements) {
-        if (util.isArray(elements)) {
-            this.elements = elements;
-            return this;
-        }
+  setObjectives: function(objectives) {
+    if (util.isArray(objectives)) {
+      this.objectives = objectives;
+      return this;
     }
+  },
+  setElements: function(elements) {
+    if (util.isArray(elements)) {
+      this.elements = elements;
+      return this;
+    }
+  }
 };
 
 /**
@@ -129,21 +138,21 @@ ActivitySchema.methods = {
 
 ActivitySchema.statics = {
 
-    /**
-     * Buscar proyecto por id
-     *
-     * @param {ObjectId} id
-     * @param {Function} cb
-     * @api private
-     */
+  /**
+   * Buscar proyecto por id
+   *
+   * @param {ObjectId} options
+   * @param {Function} cb
+   * @api private
+   */
 
-    load: function (options) {
-        const criteria = options.criteria || {_id: options};
-        return this.findOne(criteria)
-            .populate('objectives')
-            .populate('elements')
-            .exec();
-    }
+  load: function(options) {
+    const criteria = options.criteria || {_id: options};
+    return this.findOne(criteria)
+        .populate('objectives')
+        .populate('elements')
+        .exec();
+  }
 };
 
 mongoose.model('Activity', ActivitySchema);

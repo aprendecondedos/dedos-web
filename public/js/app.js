@@ -34,25 +34,27 @@ $(function(){
   // SweetAlert
   // ---------
   $('.warning-confirm').on("click", function() {
-    var that = $(this);
+    var self = $(this);
     swal({
-        title: "Are you sure?",
-        text: "You will not be able to recover this imaginary file!",
+        title: self.data('alert-title'),
+        text: self.data('alert-text'),
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: '#DD6B55',
-        confirmButtonText: 'Yes, delete it!',
+        confirmButtonText: self.data('alert-confirmbtn'),
+        cancelButtonText: 'Cancelar',
+        cancelButtonClass: 'cancel btn btn-lg btn-default margin-right-10',
         closeOnConfirm: false,
         animation: 'slide-from-bottom'
         //closeOnCancel: false
       },
       function() {
         swal({
-          title: "Deleted!",
-          text: "Your imaginary file has been deleted!",
+          title: self.data('alert-title-success'),
+          text: self.data('alert-text-success'),
           type: "success"
         }, function() {
-          $(that.data("target")).submit();
+          $(self.data("target")).submit();
         });
       });
   });

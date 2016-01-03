@@ -28,6 +28,12 @@ $(function(){
         console.log(data);
         $('#'+data.player.user.id).attr('class', 'avatar avatar-off');
     });
+    socket.on('client project:activity:join', function (data) {
+        console.log(data);
+        $('#'+data.player.user.id).closest('.list-group-item')
+                .find('.context')
+                .html('<span class="label label-warning"><i class="wb-eye"></i> Actividad '+data.num+'</span>');
+    });
 });
 </script>
 
@@ -124,7 +130,7 @@ $(function(){
                     </div>
                     <div class="media-body">
                         {{player.user.name}}
-                        <div class="pull-right">
+                        <div class="pull-right context">
                             {% if loop.index == 1 %}
                             <span class="label label-default">Sin empezar</span>
                             {% endif %}

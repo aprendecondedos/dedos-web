@@ -5,49 +5,49 @@ var util = require('util');
 
 // User model
 var userSchemaSSSS = mongoose.Schema({
-    createdDate     : {type: Date, default: Date.now},
-    name            : String,
-    picture          : String,
-    type            : String,
-    // Student properties
-    projects       : [{type: Schema.Types.ObjectId, ref: 'Project'}],
-    createdBy      : {type: Schema.Types.ObjectId, ref: 'User'},
-    // Teacher properties
-    email          : { type: String, unique: true, lowercase: true },
-    password       : String,
-    classes        : [{type: Schema.Types.ObjectId, ref: 'Class'}]
+  createdDate: {type: Date, default: Date.now},
+  name: String,
+  picture: String,
+  type: String,
+  // Student properties
+  projects: [{type: Schema.Types.ObjectId, ref: 'Project'}],
+  createdBy: {type: Schema.Types.ObjectId, ref: 'User'},
+  // Teacher properties
+  email: {type: String, unique: true, lowercase: true},
+  password: String,
+  classes: [{type: Schema.Types.ObjectId, ref: 'Class'}]
 });
 
 var UserSchema = Schema({
-    createdDate     : {type: Date, default: Date.now},
-    name            : String,
-    avatar          : String,
-    type            : String
+  createdDate: {type: Date, default: Date.now},
+  name: String,
+  avatar: String,
+  type: String
 });
 //function baseSchema(){
-var baseSchema = function(){
-    Schema.apply(this, arguments);
-    this.add({
-        createdDate     : {type: Date, default: Date.now},
-        name            : String,
-        avatar          : String,
-        type            : String
-    });
+var baseSchema = function() {
+  Schema.apply(this, arguments);
+  this.add({
+    createdDate: {type: Date, default: Date.now},
+    name: String,
+    avatar: String,
+    type: String
+  });
 };
 util.inherits(baseSchema, Schema);
 var userSchema = new baseSchema();
 
 userSchema.methods.setAsTeacher = function() {
-    this.type = 'teacher';
-    return this;
+  this.type = 'teacher';
+  return this;
 };
 userSchema.methods.setAsStudent = function() {
 
-    this.type = 'student';
-    //this.createdBy: 'ID_teacher'
-    //var p = new Student(baseSchema);
-    console.log(this);
-    return this;
+  this.type = 'student';
+  //this.createdBy: 'ID_teacher'
+  //var p = new Student(baseSchema);
+  console.log(this);
+  return this;
 };
 /**
  * Methods
@@ -55,9 +55,9 @@ userSchema.methods.setAsStudent = function() {
  * @type {{}}
  */
 UserSchema.methods = {
-    getProjects: function(){
+  getProjects: function() {
 
-    }
+  }
 };
 /**
  * Statics
@@ -65,19 +65,19 @@ UserSchema.methods = {
 
 UserSchema.statics = {
 
-    /**
-     * Buscar usuario por id
-     *
-     * @param {ObjectId} id
-     * @param {Function} cb
-     * @api private
-     */
+  /**
+   * Buscar usuario por id
+   *
+   * @param {ObjectId} id
+   * @param {Function} cb
+   * @api private
+   */
 
-    load: function (id, cb) {
-        this.findOne({_id: id})
-            .exec(cb);
-    }
-}
+  load: function(id, cb) {
+    this.findOne({_id: id})
+        .exec(cb);
+  }
+};
 //module.exports = mongoose.model('User', userSchema);
 //var User = mongoose.model('User', userSchema);
 //module.exports = mongoose.model('User', userSchema);

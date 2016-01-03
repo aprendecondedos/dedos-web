@@ -4,11 +4,10 @@ var util = require('util');
 require('./element');
 var Element = mongoose.model('Element');
 
-
 var AreaSchema = new Schema({
-    background  : String,
-    type        : String,
-    tokens      : [{type: Schema.Types.ObjectId, ref: 'Token'}]
+  background: String,
+  type: String,
+  tokens: [{type: Schema.Types.ObjectId, ref: 'Token'}]
 });
 /**
  * Methods
@@ -16,11 +15,11 @@ var AreaSchema = new Schema({
  * @type {{}}
  */
 AreaSchema.methods = {
-    setTokens: function(tokens){
-        if (util.isArray(tokens)) {
-            this.tokens = tokens;
-            return this;
-        }
+  setTokens: function(tokens) {
+    if (util.isArray(tokens)) {
+      this.tokens = tokens;
+      return this;
     }
+  }
 };
 var Area = Element.discriminator('Area', AreaSchema);

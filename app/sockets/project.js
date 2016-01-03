@@ -25,12 +25,16 @@ exports.player = {
     this.id = data.room + '-' + data.id;
     var io = this.server;
     //yield Project.update({_id: data.room, 'players.user': data.player.user.id}, {$set: {'players.$.online': true}});
-    Project.update({_id: data.room, 'players.user': data.player.user.id}, {$set: {'players.$.online': true}}, function(){
-      console.log('Guardado');
-      data.status = 'online';
-      //io.sockets.emit('client project:player:connected', data);
-      io.sockets.in(data.room).emit('client project:player:connected', data);
-    });
+    if (data.player) {
+      Project.update(
+        {_id: data.room, 'players.user': data.player.user.id},
+        {$set: {'players.$.online': true}}, function() {
+        console.log('Guardado');
+        data.status = 'online';
+        //io.sockets.emit('client project:player:connected', data);
+        io.sockets.in(data.room).emit('client project:player:connected', data);
+      });
+    }
   },
   disconnected: function(data, socket) {
     if (data.player) {
@@ -51,5 +55,12 @@ exports.player = {
       //);
 
     }
+  }
+};
+
+exports.activity = {
+  join: function(data) {
+    data.player = {user: data.player};
+    this.server.sockets.in(data.room).emit('client project:activity:join', data);
   }
 };

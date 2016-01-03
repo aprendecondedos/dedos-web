@@ -2,9 +2,10 @@
     $(function() {
         <!-- -->
         Play({
+            id: '{{project.project}}',
             project: '{{project.id}}',
             room: '{{project.id}}',
-            user: {
+            player: {
                 id: '{{player.user.id}}',
                 name: '{{player.user.name}}'
             }
@@ -45,19 +46,17 @@
         $select_player.modal({
             show: true,
             keyboard: false,
-//        backdrop: 'static'
+            backdrop: 'static'
         });
         {% endif %}
     socket.on('disconnect', function() {
 //        socket.emit('server project:player:disconnected', {room: '{{project.id}}', player: {{player|json|raw}}});
     });
-    {% if player %}
+    {% if player.project == req.project.id %}
         socket.emit('server project:player:connected', {room: '{{project.id}}', player: {{player|json|raw}}});
     {% endif %}
+
     socket.on('connect', function() {
-        {% if player %}
-            socket.emit('server project:player:connected', {room: '{{project.id}}', player: {{player|json|raw}}});
-        {% endif %}
         socket.on('client project:player:connected', function(data){
             console.log(data);
             console.log(socket.id);

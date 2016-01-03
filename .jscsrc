@@ -1,4 +1,8 @@
 {
+  "preset": "google",
   "maxErrors": 3000,
-  "requireCamelCaseOrUpperCaseIdentifiers": false
+  "esnext": true,
+//  "requireCamelCaseOrUpperCaseIdentifiers": false
+  "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
+  "validateIndentation": 2
 }

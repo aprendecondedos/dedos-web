@@ -16,11 +16,17 @@
                 <span class="panel-desc">{{gettext('education_level:'+classroom.education_level)}}</span>
             </h3>
             <div class="panel-actions">
-                <a href="/classroom/{{classroom.id}}/edit" type="button" class="panel-action" data-toggle="tooltip" data-original-title="Edit">
-                    <i class="icon fa fa-pencil margin-right-0" aria-hidden="true"></i>
+                <a href="/classroom/{{classroom.id}}/edit" type="button" class="panel-action" data-toggle="tooltip" data-original-title="{{gettext('edit')}}">
+                    <i class="icon wb-pencil margin-right-0" aria-hidden="true"></i>
                 </a>
-                <a type="button" class="panel-action warning-confirm" data-target="#delete_{{classroom.id}}" data-toggle="tooltip" data-original-title="Delete">
-                    <i class="icon fa fa-times margin-right-0" aria-hidden="true"></i>
+                <a type="button" class="panel-action warning-confirm" data-target="#delete_{{classroom.id}}" data-toggle="tooltip" data-original-title="{{gettext('delete')}}"
+                        data-alert-title="{{gettext('classroom:delete')}}"
+                        data-alert-text="{{gettext('classroom:delete:text')}}"
+                        data-alert-confirmbtn="{{gettext('delete')}}"
+                        data-alert-title-success="{{gettext('classroom:deleted')}}"
+                        data-alert-text-success="{{gettext('classroom:deleted:text')}}"
+                        >
+                    <i class="icon wb-trash margin-right-0" aria-hidden="true"></i>
                 </a>
                 <form id="delete_{{classroom.id}}" role="form" method="post" action="{{ '/classroom/' + classroom._id }}" class="hide">
                     <input type="hidden" name="_csrf" value="{{ csrf_token }}">

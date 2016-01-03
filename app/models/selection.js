@@ -3,9 +3,8 @@ var Schema = mongoose.Schema;
 require('./objective');
 var Objective = mongoose.model('Objective');
 
-
 var SelectionSchema = new Schema({
-    obj    : String,
+  obj: String
 });
 /**
  * Methods

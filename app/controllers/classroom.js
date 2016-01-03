@@ -101,11 +101,12 @@ exports.update = function(req, res){
   res.redirect('/classrooms');
 };
 
-exports.destroy = function(req, res){
-  var classroom = req.classroom;
-  classroom.remove(function (err){
-    req.flash('success', 'Deleted successfully');
-    res.redirect('/classrooms');
-  });
-};
+/**
+ * Eliminar una clase
+ */
 
+exports.destroy = wrap(function*(req, res) {
+  yield req.classroom.remove();
+  req.flash('success', 'Deleted successfully');
+  res.redirect('/classrooms');
+});
