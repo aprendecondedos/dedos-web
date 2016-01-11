@@ -32,6 +32,7 @@
   "project:deleted:text": "El proyecto ha sido eliminado",
 
   "players": "Jugadores",
+  "player": "Jugador",
 
   "students": "Estudiantes",
   "student": "Estudiante",
@@ -41,6 +42,7 @@
 
   "activities": "Actividades",
   "activity": "Actividad",
+  "activity:out_of": "Actividad %s de %s",
 
   "classroom": "Clase",
   "classrooms": "Clases",
@@ -55,6 +57,9 @@
   "classroom:create": "Crear clase",
   "classroom:students:add": "Añadir estudiantes",
   "classroom:students:none": "No se han añadido estudiantes",
+
+  "play": "Jugar",
+  "play:how_to": "¿Cómo jugar?",
 
   "education_level": "Nivel educativo",
   "education_level:infant": "Infantil",
@@ -81,6 +86,8 @@
   "name": "Nombre",
   "title": "Título",
   "copy": "Copiar",
+  "copy:clipboard": "Copiar al portapapeles",
+  "copy:clipboard:copied": "Copiado",
   "rename": "Renombrar",
   "select:all": "Seleccionar todos",
   "loading": "Cargando",

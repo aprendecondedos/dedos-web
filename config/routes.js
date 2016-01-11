@@ -11,7 +11,7 @@ var auth = require('../config/middlewares/authorization');
  */
 var classroomAuth = [auth.requiresLogin, auth.classroom.hasAuthorization];
 
-module.exports = function (app, passport, io) {
+module.exports = function(app, passport, io) {
   //var project = require('../app/controllers/project')(io);
 
   app.get('/', auth.requiresLogin, project.new);
@@ -21,17 +21,17 @@ module.exports = function (app, passport, io) {
   app.post('/signup', user.new);
   app.get('/login', user.login);
   app.post('/login',
-      passport.authenticate('local', {
-          failureRedirect: '/login',
-          failureFlash: 'Invalid email or password.'
-      }), user.session);
+    passport.authenticate('local', {
+        failureRedirect: '/login',
+        failureFlash: 'Invalid email or password.'
+    }), user.session);
   app.get('/logout', user.logout);
   // social login
   app.get('/auth/facebook',
-      passport.authenticate('facebook', {
-          scope: [ 'email', 'user_about_me'],
-          failureRedirect: '/login'
-      }), user.signin);
+    passport.authenticate('facebook', {
+      scope: [ 'email', 'user_about_me'],
+      failureRedirect: '/login'
+    }), user.signin);
   app.get('/auth/facebook/callback',
       passport.authenticate('facebook', {
           failureRedirect: '/login'
@@ -106,6 +106,7 @@ module.exports = function (app, passport, io) {
   app.post('/project/new', auth.requiresLogin, project.new);
   app.get('/project/:projectId', auth.requiresLogin, project.show);
   app.delete('/project/:projectId', auth.requiresLogin, project.destroy);
+  app.get('/project/:projectId/copy', auth.requiresLogin, project.copy);
   app.get('/project/:projectId/admin', auth.requiresLogin, project.admin);
   //app.get('/project/:id/admin', lib.upload([{name: 'file_zip'}]), lib.test(), project.admin);
 
@@ -121,6 +122,8 @@ module.exports = function (app, passport, io) {
   app.get('/play/:playId',[], play.index);
   app.post('/play/:playId/player', play.player);
   app.get('/play/:playId/activity/:activityId', auth.requiresPlayerLogin, play.activity.show);
+
+  //app.get( "/strings/:lang?", i18n.stringsRoute( "en-US" ) );
 
   //// Play routes
   //app.get('/play/:id', play.show);

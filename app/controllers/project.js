@@ -20,7 +20,7 @@ var Token = mongoose.model('Token');
 
 exports.load = wrap(function*(req, res, next, id) {
   req.project = yield Project.load(id);
-  if (!req.project) return next(new Error('not found'));
+  if (!req.project) { return next(new Error('not found')); }
   next();
 });
 
@@ -74,13 +74,14 @@ exports.new = wrap(function*(req, res){
         name: project_prop.name,
         project: project_id,
         screenshots: screenshots_array,
-        path: '/uploads/'+project_id+'/'+xml.split('/')[0]
+        path: '/uploads/' + project_id + '/' + xml.split('/')[0],
+        createdBy: req.user.id
       });
       var players =  project_prop.players;
       // Añadiendo los jugadores
-      if(players) {
+      if (players) {
         var users = [];
-        for(player in players){
+        for (player in players) {
           users.push(players[player]);
         }
         project.setPlayers(users);
@@ -96,7 +97,7 @@ exports.new = wrap(function*(req, res){
 
         var activities = [];
         XML.Project.Activity.forEach(function(activity_data){
-          if(typeof activity_data != 'object') return;
+          if (typeof activity_data != 'object') { return; }
 
           // Set activities
           var activity = new Activity({project: project.id});
@@ -186,9 +187,9 @@ exports.new = wrap(function*(req, res){
           activity.save();
           activities.push(activity);
         });
+
         project.setActivities(activities);
         project.save();
-
         // Redireccionar al proyecto
         res.redirect('/project/' + project._id);
       });
@@ -207,62 +208,64 @@ exports.new = wrap(function*(req, res){
  * Show
  */
 
-exports.show = function (req, res){
+exports.show = function(req, res) {
+  const project = req.project;
 
-    var activities = req.project.activities;
-    //activities.forEach(function(act) {
-    //    //var p = Activity.load(act._id);
-    //    Activity.load(act._id, function (err, activity) {
-    //        console.log(activity.elements);
-    //    });
-    //
-    //});
+  // Socket
+  var socketio = req.app.get('socket.io');
+  socketio.on('connection', function(socket){
+    //console.log(io.sockets.manager.roomClients[socket.id]);
+    //socket.join('admin/'+req.project.id);
+  });
+  //var socketio = req.app.get('socket.io');
+  //socketio.of('/admin-'+req.project.id);
 
-    // Socket
-    var socketio = req.app.get('socket.io');
-    socketio.on('connection', function(socket){
-      //console.log(io.sockets.manager.roomClients[socket.id]);
-      //socket.join('admin/'+req.project.id);
-    });
-    //var socketio = req.app.get('socket.io');
-    //socketio.of('/admin-'+req.project.id);
-
-    //socketio.emit('testing', {'ejeje': 'pep'});
-
-    res.render('project/show', {
-        title: req.project.name,
-        project: req.project,
-        activities: activities
-    });
+  res.render('project/show', {
+    title: project.name,
+    project: project,
+    activities: project.activities
+  });
 };
 
-exports.my = wrap(function* (req, res){
+/**
+ * Mostrar listado de proyectos creado por el usuario
+ */
+exports.my = wrap(function*(req, res) {
   var options = {
     criteria: {
-
+      createdBy: req.user.id
     }
   };
-  var projects = yield Project.list(options);
+  const projects = yield Project.list(options);
+
   res.render('project/index', {
     title: gettext('projects:my'),
     projects: projects
   });
 });
 
-exports.admin = function(){
+exports.admin = function() {
 
 };
 
 /**
- * Eliminar un proyecto
+ * Eliminar proyecto
  */
-
 exports.destroy = wrap(function*(req, res) {
-  //const activities = req.project.activities;
-  //activities.forEach(function(activity) {
-  //  activity.remove();
-  //});
   yield req.project.remove();
   req.flash('success', 'Deleted successfully');
+  res.redirect('/projects/my');
+});
+
+/**
+ * Copiar/Clonar proyecto
+ */
+// @TODO implementar metodos para clonar todas las referencias incluidas
+exports.copy = wrap(function*(req, res) {
+  //yield Project.clone().save();
+  var project = req.project;
+  project._id = mongoose.Types.ObjectId();
+  project.isNew = true;
+  yield project.save();
   res.redirect('/projects/my');
 });

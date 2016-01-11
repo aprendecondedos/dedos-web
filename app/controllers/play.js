@@ -14,35 +14,36 @@ exports.load = wrap(function*(req, res, next, id) {
     }
   };
   req.project = yield Project.load(options);
-
+  if (req.session.player) {
+    var player_session = {};
+    player_session = req.session.player.filter(function(player) {
+      return player.project == req.project.id ? player : '';
+    });
+    player_session = player_session.pop();
+    req.player = player_session;
+  }
   if (!req.project) { return next(new Error('Not found')); }
 
   next();
 });
 
 exports.index = function(req, res) {
-  var player_session = {};
-  if (req.session.player) {
-    player_session = req.session.player.filter(function(player) {
-      return player.project == req.project.id ? player : '';
-    });
-    player_session = player_session.pop();
-  }
   var view = 'play/index';
-  if (lib.isEmptyObject(player_session)) {
+  if (lib.isEmptyObject(req.player)) {
     // @TODO
     //view = 'play/select_player';
   }
   res.render(view, {
     title: gettext('play'),
     project: req.project,
-    player: player_session
+    player: req.player
   });
 };
 
 exports.new = function() {
 
 };
+
 exports.activity = {
   load: wrap(function*(req, res, next, id) {
     var options = {
@@ -51,8 +52,8 @@ exports.activity = {
         project: req.project.id
       }
     };
-
     req.activity = yield Activity.load(options);
+
     var area_options = {
       criteria: {
         '_id': {$in: req.activity.elements},
@@ -68,17 +69,27 @@ exports.activity = {
   }),
 
   show: wrap(function*(req, res) {
-
-    var areas = req.activity.elements.area;
+    const project = req.project;
+    const activity = req.activity;
 
     // Socket emit
     //req.socket.emit('player:connected', { name: 'testing' });
+    //status: {type: Number, default: 0}, // types: {0: Sin empezar, x: Numero de la actividad, -1: Terminado}
+    //project.status = 3;
+    //yield project.save();
+    //yield Project.update({_id: req.project.id, 'players.user': req.body.player_id}, {$set: {'players.$.online': true}});
+    //@TODO comprobar si el usuario ha completado o no el proyecto
+    project.setPlayerStatus(
+      req.player.user.id,
+      project.getActivityNum(activity.id)
+    );
+    project.save();
 
     res.render('play/show', {
       title: gettext('play'),
-      project: req.project,
-      activity: req.activity,
-      areas: areas
+      project: project,
+      activity: activity,
+      areas: activity.elements.area
     });
   })
 };
@@ -90,11 +101,10 @@ exports.player = wrap(function*(req, res) {
       case 'select':
         //yield Project.update({_id: req.project.id, 'players.user': req.body.player_id}, {$set: {'players.$.online': true}});
         var player = yield Player.load(req.body.player_id);
-
         var player_data = {
           project: req.project.id,
           user: {
-            id: player._id,
+            id: req.body.player_id,
             name: player.name,
             avatar: req.body.avatar
           }

@@ -86,7 +86,7 @@
           socket.emit(sockets.activity.join, {
             room: self.options.room,
             activity: activity_id,
-            num: activity_num,
+            status: activity_num,
             player: self.options.player
           });
         }

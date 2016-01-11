@@ -18,6 +18,7 @@ var ProjectSchema = mongoose.Schema({
   players: [{
     avatar: String,
     user: {type: Schema.Types.ObjectId, ref: 'User'},
+    status: {type: Number, default: 0}, // types: {0: Sin empezar, x: Numero de la actividad, -1: Terminado}
     online: {type: Boolean, default: false}
   }],
   activities: [{type: Schema.Types.ObjectId, ref: 'Activity'}],
@@ -33,6 +34,10 @@ var ProjectSchema = mongoose.Schema({
 /**
  * Hooks
  */
+ProjectSchema.pre('save', function(next) {
+  next();
+});
+
 ProjectSchema.pre('remove', function(next) {
   const activities = this.activities;
   if (activities.length > 0) {
@@ -100,6 +105,22 @@ ProjectSchema.methods = {
       self.addPlayer(user);
     });
     return this;
+  },
+  setPlayerStatus: function(player_id, status) {
+    this.players.forEach(function(player) {
+      if (player.user.id == player_id) {
+        player.status = status;
+      }
+    });
+    return this;
+  },
+  getActivityNum: function(activity_id) {
+    for (var i = 0; i < this.activities.length; i++) {
+      if (this.activities[i].id === activity_id) {
+        return i + 1;
+      }
+    };
+    return false;
   },
   getSubjects: function() {
     var subjects = [

@@ -15,12 +15,11 @@
                 <figcaption class="overlay-panel overlay-background overlay-fade text-center vertical-align">
                     <div class="btn-group">
                         <div class="dropdown pull-left">
-                            <button type="button" class="btn btn-icon btn-pure btn-default dropdown-toggle" title="Setting">
+                            <button type="button" data-toggle="dropdown" class="btn btn-icon btn-pure btn-default dropdown-toggle" title="Setting">
                                 <i class="icon wb-settings" aria-hidden="true"></i>
                             </button>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="">{{gettext('copy')}}</a></li>
-                                <li><a href="">{{gettext('rename')}}</a></li>
+                                <li><a href="/project/{{project.id}}/copy">{{gettext('copy')}}</a></li>
                             </ul>
                         </div>
                         <button type="button" data-target="#delete_{{project.id}}" class="btn btn-icon btn-pure btn-default warning-confirm" title="{{gettext('delete')}}"
@@ -32,7 +31,7 @@
                             >
                             <i class="icon wb-trash" aria-hidden="true"></i>
                         </button>
-                        <form id="delete_{{project.id}}" role="form" method="post" action="{{ '/project/' + project._id }}" class="hide">
+                        <form id="delete_{{project.id}}" role="form" method="post" action="/project/{{project.id}}" class="hide">
                             <input type="hidden" name="_csrf" value="{{ csrf_token }}">
                             <input type="hidden" name="_method" value="DELETE">
                             <button type="submit">delete</button>

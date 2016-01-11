@@ -1,0 +1,7 @@
+{% if player.status == 0 %}
+    <span class="label label-default">Sin empezar</span>
+{% elseif player.status == -1 %}
+    <span class="label label-success">Terminado</span>
+{% else %}
+    <span class="label label-warning"><i class="wb-eye"></i> {{gettext('activity')}} {{player.status}}</span>
+{% endif %}
