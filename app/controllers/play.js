@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
 var Activity = mongoose.model('Activity');
 var Area = mongoose.model('Area');
+var Token = mongoose.model('Token');
 var Player = mongoose.model('Player');
 
 exports.load = wrap(function*(req, res, next, id) {
@@ -91,6 +92,20 @@ exports.activity = {
       activity: activity,
       areas: activity.elements.area
     });
+  }),
+  check: wrap(function*(req, res) {
+    var activity = req.activity;
+    var result = false;
+    activity.objectives.forEach(function(objective) {
+      console.log(objective);
+      if (req.body.element_id === objective.obj) {
+        result = true;
+      }
+    });
+    res.send(result);
+    //var token = yield Token.load(req.body.token_id);
+    //console.log(activity);
+    //res.send(token.isCorrect());
   })
 };
 
@@ -118,7 +133,3 @@ exports.player = wrap(function*(req, res) {
     //res.sendStatus(200);
   }
 });
-
-exports.admin = function() {
-
-};

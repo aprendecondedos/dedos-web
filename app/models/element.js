@@ -36,12 +36,21 @@ ElementSchema.methods = {
 
 ElementSchema.statics = {
   /**
+   * Buscar elemento por id
+   * @param options
+   * @returns {Promise}
+   */
+  load: function(options) {
+    const criteria = options.criteria || {_id: options};
+    return this.findOne(criteria)
+      .exec();
+  },
+  /**
    * Listar elmentos y filtrarlos
    *
    * @param {Object} options
-   * @api private
+   * @returns {Promise}
    */
-
   list: function(options) {
     const criteria = options.criteria || {};
     const page = options.page || 0;

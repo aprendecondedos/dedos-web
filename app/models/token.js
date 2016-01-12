@@ -38,6 +38,16 @@ TokenSchema.methods = {
     if (this.type != 'txt')  return false;
     this.text = text;
     return this;
+  },
+  /**
+   * Comprobación si el token dado es correcto o no
+   *
+   * @returns {boolean}
+   */
+  isCorrect: function() {
+    //console.log(this.model('Objective'));
+    this.element_id;
+    return true;
   }
 };
 var Token = Element.discriminator('Token', TokenSchema);

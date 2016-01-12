@@ -77,7 +77,7 @@ module.exports = function(app, passport, io) {
       }), user.authCallback);
 
   app.param('userId', user.load);
-//{% include pets.html with pets only %}
+
   app.get('/user/settings',auth.requiresLogin, user.edit);
   app.post('/user/settings',auth.requiresLogin, user.edit);
 
@@ -107,11 +107,9 @@ module.exports = function(app, passport, io) {
   app.get('/project/:projectId', auth.requiresLogin, project.show);
   app.delete('/project/:projectId', auth.requiresLogin, project.destroy);
   app.get('/project/:projectId/copy', auth.requiresLogin, project.copy);
-  app.get('/project/:projectId/admin', auth.requiresLogin, project.admin);
-  //app.get('/project/:id/admin', lib.upload([{name: 'file_zip'}]), lib.test(), project.admin);
 
   // Other routes
-  app.get('/faq',auth.requiresLogin, function(req, res) {
+  app.get('/faq', auth.requiresLogin, function(req, res) {
     console.log('test');
   });
 
@@ -122,6 +120,7 @@ module.exports = function(app, passport, io) {
   app.get('/play/:playId',[], play.index);
   app.post('/play/:playId/player', play.player);
   app.get('/play/:playId/activity/:activityId', auth.requiresPlayerLogin, play.activity.show);
+  app.post('/play/:playId/activity/:activityId/check', auth.requiresPlayerLogin, play.activity.check);
 
   //app.get( "/strings/:lang?", i18n.stringsRoute( "en-US" ) );
 

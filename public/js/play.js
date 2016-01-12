@@ -59,6 +59,11 @@
     var $select_player = $(this.options.modals.select_player);
     var self = this;
     /**
+     * Urls
+     * @type {string}
+     */
+    var url_play = '/play/' + self.options.id;
+    /**
      * Sockets
      */
     var sockets = {};
@@ -76,12 +81,13 @@
       //var url_data = $(this).attr('href');
       var activity_id = this.id;
       var activity_num = $(this).data('num');
-      var url_data = '/play/' + self.options.id + '/activity/' + activity_id;
+      var url_data = url_play + '/activity/' + activity_id;
       $.ajax({
         type: 'GET',
         url: url_data,
         success: function(html) {
           $container.html(html);
+          $container.attr('data-context', activity_id);
           // SOCKET emit
           socket.emit(sockets.activity.join, {
             room: self.options.room,
@@ -94,9 +100,23 @@
     });
 
     $(document).on('click', '.token-clickable', function(e) {
-      var element_id = $(this).attr('id');
+      var token_id = this.id;
+      var element_id = $(this).data('element');
+      var activity_id = $container.data('context');
+      $.ajax({
+        type: 'POST',
+        url: url_play + '/activity/' + activity_id + '/check',
+        data: {
+          token_id: token_id,
+          element_id: element_id
+        },
+        success: function(html) {
+          console.log(html);
+        }
+      });
       socket.emit('event:click:token', {id: element_id});
     });
+
     console.log(this.options);
   };
 }());

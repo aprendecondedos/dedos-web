@@ -38,13 +38,6 @@ var io = require('socket.io')(server);
 
 // Socket routes
 require('./config/socket')(io, app);
-//app.set('socket.io', io);
-
-//app.use(function (req, res, next) {
-//  req.socket_d = io;
-//  next();
-//});
-
 
 // Bootstrap routes
 require('./config/routes')(app, passport, io);
