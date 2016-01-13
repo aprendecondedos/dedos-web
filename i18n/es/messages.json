@@ -68,6 +68,7 @@
   "dashboard": "Inicio",
   "analytics": "Estadísticas",
   "settings": "Configuración",
+  "options": "Opciones",
 
   "error:404:title": "Página no encontrada",
   "error:404:description": "You seem to be trying to find his way home",

@@ -1,1 +1,30 @@
-{% extends 'form.html' %}
+{% extends "../layouts/default.html" %}
+
+{% block title %} {{ gettext("new:project") }} {% endblock %}
+{% block page-header %}
+{{ gettext("new:project") }}
+{% endblock %}
+{% block content %}
+
+<form data-validation="true" enctype="multipart/form-data" class="form-horizontal" action="/project/new" method="post" role="form">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-body container-fluid">
+                    {% include 'forms/general.html' %}
+                </div>
+            </div>
+        </div>
+        <!-- Classroom / students -->
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-body container-fluid">
+                    {% include "../player/admin/list.html" with players %}
+                </div>
+            </div>
+        </div>
+        <!-- Classroom / students end -->
+    </div>
+</form>
+{% endblock %}

@@ -4,6 +4,7 @@ var fs = require('fs');
 var xml2js = require('xml2js');
 var parser = new xml2js.Parser({async: true});
 var gettext = require('../../i18n/i18n').gettext;
+var extend = require('util')._extend;
 var wrap = require('co-express');
 
 var mongoose = require('mongoose');
@@ -228,6 +229,36 @@ exports.show = function(req, res) {
 };
 
 /**
+ *  Propiedades del proyecto
+ *
+ * @param {Object} req
+ * @param {Object} res
+ */
+exports.settings = function(req, res) {
+  const project = req.project;
+
+  res.render('project/settings', {
+    title: project.name,
+    project: project
+  });
+};
+
+/**
+ *  Propiedades del proyecto
+ *
+ * @param {Object} req
+ * @param {Object} res
+ */
+exports.edit = function(req, res) {
+  var project = req.project;
+  var project = extend(req.project, req.body);
+  project.save();
+
+  res.redirect('/project/' + project.id + '/settings');
+
+};
+
+/**
  * Mostrar listado de proyectos creado por el usuario
  */
 exports.my = wrap(function*(req, res) {
@@ -244,9 +275,6 @@ exports.my = wrap(function*(req, res) {
   });
 });
 
-exports.admin = function() {
-
-};
 
 /**
  * Eliminar proyecto

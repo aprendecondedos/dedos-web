@@ -40,6 +40,8 @@
     var defaults = {
       id: '',
       project: '',
+      width: '',
+      height: '',
       player: {
         id: '',
         name: ''
@@ -68,6 +70,42 @@
      */
     var sockets = {};
     /**
+     * Elements
+     * @type {{}}
+     */
+    var elements = this.elements = {};
+
+    elements.load = function() {
+      elementsAdjustSize();
+      console.log('CARGADO!');
+    };
+    /**
+     * Funciones privadas de elements
+     */
+    function elementsAdjustSize(){
+      var $elements = $container.find('.element');
+      var res = {
+        width: $container.find('.play-table').innerWidth(),
+        height: $container.find('.play-table').height()
+      };
+      var coefficient = {
+        x: (res.width * 1) / self.options.width,
+        y: (res.height * 1) / self.options.height
+      };
+      $elements.hide();
+      $elements.each(function() {
+        $(this).css({
+          'left': ($(this).data('position').x) * coefficient.x,
+          'top': ($(this).data('position').y) * coefficient.y,
+          'width': ($(this).data('size').width) * coefficient.x,
+          'height': ($(this).data('size').height) * coefficient.y
+        });
+        $(this).fadeIn('fast');
+      });
+    };
+    $(window).on('resize', elementsAdjustSize);
+
+    /**
      * Actividad
      */
 
@@ -86,8 +124,11 @@
         type: 'GET',
         url: url_data,
         success: function(html) {
+
           $container.html(html);
           $container.attr('data-context', activity_id);
+          // Renderizado de elementos/tokens
+          self.elements.load();
           // SOCKET emit
           socket.emit(sockets.activity.join, {
             room: self.options.room,
@@ -95,6 +136,7 @@
             status: activity_num,
             player: self.options.player
           });
+
         }
       });
     });

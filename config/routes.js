@@ -105,6 +105,8 @@ module.exports = function(app, passport, io) {
   app.get('/project/new',auth.requiresLogin, project.new);
   app.post('/project/new', auth.requiresLogin, project.new);
   app.get('/project/:projectId', auth.requiresLogin, project.show);
+  app.get('/project/:projectId/settings', auth.requiresLogin, project.settings);
+  app.post('/project/:projectId/settings', auth.requiresLogin, project.edit);
   app.delete('/project/:projectId', auth.requiresLogin, project.destroy);
   app.get('/project/:projectId/copy', auth.requiresLogin, project.copy);
 

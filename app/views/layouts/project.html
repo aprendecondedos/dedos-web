@@ -1,0 +1,45 @@
+{% extends 'default.html' %}
+
+{% block content %}
+{% set projectUrl = '/project/' + project.id; %}
+<ul class="nav-quick nav-quick-sm row">
+    <li class="col-sm-2 col-xs-4">
+        <a href="{{projectUrl}}">
+            <i class="icon wb-layout" aria-hidden="true"></i> {{gettext('dashboard')}}
+        </a>
+    </li>
+    <li class="col-sm-2 col-xs-4">
+        <a href="javascript:void(0)">
+            <i class="icon wb-pie-chart" aria-hidden="true"></i> {{gettext('analytics')}}
+        </a>
+    </li>
+    <li class="col-sm-2 col-xs-4">
+        <a href="javascript:void(0)">
+            <i class="icon wb-users" aria-hidden="true"></i> {{gettext('students')}}
+        </a>
+    </li>
+    <li class="col-sm-2 col-xs-4">
+        <a href="{{projectUrl}}/settings">
+            <i class="icon wb-settings" aria-hidden="true"></i> {{gettext('settings')}}
+        </a>
+    </li>
+    <li class="col-sm-4 col-xs-4 text-right margin-top-30">
+        <div>
+            <span class="label label-lg label-default margin-right-20" style="position: relative;">{{project.project}}</span>
+        </div>
+        <!--<a class="btn btn-primary btn-outline margin-right-20 inline-block" style="padding: 6px 15px;" href="/play/{{project.project}}">Jugar {{project.project}}</a>-->
+    </li>
+    <li class="col-sm-2 col-xs-4" style="display: none;">
+        <a href="javascript:void(0)">
+            <i class="icon wb-lock" aria-hidden="true"></i> Lock
+        </a>
+    </li>
+    <li class="col-sm-2 col-xs-4" style="display: none;">
+        <a href="javascript:void(0)">
+            <i class="icon wb-search" aria-hidden="true"></i> Search
+        </a>
+    </li>
+</ul>
+{% block project %}{% endblock %}
+
+{% endblock %}

@@ -4,17 +4,14 @@
         Play({
             id: '{{project.project}}',
             project: '{{project.id}}',
+            width: {{project.resolution.x}},
+            height: {{project.resolution.y}},
             room: '{{project.id}}',
             player: {
                 id: '{{player.user.id}}',
                 name: '{{player.user.name}}'
             }
         });
-//        $.play({
-//            modals: {
-//                select_player: '#modal-select-player'
-//            }
-//        });
         <!-- -->
 
         var $user = '';
@@ -72,8 +69,8 @@
     });
 </script>
 <script>
-    $(document).ajaxSuccess(loadElements);
-    $(window).on('resize', loadElements);
+//    $(document).ajaxSuccess(loadElements);
+//    $(window).on('resize', loadElements);
 
     function loadElements(){
         var win = $(this),

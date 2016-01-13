@@ -25,7 +25,8 @@ var ProjectSchema = mongoose.Schema({
   classroom: {type: Schema.Types.ObjectId, ref: 'Classroom'},
   // Propiedades extra del proyectos
   properties: {
-    numPlayers: Number
+    required: {type: Boolean, default: false},
+    delayed: {type: Boolean, default: false}
   },
   createdDate: {type: Date, default: Date.now},
   createdBy: {type: Schema.Types.ObjectId, ref: 'User'}
