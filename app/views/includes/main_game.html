@@ -4,12 +4,15 @@
         Play({
             id: '{{project.project}}',
             project: '{{project.id}}',
-            width: {{project.resolution.x}},
-            height: {{project.resolution.y}},
+            width: '{{project.resolution.x}}',
+            height: '{{project.resolution.y}}',
             room: '{{project.id}}',
             player: {
                 id: '{{player.user.id}}',
                 name: '{{player.user.name}}'
+            },
+            properties: {
+                delayed: false//{{project.properties.delayed}}
             }
         });
         <!-- -->

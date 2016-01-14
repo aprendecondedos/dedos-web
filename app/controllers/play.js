@@ -8,6 +8,8 @@ var Area = mongoose.model('Area');
 var Token = mongoose.model('Token');
 var Player = mongoose.model('Player');
 
+
+
 exports.load = wrap(function*(req, res, next, id) {
   const options = {
     criteria: {
@@ -96,13 +98,29 @@ exports.activity = {
   check: wrap(function*(req, res) {
     var activity = req.activity;
     var result = false;
-    activity.objectives.forEach(function(objective) {
-      console.log(objective);
-      if (req.body.element_id === objective.obj) {
-        result = true;
+    var globalResult=true;
+    var arraySingleResults = [];
+    var singleResult = {
+      token_id: '',
+      result: '',
+    };
+    req.body.element_id.forEach(function(elementId) {
+      result=false;
+      activity.objectives.forEach(function (objective) {
+        console.log(objective);
+        if (elementId === objective.obj) {
+          result = true;
+        }
+      });
+      singleResult.token_id=req.body.token_id;
+      singleResult.result=result;
+      arraySingleResults.push(singleResult);
+      if(!result){
+        globalResult = false;
       }
     });
-    res.send(result);
+    res.send({result: globalResult, tokens: arraySingleResults});
+
     //var token = yield Token.load(req.body.token_id);
     //console.log(activity);
     //res.send(token.isCorrect());

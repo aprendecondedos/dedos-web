@@ -46,6 +46,9 @@
         id: '',
         name: ''
       },
+      properties: {
+        delayed: false
+      },
       room: '',
       container: '.play',
       modals: {
@@ -145,18 +148,29 @@
       var token_id = this.id;
       var element_id = $(this).data('element');
       var activity_id = $container.data('context');
-      $.ajax({
-        type: 'POST',
-        url: url_play + '/activity/' + activity_id + '/check',
-        data: {
-          token_id: token_id,
-          element_id: element_id
-        },
-        success: function(html) {
-          console.log(html);
-        }
-      });
-      socket.emit('event:click:token', {id: element_id});
+      console.log('Opciones' + self.options.properties.delayed);
+      if(!self.options.properties.delayed) {
+
+        $.ajax({
+          type: 'POST',
+          url: url_play + '/activity/' + activity_id + '/check',
+          data: {
+            token_id: token_id,
+            element_id: [element_id]
+          },
+          success: function (html) {
+            console.log(html);
+            html.tokens.forEach(function(token) {
+              if(token.result){
+                $("#"+token.token_id).css({"border-color":"green", "border-width":"15px"});
+              }else{
+                $("#"+token.token_id).css({"border-color":"red", "border-width":"15px"});
+              }
+            });
+          }
+        });
+        socket.emit('event:click:token', {id: element_id});
+      }
     });
 
     console.log(this.options);
