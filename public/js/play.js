@@ -143,6 +143,20 @@
         }
       });
     });
+// Función para comprobar respuestas en caso de demorada
+    $(document).on('click', '.checkBtn', function(e) {
+      var sendingTokens = {
+        token_id: [],
+        element_id: [],
+      };
+      $(".clicked").each(function(token){
+        console.log($(".clicked")[token].getAttribute("data-element"));
+        sendingTokens.token_id.push($(".clicked")[token].getAttribute("data-element"));
+        sendingTokens.element_id.push($(".clicked")[token].getAttribute("id"));
+
+      });
+      console.log(sendingTokens);
+    });
 
     $(document).on('click', '.token-clickable', function(e) {
       var token_id = this.id;
@@ -150,12 +164,12 @@
       var activity_id = $container.data('context');
       console.log('Opciones' + self.options.properties.delayed);
       if(!self.options.properties.delayed) {
-
+        socket.emit('event:click:token', {id: element_id});
         $.ajax({
           type: 'POST',
           url: url_play + '/activity/' + activity_id + '/check',
           data: {
-            token_id: token_id,
+            token_id: [token_id],
             element_id: [element_id]
           },
           success: function (html) {
@@ -169,10 +183,16 @@
             });
           }
         });
-        socket.emit('event:click:token', {id: element_id});
-      }
+
+      }else{
+        $("#"+token_id).addClass( $("#"+token_id).attr("class")+" clicked");
+        //console.log($("#"+token_id).attr("class"));
+        //console.log($(".clicked"));
+
+      };
     });
 
     console.log(this.options);
   };
+
 }());

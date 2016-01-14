@@ -97,6 +97,7 @@ exports.activity = {
   }),
   check: wrap(function*(req, res) {
     var activity = req.activity;
+    var counter = 0;
     var result = false;
     var globalResult=true;
     var arraySingleResults = [];
@@ -112,12 +113,13 @@ exports.activity = {
           result = true;
         }
       });
-      singleResult.token_id=req.body.token_id;
+      singleResult.token_id=req.body.token_id[counter];
       singleResult.result=result;
       arraySingleResults.push(singleResult);
       if(!result){
         globalResult = false;
       }
+      counter++;
     });
     res.send({result: globalResult, tokens: arraySingleResults});
 
