@@ -251,7 +251,12 @@ exports.settings = function(req, res) {
  */
 exports.edit = function(req, res) {
   var project = req.project;
-  var project = extend(req.project, req.body);
+  var prop = req.body.properties || {};
+  // Propiedades del proyecto seleccionadas
+  prop.required = prop.required || false;
+  prop.delayed = prop.delayed || false;
+  var properties = {properties: prop};
+  var project = extend(req.project, properties, req.body);
   project.save();
 
   res.redirect('/project/' + project.id + '/settings');
