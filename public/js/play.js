@@ -202,14 +202,19 @@
               } else {
                 $('#' + token.token_id).css({
                   'border-color': 'red',
-                  'border-width': '15px'});
+                  'border-width': '15px'
+                });
               }
             });
           }
         });
 
       }else {
-        $('#' + token_id).addClass($('#' + token_id).attr('class') + ' clicked');
+        $('#' + token_id).toggleClass($('#' + token_id).attr('class') + ' clicked');
+        $('#' + token_id).css({
+          'border-color': 'yellow',
+          'border-width': '15px'
+        });
         //console.log($("#"+token_id).attr("class"));
         console.log($('.clicked'));
 
