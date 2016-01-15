@@ -260,7 +260,6 @@ exports.edit = function(req, res) {
   project.save();
 
   res.redirect('/project/' + project.id + '/settings');
-
 };
 
 /**

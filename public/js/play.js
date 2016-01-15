@@ -47,7 +47,8 @@
         name: ''
       },
       properties: {
-        delayed: false
+        delayed: false,
+        required: false
       },
       room: '',
       container: '.play',
@@ -80,12 +81,11 @@
 
     elements.load = function() {
       elementsAdjustSize();
-      console.log('CARGADO!');
     };
     /**
      * Funciones privadas de elements
      */
-    function elementsAdjustSize(){
+    function elementsAdjustSize() {
       var $elements = $container.find('.element');
       var res = {
         width: $container.find('.play-table').innerWidth(),
@@ -119,15 +119,13 @@
     // Eventos
     $(document).on('click', '.select-activity', function(e) {
       e.preventDefault();
-      //var url_data = $(this).attr('href');
-      var activity_id = this.id;
+      var activity_id = $(this).data('activity');
       var activity_num = $(this).data('num');
       var url_data = url_play + '/activity/' + activity_id;
       $.ajax({
         type: 'GET',
         url: url_data,
         success: function(html) {
-
           $container.html(html);
           $container.attr('data-context', activity_id);
           // Renderizado de elementos/tokens
@@ -144,80 +142,54 @@
       });
     });
     // Función para comprobar respuestas en caso de demorada
-    $(document).on('click', '.checkBtn', function(e) {
-      var sendingTokens = {
-        token_id: [],
-        element_id: []
-      };
-      $('.clicked').each(function(token){
-        sendingTokens.token_id.push($(this).data('element'));
-        sendingTokens.element_id.push($(this).attr('id'));
+    $(document).on('click', '#check-activity', function(e) {
+      var activity_id = $(this).data('activity');
+      var url_data = url_play + '/activity/' + activity_id + '/check';
+      var tokens = [];
+      $container.find('.clicked').each(function() {
+        tokens.push({
+          token_id: $(this).attr('id'),
+          element_id: $(this).data('element')
+        });
       });
       $.ajax({
         type: 'POST',
-        url: url_play + '/activity/' + activity_id + '/check',
-        data: sendingTokens,
-        success: function (html) {
-          console.log(html);
-          html.tokens.forEach(function(token) {
-            if (token.result) {
-              $('#' + token.token_id).css({
-                'border-color': 'green',
-                'border-width': '15px'
-              });
-            }else{
-              $('#' + token.token_id).css({
-                'border-color': 'red',
-                'border-width': '15px'
-              });
-            }
+        dataType: 'json',
+        url: url_data,
+        data: {tokens: tokens},
+        success: function(data) {
+          $.each(data.tokens, function(i, token) {
+            $('#' + token.id).addClass(function() {
+              if (token.valid) { return 'correct checked'; } else { return 'wrong checked'; }
+            });
           });
         }
       });
-      console.log(sendingTokens);
     });
 
     $(document).on('click', '.token-clickable', function(e) {
       var token_id = this.id;
       var element_id = $(this).data('element');
       var activity_id = $container.data('context');
-      console.log('Opciones' + self.options.properties.delayed);
-      if(!self.options.properties.delayed) {
+
+      if (self.options.properties.delayed) {
+        $('#' + token_id).toggleClass('clicked');
+      } else {
         socket.emit('event:click:token', {id: element_id});
         $.ajax({
           type: 'POST',
+          dataType: 'json',
           url: url_play + '/activity/' + activity_id + '/check',
           data: {
-            token_id: [token_id],
-            element_id: [element_id]
+            tokens: [{token_id: token_id, element_id: element_id}]
           },
-          success: function (html) {
-            console.log(html);
-            html.tokens.forEach(function(token) {
-              if (token.result) {
-                $('#' + token.token_id).css({
-                  'border-color': 'green',
-                  'border-width': '15px'
-                });
-              } else {
-                $('#' + token.token_id).css({
-                  'border-color': 'red',
-                  'border-width': '15px'
-                });
-              }
+          success: function(data) {
+            var token = data.tokens[0];
+            $('#' + token.id).addClass(function() {
+              if (token.valid) { return 'correct checked'; } else { return 'wrong checked'; }
             });
           }
         });
-
-      }else {
-        $('#' + token_id).toggleClass($('#' + token_id).attr('class') + ' clicked');
-        $('#' + token_id).css({
-          'border-color': 'yellow',
-          'border-width': '15px'
-        });
-        //console.log($("#"+token_id).attr("class"));
-        console.log($('.clicked'));
-
       };
     });
 

@@ -16,7 +16,7 @@
         {{project.name}}
         <div>
             {% for activity in project.activities %}
-            <a id="{{activity.id}}" data-num="{{loop.index}}" class="select-activity margin-right-20 margin-bottom-15 btn btn-sm btn-primary {% if req.activity.id == activity.id %}btn-info{% endif %}" href="/play/{{project.project}}/activity/{{activity.id}}">
+            <a data-activity="{{activity.id}}" data-num="{{loop.index}}" class="select-activity margin-right-20 margin-bottom-15 btn btn-sm btn-primary {% if req.activity.id == activity.id %}btn-info{% endif %}" href="/play/{{project.project}}/activity/{{activity.id}}">
                 Actividad {{loop.index}}
             </a>
             {% endfor %}

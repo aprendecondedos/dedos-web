@@ -96,36 +96,34 @@ exports.activity = {
     });
   }),
   check: wrap(function*(req, res) {
-    var activity = req.activity;
-    var counter = 0;
-    var result = false;
-    var globalResult=true;
-    var arraySingleResults = [];
-    var singleResult = {
-      token_id: '',
-      result: '',
-    };
-    req.body.element_id.forEach(function(elementId) {
-      result = false;
-      activity.objectives.forEach(function (objective) {
-        console.log(objective);
-        if (elementId === objective.obj) {
-          result = true;
-        }
-      });
-      singleResult.token_id = req.body.token_id[counter];
-      singleResult.result = result;
-      arraySingleResults.push(singleResult);
-      if (!result) {
-        globalResult = false;
-      }
-      counter++;
+    const tokens = req.body.tokens;
+    const activity = req.activity;
+    var targets = [];
+    var tokens_result = [];
+    var activity_result = true;
+    activity.objectives.forEach(function(objective) {
+      targets.push(objective.obj);
     });
-    res.send({result: globalResult, tokens: arraySingleResults});
+    tokens.forEach(function(token) {
+      var result = false;
+      if (targets.indexOf(token.element_id) != -1) {
+        result = true;
+      } else {
+        activity_result = false;
+      }
+      tokens_result.push({
+        id: token.token_id,
+        valid: result
+      });
+    });
 
-    //var token = yield Token.load(req.body.token_id);
-    //console.log(activity);
-    //res.send(token.isCorrect());
+    res.send({
+      tokens: tokens_result,
+      activity: {
+        id: activity.id,
+        valid: activity_result
+      }
+    });
   })
 };
 

@@ -1,3 +1,4 @@
+<link href='https://fonts.googleapis.com/css?family=McLaren' rel='stylesheet' type='text/css'>
 <div class="game" style="position: relative;">
     {% for area in areas %}
     <div class="element area" data-position="{{ area.position|json_encode }}" data-size="{{ area.size|json_encode }}">
@@ -8,14 +9,78 @@
              data-position="{{ token.position|json_encode }}"
              data-size="{{ token.size|json_encode }}"
                 >
+            <div class="check">
+                <div>
+                    <div>
+                        <i class="wb-close icon-wrong font-size-40" style="background-color: rgba(249, 104, 104, 0.65);display: none;"></i>
+                        <i class="wb-check icon-correct font-size-40" style="background-color: rgba(70, 190, 138, 0.65);display: none;"></i>
+                    </div>
+                </div>
+            </div>
             <span class="badge badge-primary badge-radius" style="display:none;position: absolute;right: 10px;bottom: 10px;box-shadow: 0 2px 0 0 #3E7CB5;"></span>
             {% if token.type == 'txt' %}
-            {% include 'tokens/txt.html' %}
+                {% include 'tokens/txt.html' %}
             {% elseif token.type == 'img' %}
-            {% include 'tokens/img.html' %}
+                {% include 'tokens/img.html' %}
             {% endif %}
         </div>
         {% endfor %}
     </div>
     {% endfor %}
 </div>
+<style>
+    .game .clicked{
+        border: 3px solid #3583CA;
+    }
+    .game .wrong {
+        border: 3px solid #f96868;
+    }
+    .game .wrong .icon-wrong{
+        display: inline-block !important;
+    }
+    .game .correct {
+        border: 3px solid #46be8a;
+    }
+    .game .correct .icon-correct{
+        display: inline-block !important;
+    }
+    .game .checked .check {
+        display: block;
+    }
+    .game .check {
+        display: none;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: rgba(255, 255, 255, 0.4);
+    }
+    .game .check > div {
+        display: table;
+        width: 100%;
+        height: 100%;
+    }
+    .game .check > div > div {
+        display: table-cell;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .game .check > div > div i{
+        color: #ffffff;
+        border-radius: 100%;
+        height: 60px;
+        width: 60px;
+        line-height: 61px;
+    }
+</style>
+{% if project.properties.delayed %}
+<!-- Delayed property true -->
+<div style="position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 20px;">
+    <button id="check-activity" data-activity="{{activity.id}}"  class="btn btn-primary btn-floating"><i class="wb-check"></i></button>
+</div>
+<!-- Delayed property true -->
+{% endif %}
