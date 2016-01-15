@@ -105,7 +105,7 @@
         });
         $(this).fadeIn('fast');
       });
-    };
+    }
     $(window).on('resize', elementsAdjustSize);
 
     /**
@@ -143,17 +143,36 @@
         }
       });
     });
-// Función para comprobar respuestas en caso de demorada
+    // Función para comprobar respuestas en caso de demorada
     $(document).on('click', '.checkBtn', function(e) {
       var sendingTokens = {
         token_id: [],
-        element_id: [],
+        element_id: []
       };
-      $(".clicked").each(function(token){
-        console.log($(".clicked")[token].getAttribute("data-element"));
-        sendingTokens.token_id.push($(".clicked")[token].getAttribute("data-element"));
-        sendingTokens.element_id.push($(".clicked")[token].getAttribute("id"));
-
+      $('.clicked').each(function(token){
+        sendingTokens.token_id.push($(this).data('element'));
+        sendingTokens.element_id.push($(this).attr('id'));
+      });
+      $.ajax({
+        type: 'POST',
+        url: url_play + '/activity/' + activity_id + '/check',
+        data: sendingTokens,
+        success: function (html) {
+          console.log(html);
+          html.tokens.forEach(function(token) {
+            if (token.result) {
+              $('#' + token.token_id).css({
+                'border-color': 'green',
+                'border-width': '15px'
+              });
+            }else{
+              $('#' + token.token_id).css({
+                'border-color': 'red',
+                'border-width': '15px'
+              });
+            }
+          });
+        }
       });
       console.log(sendingTokens);
     });
@@ -175,19 +194,24 @@
           success: function (html) {
             console.log(html);
             html.tokens.forEach(function(token) {
-              if(token.result){
-                $("#"+token.token_id).css({"border-color":"green", "border-width":"15px"});
-              }else{
-                $("#"+token.token_id).css({"border-color":"red", "border-width":"15px"});
+              if (token.result) {
+                $('#' + token.token_id).css({
+                  'border-color': 'green',
+                  'border-width': '15px'
+                });
+              } else {
+                $('#' + token.token_id).css({
+                  'border-color': 'red',
+                  'border-width': '15px'});
               }
             });
           }
         });
 
-      }else{
-        $("#"+token_id).addClass( $("#"+token_id).attr("class")+" clicked");
+      }else {
+        $('#' + token_id).addClass($('#' + token_id).attr('class') + ' clicked');
         //console.log($("#"+token_id).attr("class"));
-        //console.log($(".clicked"));
+        console.log($('.clicked'));
 
       };
     });

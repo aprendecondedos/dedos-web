@@ -106,17 +106,17 @@ exports.activity = {
       result: '',
     };
     req.body.element_id.forEach(function(elementId) {
-      result=false;
+      result = false;
       activity.objectives.forEach(function (objective) {
         console.log(objective);
         if (elementId === objective.obj) {
           result = true;
         }
       });
-      singleResult.token_id=req.body.token_id[counter];
-      singleResult.result=result;
+      singleResult.token_id = req.body.token_id[counter];
+      singleResult.result = result;
       arraySingleResults.push(singleResult);
-      if(!result){
+      if (!result) {
         globalResult = false;
       }
       counter++;
