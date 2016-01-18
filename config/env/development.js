@@ -1,8 +1,7 @@
-
 /*!
  * Module dependencies.
  */
-
+var mandrillTransport = require('nodemailer-mandrill-transport');
 var fs = require('fs');
 var env = {};
 var envFile = require('path').join(__dirname, 'env.json');
@@ -12,11 +11,11 @@ var envFile = require('path').join(__dirname, 'env.json');
 // it is not safe to store id's in files
 
 if (fs.existsSync(envFile)) {
-    env = fs.readFileSync(envFile, 'utf-8');
-    env = JSON.parse(env);
-    Object.keys(env).forEach(function (key) {
-        process.env[key] = env[key];
-    });
+  env = fs.readFileSync(envFile, 'utf-8');
+  env = JSON.parse(env);
+  Object.keys(env).forEach(function(key) {
+    process.env[key] = env[key];
+  });
 }
 
 /**
@@ -24,30 +23,55 @@ if (fs.existsSync(envFile)) {
  */
 
 module.exports = {
-    db: 'mongodb://'+process.env.DATABASE_SERVER + '/' + process.env.DATABASE_TABLE,
-    facebook: {
-        clientID: process.env.FACEBOOK_CLIENTID,
-        clientSecret: process.env.FACEBOOK_SECRET,
-        callbackURL: "http://localhost:3000/auth/facebook/callback"
+  db: 'mongodb://' + process.env.DATABASE_SERVER + '/' + process.env.DATABASE_TABLE,
+  mailer: {
+    from: 'info@aprendecondedos.es',
+    /**
+     * Ejemplo con datos de Gmail
+     */
+    transporter: {
+      service: 'Gmail',
+      auth: {
+        user: 'gmail.user@gmail.com',
+        pass: 'userpass'
+      }
     },
-    twitter: {
-        clientID: process.env.TWITTER_CLIENTID,
-        clientSecret: process.env.TWITTER_SECRET,
-        callbackURL: "http://localhost:3000/auth/twitter/callback"
-    },
-    github: {
-        clientID: process.env.GITHUB_CLIENTID,
-        clientSecret: process.env.GITHUB_SECRET,
-        callbackURL: 'http://localhost:3000/auth/github/callback'
-    },
-    linkedin: {
-        clientID: process.env.LINKEDIN_CLIENTID,
-        clientSecret: process.env.LINKEDIN_SECRET,
-        callbackURL: 'http://localhost:3000/auth/linkedin/callback'
-    },
-    google: {
-        clientID: process.env.GOOGLE_CLIENTID,
-        clientSecret: process.env.GOOGLE_SECRET,
-        callbackURL: "http://localhost:3000/auth/google/callback"
-    }
+    /**
+     * Servidor propio
+     */
+    transporter: null,
+    /**
+     * MandrillApp
+     */
+    transporter: mandrillTransport({
+      auth: {
+        apiKey: process.env.MAILER_MANDRILL_APIKEY
+      }
+    })
+  },
+  facebook: {
+    clientID: process.env.FACEBOOK_CLIENTID,
+    clientSecret: process.env.FACEBOOK_SECRET,
+    callbackURL: 'http://localhost:3000/auth/facebook/callback'
+  },
+  twitter: {
+    clientID: process.env.TWITTER_CLIENTID,
+    clientSecret: process.env.TWITTER_SECRET,
+    callbackURL: 'http://localhost:3000/auth/twitter/callback'
+  },
+  github: {
+    clientID: process.env.GITHUB_CLIENTID,
+    clientSecret: process.env.GITHUB_SECRET,
+    callbackURL: 'http://localhost:3000/auth/github/callback'
+  },
+  linkedin: {
+    clientID: process.env.LINKEDIN_CLIENTID,
+    clientSecret: process.env.LINKEDIN_SECRET,
+    callbackURL: 'http://localhost:3000/auth/linkedin/callback'
+  },
+  google: {
+    clientID: process.env.GOOGLE_CLIENTID,
+    clientSecret: process.env.GOOGLE_SECRET,
+    callbackURL: 'http://localhost:3000/auth/google/callback'
+  }
 };

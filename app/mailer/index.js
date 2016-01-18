@@ -37,34 +37,34 @@ module.exports = {
    * @api public
    */
   user: {
+    register: function(user, cb) {
+      var obj = {
+        to: user.email,
+        subject: gettext('mail:subject:user:register'),
+        html: renderTemplate('user/register', {
+          name: user.name
+        })
+      };
 
-      register:  function (user, cb) {
-        var obj = {
-          to: user.email,
-          subject: gettext('mail:subject:user:register'),
-          html: renderTemplate('user/register', {
-            name: user.name
-          })
-        };
-
-        return send(obj);
-      }
+      return send(obj);
+    }
   }
 };
-function renderTemplate(file, locals){
+
+function renderTemplate(file, locals) {
   var templatesDir = path.join(__dirname, '/templates/');
-  console.log(templatesDir+ file);
+  console.log(templatesDir + file);
   return swig.renderFile(templatesDir + file + '.html', locals);
 };
 
-function send(options){
+function send(options) {
   var transporter = nodemailer.createTransport(config.mailer.transporter);
   var defaults = {
     from: config.mailer.from
   };
   options = extend(defaults, options);
   transporter.sendMail(options, function(error, info){
-    if(error){
+    if (error) {
       return console.log(error);
     }
     console.log('Message sent: ' + info.response);
