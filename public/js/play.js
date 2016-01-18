@@ -85,12 +85,23 @@
           // @TODO
           $container.find('.token-movable').draggable({
             revert: true,
-            cursor: 'move'
+            cursor: 'move',
+            //opacity: 0.7,
+            helper: 'clone',
+            drag: function(event, ui) {
+              $(this).css('opacity', 0.3);
+            },
+            stop: function(event, ui) {
+              $(this).css('opacity', 1);
+            }
           });
-          $('.token-container').droppable({
-            drop: function( event, ui ) {
-              $( this )
+          $container.find('.token-target').droppable({
+            drop: function(event, ui) {
+              $(this).afster($(ui.draggable).clone());
+              $(this).addClass('checked correct');
+              $(this)
                 .addClass( "ui-state-highlight" );
+              ui.draggable.draggable('option', 'revert', false);
             }
           });
           // Se emite un socket incluyendo información relacionada con la actividad y jugador
