@@ -87,10 +87,17 @@
             revert: true,
             cursor: 'move'
           });
-          $('.token-container').droppable({
+          $('.token-droppable').droppable({
             drop: function( event, ui ) {
-              $( this )
-                .addClass( "ui-state-highlight" );
+              elements.tokens.checkPair({
+                token_id: ui.draggable.context.id,
+                element_id: $container.find(
+                    '#' + ui.draggable.context.id).data('element'),
+                targetId: event.target.id,
+                targetName: $container.find('#' + event.target.id)
+                    .data('element')
+              })
+              $(this).addClass('ui-state-highlight');
             }
           });
           // Se emite un socket incluyendo información relacionada con la actividad y jugador
@@ -116,6 +123,17 @@
           element_id: $(this).data('element')
         });
       });
+
+      $container.find('.dropped').each(function() {
+        tokens_array.push({
+          token_id: $(this).attr('id'),
+          element_id: $(this).data('element'),
+          targetId: $(this).data('droppedin'),
+          targetName: $container.find('#' + $(this).data('droppedin'))
+              .data('element')
+        });
+      });
+
       if (tokens_array.length == 0) {
         return false;
       }
@@ -165,6 +183,7 @@
             tokens: [{token_id: token.id, element_id: token.element}]
           },
           success: function(data) {
+            console.log(data);
             var token_data = data.tokens[0];
             $container.find('#' + token_data.id).addClass(function() {
               if (token_data.valid) { return 'correct checked'; } else { return 'wrong checked'; }
@@ -172,6 +191,26 @@
           }
         });
       };
+    };
+
+    tokens.checkPair = function(token) {
+      if (self.options.properties.delayed) {
+        $container.find('#' + token.id).addClass('dropped');
+        $container.find('#' + token.id).attr('data-droppedin',token.targetId);
+      } else {
+        $.ajax({
+          type: 'POST',
+          dataType: 'json',
+          url: activity.url + '/check',
+          data: {
+            tokens: [token]
+          },
+          success: function(data) {
+            console.log(data);
+            var token_data = data.tokens[0];
+          }
+        });
+      }
     };
     /**
      * Ajuste de la resolución en tamaño y posición de un elemento

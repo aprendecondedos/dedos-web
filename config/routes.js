@@ -22,58 +22,58 @@ module.exports = function(app, passport, io) {
   app.get('/login', user.login);
   app.post('/login',
     passport.authenticate('local', {
-        failureRedirect: '/login',
-        failureFlash: 'Invalid email or password.'
+      failureRedirect: '/login',
+      failureFlash: 'Invalid email or password.'
     }), user.session);
   app.get('/logout', user.logout);
   // social login
   app.get('/auth/facebook',
     passport.authenticate('facebook', {
-      scope: [ 'email', 'user_about_me'],
+      scope: ['email', 'user_about_me'],
       failureRedirect: '/login'
     }), user.signin);
   app.get('/auth/facebook/callback',
       passport.authenticate('facebook', {
-          failureRedirect: '/login'
+        failureRedirect: '/login'
       }), user.authCallback);
   app.get('/auth/github',
       passport.authenticate('github', {
-          failureRedirect: '/login'
+        failureRedirect: '/login'
       }), user.signin);
   app.get('/auth/github/callback',
       passport.authenticate('github', {
-          failureRedirect: '/login'
+        failureRedirect: '/login'
       }), user.authCallback);
   app.get('/auth/twitter',
       passport.authenticate('twitter', {
-          failureRedirect: '/login'
+        failureRedirect: '/login'
       }), user.signin);
   app.get('/auth/twitter/callback',
       passport.authenticate('twitter', {
-          failureRedirect: '/login'
+        failureRedirect: '/login'
       }), user.authCallback);
   app.get('/auth/google',
       passport.authenticate('google', {
-          failureRedirect: '/login',
-          scope: [
-              'https://www.googleapis.com/auth/userinfo.profile',
-              'https://www.googleapis.com/auth/userinfo.email'
-          ]
+        failureRedirect: '/login',
+        scope: [
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/userinfo.email'
+        ]
       }), user.signin);
   app.get('/auth/google/callback',
       passport.authenticate('google', {
-          failureRedirect: '/login'
+        failureRedirect: '/login'
       }), user.authCallback);
   app.get('/auth/linkedin',
       passport.authenticate('linkedin', {
-          failureRedirect: '/login',
-          scope: [
-              'r_emailaddress'
-          ]
+        failureRedirect: '/login',
+        scope: [
+            'r_emailaddress'
+        ]
       }), user.signin);
   app.get('/auth/linkedin/callback',
       passport.authenticate('linkedin', {
-          failureRedirect: '/login'
+        failureRedirect: '/login'
       }), user.authCallback);
 
   app.param('userId', user.load);
@@ -123,8 +123,7 @@ module.exports = function(app, passport, io) {
   app.post('/play/:playId/player', play.player);
   app.get('/play/:playId/activity/:activityId', auth.requiresPlayerLogin, play.activity.show);
   app.post('/play/:playId/activity/:activityId/check', auth.requiresPlayerLogin, play.activity.check);
-
-  //app.get( "/strings/:lang?", i18n.stringsRoute( "en-US" ) );
+    //app.get( "/strings/:lang?", i18n.stringsRoute( "en-US" ) );
 
   //// Play routes
   //app.get('/play/:id', play.show);

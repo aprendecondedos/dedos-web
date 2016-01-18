@@ -8,8 +8,6 @@ var Area = mongoose.model('Area');
 var Token = mongoose.model('Token');
 var Player = mongoose.model('Player');
 
-
-
 exports.load = wrap(function*(req, res, next, id) {
   const options = {
     criteria: {
@@ -117,21 +115,45 @@ exports.activity = {
   check: wrap(function*(req, res) {
     const tokens = req.body.tokens;
     const activity = req.activity;
+    var selection = false;
+    var pair = false;
+    var type = "tipo de objetivo";
     var targets = [];
     var tokens_result = [];
     var activity_result = true;
     activity.objectives.forEach(function(objective) {
-      targets.push(objective.obj);
+      if (objective.obj) {
+        targets.push(objective.obj);
+        selection = true;
+      } else if (objective.targets) {
+        targets.push({origen: objective.origen, targets: objective.targets});
+        pair = true;
+      };
     });
     tokens.forEach(function(token) {
       var result = false;
-      if (targets.indexOf(token.element_id) != -1) {
-        result = true;
-      } else {
+      if (selection) {
+        type = 'selection';
+        if (targets.indexOf(token.element_id) != -1) {
+          result = true;
+        }
+      } else if (pair) {
+        type = 'pair';
+        targets.forEach(function(target) {
+          if (token.element_id === target.origen) {
+            if (target.targets.indexOf(token.targetName) != -1) {
+              result = true;
+              console.log('EMPAREJAMIENTO_CORRECTO');
+            }
+          }
+        });
+      };
+      if (!result) {
         activity_result = false;
       }
       tokens_result.push({
         id: token.token_id,
+        type: type,
         valid: result
       });
     });
