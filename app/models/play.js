@@ -15,6 +15,8 @@ var PlaySchema = new Schema({
  * Hooks
  */
 PlaySchema.pre('save', function(next) {
+  this.updatedDate = Date.now();
+
   next();
 });
 /**

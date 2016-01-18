@@ -7,6 +7,7 @@ var Activity = mongoose.model('Activity');
 var Area = mongoose.model('Area');
 var Token = mongoose.model('Token');
 var Player = mongoose.model('Player');
+var Answer = mongoose.model('Answer');
 
 exports.load = wrap(function*(req, res, next, id) {
   const options = {
@@ -28,6 +29,9 @@ exports.load = wrap(function*(req, res, next, id) {
   next();
 });
 
+/**
+ * Inicio del juego
+ */
 exports.index = wrap(function*(req, res) {
   const project = req.project;
   var view = 'play/index';
@@ -36,6 +40,12 @@ exports.index = wrap(function*(req, res) {
     //view = 'play/select_player';
   }
   var activity = project.activities[0];
+  // @TODO
+  // obtener la última actividad donde se tenga respuestas
+  // o donde Answer tenga done = true
+
+  //var activity = player.getPrevActivity(activity.id);
+  //var activity = player.getNextActivity(activity.id);
   //var activity = player.getLastActivity(activity.id);
   const activity_data = {
     id: activity.id,
@@ -49,10 +59,11 @@ exports.index = wrap(function*(req, res) {
   });
 });
 
-exports.new = function() {
-
-};
-
+/**
+ * Funcionalidad sobre actividades
+ *
+ * @type {{load: *, show: *, check: *}}
+ */
 exports.activity = {
   load: wrap(function*(req, res, next, id) {
     var options = {
@@ -69,14 +80,15 @@ exports.activity = {
         '__t': 'Area'
       }
     };
-
     req.activity.elements.area = yield Area.list(area_options);
 
     if (!req.activity) {return next(new Error('Not found')); }
 
     next();
   }),
-
+  /**
+   * Mostrar la actividad dado una id
+   */
   show: wrap(function*(req, res) {
     const project = req.project;
     var activity = req.activity;
@@ -93,14 +105,13 @@ exports.activity = {
       activity.num
     );
     project.save();
-    // Target si el objetivo es de emparejamiento
+    // Target si los objetivos son de emparejamiento
     var targets = [];
     activity.objectives.forEach(function(objective) {
       if (objective.targets && objective.type == 'pair') {
         targets.push(objective.targets.join());
       }
     });
-    console.log(targets);
     res.render('play/show', {
       title: gettext('play'),
       project: project,
@@ -110,7 +121,8 @@ exports.activity = {
     });
   }),
   /**
-   *
+   * Comprobaciónes sobre información enviada
+   * relacionada con el usuario y el/los token/s
    */
   check: wrap(function*(req, res) {
     const tokens = req.body.tokens;
@@ -130,6 +142,25 @@ exports.activity = {
         pair = true;
       };
     });
+    // @TODO insertar respuestas en el modelo Answer
+    var answer = new Answer({
+      player: req.player.user.id,
+      activity: activity.id,
+      answered: true
+    });
+    var answer_options = {
+      criteria: {
+        player: req.player.user.id,
+        activity: activity._id
+      }
+    };
+    var answer = yield Answer.load(answer_options);
+    if (answer) {
+     // stuff
+    } else {
+      //answer.save();
+    }
+
     tokens.forEach(function(token) {
       var result = false;
       if (selection) {
@@ -168,10 +199,14 @@ exports.activity = {
   })
 };
 
+/**
+ * Jugador
+ */
 exports.player = wrap(function*(req, res) {
   // Solo se ejecuta por ajax
   if (req.xhr && req.body) {
     switch (req.body.type){
+      // Seleccion de jugador
       case 'select':
         //yield Project.update({_id: req.project.id, 'players.user': req.body.player_id}, {$set: {'players.$.online': true}});
         var player = yield Player.load(req.body.player_id);

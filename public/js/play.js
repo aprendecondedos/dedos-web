@@ -97,6 +97,13 @@
           });
           $('.token-droppable').droppable({
             drop: function(event, ui) {
+              //$container.find('.token-target').droppable({
+              //  drop: function(event, ui) {
+              //    $(this).afster($(ui.draggable).clone());
+              //    $(this).addClass('checked correct');
+              //    $(this)
+              //      .addClass( "ui-state-highlight" );
+              //    ui.draggable.draggable('option', 'revert', false);
               elements.tokens.check({
                 token_id: ui.draggable.context.id,
                 element_id: $container.find(
