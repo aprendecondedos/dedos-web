@@ -13,7 +13,7 @@ Dedos-web requiere las siguientes tecnologías para su instalación:
 * [xml2js](https://www.npmjs.com/package/xml2js)
 * [adm-zip](https://www.npmjs.com/package/adm-zip)
 * [mongoose](https://www.npmjs.com/package/mongoose)
-* [nunjucks](https://www.npmjs.com/package/nunjucks)
+* [swig](https://www.npmjs.com/package/swig)
 * [multer](https://www.npmjs.com/package/multer)
 
 ### Configuración
