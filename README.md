@@ -17,12 +17,25 @@ Dedos-web requiere las siguientes tecnologías para su instalación:
 * [multer](https://www.npmjs.com/package/multer)
 
 ### Configuración
-Editar [config/database.js](../master/config/database.js)
+Renombrar [config/env/env.example.json](../master/config/env/env.example.json) a ``` env.json ```
 
+Editar el archivo
 ```javascript
-module.exports = {
-    'url' : 'mongodb://IP:PORT/document'
-};
+{
+  "DATABASE_SERVER": "127.0.0.1:27017", // Servidor y puerto de MongoDB
+  "DATABASE_TABLE": "dedos", // Document de MongoDB
+  "MAILER_MANDRILL_APIKEY": "API_KEY", // API key de Mandrill para envio de correo
+  "FACEBOOK_CLIENTID": "ID",
+  "FACEBOOK_SECRET": "SECRET",
+  "TWITTER_CLIENTID": "ID",
+  "TWITTER_SECRET": "SECRET",
+  "GITHUB_CLIENTID": "ID",
+  "GITHUB_SECRET": "SECRET",
+  "LINKEDIN_CLIENTID": "ID",
+  "LINKEDIN_SECRET": "SECRET",
+  "GOOGLE_CLIENTID": "ID",
+  "GOOGLE_SECRET": "SECRET"
+}
 ```
 
 ### Instalación
