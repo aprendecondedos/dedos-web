@@ -84,7 +84,14 @@
           self.elements.load();
           // @TODO
           $container.find('.token-movable').draggable({
+            revert: true,
             cursor: 'move'
+          });
+          $('.token-container').droppable({
+            drop: function( event, ui ) {
+              $( this )
+                .addClass( "ui-state-highlight" );
+            }
           });
           // Se emite un socket incluyendo información relacionada con la actividad y jugador
           socket.emit(sockets.activity.join, {
@@ -219,5 +226,4 @@
     return this;
     console.log(this.options);
   };
-
 }());

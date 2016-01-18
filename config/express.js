@@ -70,7 +70,6 @@ module.exports = function(app, passport) {
   swig.setFilter('length', function(input, idx) {
     return input.length;
   });
-
   // expose package.json to views
   app.use(function(req, res, next) {
     res.locals.pkg = pkg;

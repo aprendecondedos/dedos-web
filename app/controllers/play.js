@@ -95,13 +95,25 @@ exports.activity = {
       activity.num
     );
     project.save();
+    // Target si el objetivo es de emparejamiento
+    var targets = [];
+    activity.objectives.forEach(function(objective) {
+      if (objective.targets && objective.type == 'pair') {
+        targets.push(objective.targets.join());
+      }
+    });
+    console.log(targets);
     res.render('play/show', {
       title: gettext('play'),
       project: project,
       activity: activity,
-      areas: activity.elements.area
+      areas: activity.elements.area,
+      targets: targets
     });
   }),
+  /**
+   *
+   */
   check: wrap(function*(req, res) {
     const tokens = req.body.tokens;
     const activity = req.activity;
