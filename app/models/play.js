@@ -4,7 +4,10 @@ var util = require('util');
 
 // Play model
 var PlaySchema = new Schema({
-  project: {type: Schema.Types.ObjectId, ref: 'Project'},
+  user: {type: Schema.Types.ObjectId, ref: 'User'},
+  createdDate: {type: Date, default: Date.now},
+  updatedDate: {type: Date, default: Date.now},
+
   objectives: [{type: Schema.Types.ObjectId, ref: 'Objective'}],
   elements: [{type: Schema.Types.ObjectId, ref: 'Element'}]
 });

@@ -30,18 +30,26 @@ exports.load = wrap(function*(req, res, next, id) {
   next();
 });
 
-exports.index = function(req, res) {
+exports.index = wrap(function*(req, res) {
+  const project = req.project;
   var view = 'play/index';
-  if (lib.isEmptyObject(req.player)) {
+  if (lib.isEmptyObject(req.player) || !req.player) {
     // @TODO
     //view = 'play/select_player';
   }
+  var activity = project.activities[0];
+  //var activity = player.getLastActivity(activity.id);
+  const activity_data = {
+    id: activity.id,
+    num: project.getActivityNum(activity.id)
+  };
   res.render(view, {
     title: gettext('play'),
     project: req.project,
-    player: req.player
+    player: req.player,
+    activity: activity_data
   });
-};
+});
 
 exports.new = function() {
 
@@ -73,8 +81,7 @@ exports.activity = {
 
   show: wrap(function*(req, res) {
     const project = req.project;
-    const activity = req.activity;
-
+    var activity = req.activity;
     // Socket emit
     //req.socket.emit('player:connected', { name: 'testing' });
     //status: {type: Number, default: 0}, // types: {0: Sin empezar, x: Numero de la actividad, -1: Terminado}
@@ -82,12 +89,12 @@ exports.activity = {
     //yield project.save();
     //yield Project.update({_id: req.project.id, 'players.user': req.body.player_id}, {$set: {'players.$.online': true}});
     //@TODO comprobar si el usuario ha completado o no el proyecto
+    activity.num = project.getActivityNum(activity.id);
     project.setPlayerStatus(
       req.player.user.id,
-      project.getActivityNum(activity.id)
+      activity.num
     );
     project.save();
-
     res.render('play/show', {
       title: gettext('play'),
       project: project,

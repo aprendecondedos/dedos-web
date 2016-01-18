@@ -1,8 +1,8 @@
 <ul class="list-group list-group-dividered">
-<h3>Activdad 3</h3>
+<h3>{{gettext('activity')}} {{activity.num}}</h3>
 {% for user in project.players %}
 <li class="list-group-item" id="{{user.user.id}}" href="javascript:;"
-   style="display: {% if user.online %}block{% else %}none{% endif %};">
+   style="display: {% if user.online || req.player.user.id == user.user.id %}block{% else %}none{% endif %};">
     <div class="media">
         <div class="media-left">
             <span class="avatar avatar-online">

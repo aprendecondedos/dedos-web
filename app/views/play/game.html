@@ -1,14 +1,15 @@
-<link href='https://fonts.googleapis.com/css?family=McLaren' rel='stylesheet' type='text/css'>
+<!--<div class="token-movablex element token " style="width: 300px;height: 300px;background-color: #ccc"></div>-->
 <div class="game" style="position: relative;">
     {% for area in areas %}
     <div class="element area" data-position="{{ area.position|json_encode }}" data-size="{{ area.size|json_encode }}">
         {% for token in area.tokens %}
-        <div class="element token {% if token.clickable %}token-clickable{% endif %} {% if token.movable %}token-movable{% endif %}" style="display: none;width: 200px;"
+        <div class="element token {% if token.clickable %}token-clickable{% endif %} {% if token.movable %}token-movable{% endif %}"
+             style="display: none;width: 200px;"
              id="{{token.id}}"
              data-element="{{token.element_id}}"
              data-position="{{ token.position|json_encode }}"
              data-size="{{ token.size|json_encode }}"
-                >
+        >
             <div class="check">
                 <div>
                     <div>

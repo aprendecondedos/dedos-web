@@ -1,38 +1,3 @@
-(function(window, document, $) {
-  'use strict';
-  var $doc = $(document);
-  $.play = $.play || {};
-  $.extend($.play, {
-    defaults: {
-      container: '.play',
-      modals: {
-        select_player: '#modal-select-player'
-      }
-    },
-    init: function() {
-      console.log('loaded');
-    }
-  });
-  var $user = '';
-  var $select_player = $('#modal-select-player');
-  var $play = $('.play');
-
-  //$(document).on('click', '.select-activity', function(e) {
-  //  e.preventDefault();
-  //  var url_data = $(this).attr('href');
-  //  $.ajax({
-  //    type: 'GET',
-  //    url: url_data,
-  //    success: function(html) {
-  //      $play.html(html);
-  //    }
-  //  });
-  //});
-
-  console.log('{{req.project}}');
-
-})(window, document, jQuery);
-
 (function() {
   // Play Constructor
   this.Play = function() {
@@ -61,29 +26,148 @@
     if (arguments[0] && typeof arguments[0] === 'object') {
       this.options = $.extend(defaults, arguments[0]);
     }
+    var $document = $(document);
     var $container = $(this.options.container);
     var $select_player = $(this.options.modals.select_player);
     var self = this;
     /**
      * Urls
-     * @type {string}
+     *
+     * @type {string} url_play
      */
     var url_play = '/play/' + self.options.id;
     /**
-     * Sockets
+     * Propiedades de la actividad
+     *
+     * @type {Object} activity
+     */
+    var activity = this.activity = {};
+    /**
+     * Listado de sockets disponibles
+     *
+     * @type {Object} sockets
      */
     var sockets = {};
     /**
-     * Elements
-     * @type {{}}
+     * Propiedades de los elementos
+     *
+     * @type {Object} elements
      */
     var elements = this.elements = {};
-
-    elements.load = function() {
-      elementsAdjustSize();
+    /**
+     * Tokens incluido en elementos
+     *
+     * @type {Object} tokens
+     */
+    var tokens = this.elements.tokens = {};
+    /**
+     * Carga de una actividad
+     *
+     * @param {Object} activity_data
+     * @property {Number} activity.id Identificador de la actividad
+     * @property {Number} activity.num Número natural de la actividad
+     * @property {String} activity.url Dirección URL
+     */
+    activity.load = function(activity_data) {
+      // Se inicia las variables relacionadas
+      // con la actividad
+      activity.id = activity_data.id;
+      activity.num = activity_data.num;
+      activity.url = url_play + '/activity/' + activity.id;
+      $.ajax({
+        type: 'GET',
+        url: activity.url,
+        success: function(html) {
+          $container.html(html);
+          $container.attr('id', activity.id);
+          // Renderizado de elementos/tokens
+          self.elements.load();
+          // @TODO
+          $container.find('.token-movable').draggable({
+            cursor: 'move'
+          });
+          // Se emite un socket incluyendo información relacionada con la actividad y jugador
+          socket.emit(sockets.activity.join, {
+            room: self.options.room,
+            activity: activity.id,
+            status: activity.num,
+            player: self.options.player
+          });
+        }
+      });
     };
     /**
-     * Funciones privadas de elements
+     * Comprobación si la actividad esta correcta
+     * dado un listado de tokens que pertenece a la actividad
+     *
+     */
+    activity.check = function() {
+      var tokens_array = [];
+      $container.find('.clicked').each(function() {
+        tokens_array.push({
+          token_id: $(this).attr('id'),
+          element_id: $(this).data('element')
+        });
+      });
+      if (tokens_array.length == 0) {
+        return false;
+      }
+      $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: activity.url + '/check',
+        data: {tokens: tokens_array},
+        success: function(data) {
+          $.each(data.tokens, function(i, token) {
+            $container.find('#' + token.id).addClass(function() {
+              if (token.valid) { return 'correct checked'; } else { return 'wrong checked'; }
+            });
+          });
+        }
+      });
+    };
+    /**
+     * Carga de los elementos
+     */
+    elements.load = function() {
+      elementsAdjustSize();
+      // stuff
+    };
+    /**
+     * Comprobación por AJAX del token
+     *
+     * @param {Object} token
+     * @property {Number} token.id Identificador dada por la BD
+     * @property {Number} token.element Identificador nativo del token
+     * @property {Boolean} token.checked Comprobador si el token ya ha sido seleccionado
+     */
+    tokens.check = function(token) {
+      if (self.options.properties.delayed) {
+        $container.find('#' + token.id).toggleClass('clicked');
+      // Se comprueba si ya se ha comprobado el token
+      } else if (token.checked) {
+        return false;
+      } else {
+        // Se emite un socket con la información del token
+        socket.emit('event:click:token', {id: token.element});
+        $.ajax({
+          type: 'POST',
+          dataType: 'json',
+          url: activity.url + '/check',
+          data: {
+            tokens: [{token_id: token.id, element_id: token.element}]
+          },
+          success: function(data) {
+            var token_data = data.tokens[0];
+            $container.find('#' + token_data.id).addClass(function() {
+              if (token_data.valid) { return 'correct checked'; } else { return 'wrong checked'; }
+            });
+          }
+        });
+      };
+    };
+    /**
+     * Ajuste de la resolución en tamaño y posición de un elemento
      */
     function elementsAdjustSize() {
       var $elements = $container.find('.element');
@@ -108,91 +192,31 @@
     }
     $(window).on('resize', elementsAdjustSize);
 
-    /**
-     * Actividad
-     */
-
     // Sockets
     sockets.activity = {
       join: 'server project:activity:join'
     };
     // Eventos
-    $(document).on('click', '.select-activity', function(e) {
-      e.preventDefault();
-      var activity_id = $(this).data('activity');
-      var activity_num = $(this).data('num');
-      var url_data = url_play + '/activity/' + activity_id;
-      $.ajax({
-        type: 'GET',
-        url: url_data,
-        success: function(html) {
-          $container.html(html);
-          $container.attr('data-context', activity_id);
-          // Renderizado de elementos/tokens
-          self.elements.load();
-          // SOCKET emit
-          socket.emit(sockets.activity.join, {
-            room: self.options.room,
-            activity: activity_id,
-            status: activity_num,
-            player: self.options.player
-          });
 
-        }
-      });
-    });
     // Función para comprobar respuestas en caso de demorada
-    $(document).on('click', '#check-activity', function(e) {
-      var activity_id = $(this).data('activity');
-      var url_data = url_play + '/activity/' + activity_id + '/check';
-      var tokens = [];
-      $container.find('.clicked').each(function() {
-        tokens.push({
-          token_id: $(this).attr('id'),
-          element_id: $(this).data('element')
-        });
+    $document.on('click', '#check-activity', activity.check);
+
+    $document.on('click', '.select-activity', function(e) {
+      e.preventDefault();
+      activity.load({
+        id: $(this).data('activity'),
+        num: $(this).data('num')
       });
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: url_data,
-        data: {tokens: tokens},
-        success: function(data) {
-          $.each(data.tokens, function(i, token) {
-            $('#' + token.id).addClass(function() {
-              if (token.valid) { return 'correct checked'; } else { return 'wrong checked'; }
-            });
-          });
-        }
+    });
+    $document.on('click', '.token-clickable', function() {
+      elements.tokens.check({
+        id: $(this).attr('id'),
+        element: $(this).data('element'),
+        checked: $(this).hasClass('checked')
       });
     });
 
-    $(document).on('click', '.token-clickable', function(e) {
-      var token_id = this.id;
-      var element_id = $(this).data('element');
-      var activity_id = $container.data('context');
-
-      if (self.options.properties.delayed) {
-        $('#' + token_id).toggleClass('clicked');
-      } else {
-        socket.emit('event:click:token', {id: element_id});
-        $.ajax({
-          type: 'POST',
-          dataType: 'json',
-          url: url_play + '/activity/' + activity_id + '/check',
-          data: {
-            tokens: [{token_id: token_id, element_id: element_id}]
-          },
-          success: function(data) {
-            var token = data.tokens[0];
-            $('#' + token.id).addClass(function() {
-              if (token.valid) { return 'correct checked'; } else { return 'wrong checked'; }
-            });
-          }
-        });
-      };
-    });
-
+    return this;
     console.log(this.options);
   };
 

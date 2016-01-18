@@ -214,7 +214,7 @@ exports.show = function(req, res) {
 
   // Socket
   var socketio = req.app.get('socket.io');
-  socketio.on('connection', function(socket){
+  socketio.on('connection', function(socket) {
     //console.log(io.sockets.manager.roomClients[socket.id]);
     //socket.join('admin/'+req.project.id);
   });
@@ -260,6 +260,7 @@ exports.edit = function(req, res) {
   project.save();
 
   res.redirect('/project/' + project.id + '/settings');
+
 };
 
 /**
@@ -278,7 +279,6 @@ exports.my = wrap(function*(req, res) {
     projects: projects
   });
 });
-
 
 /**
  * Eliminar proyecto

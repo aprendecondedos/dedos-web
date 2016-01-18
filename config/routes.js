@@ -100,9 +100,9 @@ module.exports = function(app, passport, io) {
   // Project routes
   app.param('projectId', project.load);
 
-  app.get('/projects/my',auth.requiresLogin, project.my);
-  app.get('/projects',auth.requiresLogin, project.index);
-  app.get('/project/new',auth.requiresLogin, project.new);
+  app.get('/projects/my', auth.requiresLogin, project.my);
+  app.get('/projects', auth.requiresLogin, project.index);
+  app.get('/project/new', auth.requiresLogin, project.new);
   app.post('/project/new', auth.requiresLogin, project.new);
   app.get('/project/:projectId', auth.requiresLogin, project.show);
   app.get('/project/:projectId/settings', auth.requiresLogin, project.settings);
