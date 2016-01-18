@@ -88,15 +88,15 @@
             cursor: 'move'
           });
           $('.token-droppable').droppable({
-            drop: function( event, ui ) {
-              elements.tokens.checkPair({
+            drop: function(event, ui) {
+              elements.tokens.check({
                 token_id: ui.draggable.context.id,
                 element_id: $container.find(
                     '#' + ui.draggable.context.id).data('element'),
                 targetId: event.target.id,
                 targetName: $container.find('#' + event.target.id)
                     .data('element')
-              })
+              });
               $(this).addClass('ui-state-highlight');
             }
           });
@@ -167,20 +167,40 @@
      * @property {Boolean} token.checked Comprobador si el token ya ha sido seleccionado
      */
     tokens.check = function(token) {
+      var array_tokens = [];
+      var token;
       if (self.options.properties.delayed) {
-        $container.find('#' + token.id).toggleClass('clicked');
+        if (token.targetId) {
+          $container.find('#' + token.token_id).addClass('dropped');
+          $container.find('#' + token.token_id).attr('data-droppedin',token.targetId);
+        }else {
+          $container.find('#' + token.id).toggleClass('clicked');
+        }
       // Se comprueba si ya se ha comprobado el token
       } else if (token.checked) {
         return false;
       } else {
         // Se emite un socket con la información del token
+        if (token.targetId) {
+          var token = {
+            token_id: token.token_id,
+            element_id: token.element_id,
+            targetId: token.targetId,
+            targetName: token.targetName,
+          };
+        }else {
+          var token = {
+             token_id: token.id,
+             element_id: token.element
+           }
+        }
         socket.emit('event:click:token', {id: token.element});
         $.ajax({
           type: 'POST',
           dataType: 'json',
           url: activity.url + '/check',
           data: {
-            tokens: [{token_id: token.id, element_id: token.element}]
+            tokens: [token]
           },
           success: function(data) {
             console.log(data);
