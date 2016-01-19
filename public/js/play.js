@@ -133,14 +133,18 @@
               //      .addClass( "ui-state-highlight" );
               //    ui.draggable.draggable('option', 'revert', false);
               elements.tokens.check({
-                id: ui.draggable.context.id,
-                element_id: $container.find(
-                    '#' + ui.draggable.context.id).data('element'),
+                data: {
+                  id: ui.draggable.context.id,
+                  name: $container.find(
+                      '#' + ui.draggable.context.id).data('element')
+                },
                 area_id: $container.find(
                   '#' + ui.draggable.context.id).parent().data('element'),
-                targetId: event.target.id,
-                targetName: $container.find('#' + event.target.id)
-                    .data('element')
+                droppedInto:{
+                  id: event.target.id,
+                  name: $container.find('#' + event.target.id)
+                      .data('element')
+                }
               });
               $(this).addClass('ui-state-highlight');
             }
@@ -169,20 +173,26 @@
           area_data = area.data('element');
         }
         tokens_array.push({
-          id: $(this).attr('id'),
-          element_id: $(this).data('element'),
+          data: {
+            id: $(this).attr('id'),
+            name: $(this).data('element')
+          },
           area_id: area_data
         });
       });
       // Se recorre todos los elementos que han sido arrastrados y soltados
       $container.find('.dropped').each(function() {
         tokens_array.push({
-          id: $(this).attr('id'),
-          element_id: $(this).data('element'),
+          data: {
+            id: $(this).attr('id'),
+            name: $(this).data('element')
+          },
           area_id: area_data,
-          targetId: $(this).data('droppedin'),
-          targetName: $container.find('#' + $(this).data('droppedin'))
-            .data('element')
+          droppedInto: {
+            id: $(this).data('droppedin'),
+            name: $container.find('#' + $(this).data('droppedin'))
+                .data('element')
+          }
         });
       });
       if (tokens_array.length == 0) {
@@ -220,14 +230,14 @@
      */
     tokens.check = function(token) {
       if (self.options.properties.delayed) {
-        if (token.targetId) {
-          $container.find('#' + token.id).addClass('dropped');
-          $container.find('#' + token.id).attr('data-droppedin',token.targetId);
+        if (token.droppedInto) {
+          $container.find('#' + token.data.id).addClass('dropped');
+          $container.find('#' + token.data.id).attr('data-droppedin',token.droppedInto.id);
         }else {
-          $container.find('#' + token.id).toggleClass('clicked');
+          $container.find('#' + token.data.id).toggleClass('clicked');
         }
       // Se comprueba si ya se ha comprobado el token
-      } else if (token.checked) {
+      } else if (token.data.checked) {
         return false;
       } else {
         // Se emite un socket con la información del token
@@ -295,9 +305,11 @@
     $document.on('click', '.token-clickable', function() {
       //console.log('hola' + $(this).parent().data('element'));
       elements.tokens.check({
-        id: $(this).attr('id'),
-        element_id: $(this).data('element'),
-        checked: $(this).hasClass('checked'),
+        data: {
+          id: $(this).attr('id'),
+          name: $(this).data('element'),
+          checked: $(this).hasClass('checked')
+        },
         area_id:  $(this).parent().data('element')
       });
     });

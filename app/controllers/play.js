@@ -143,12 +143,12 @@ exports.activity = {
     var activity_result = true;
     console.log(req.body.tokens);
     activity.objectives.forEach(function(objective) {
-      console.log(objective);
       if (objective.type == 'sel') {
         targets.push(objective.obj);
         selection = true;
-      } else if (objective.type == 'Pair') {
-        targets.push({origen: objective.origen, targets: objective.targets, tokenMeter: objectibe.tokenMeter});
+      } else if (objective.type == 'pair') {
+        console.log('detecta objetivo');
+        targets.push({origen: objective.origen, targets: objective.targets, tokenMeter: objective.tokenMeter});
         pair = true;
       }
     });
@@ -172,17 +172,18 @@ exports.activity = {
       if (selection) {
         console.log("comprueba");
         type = 'selection';
-        if (targets.indexOf(token.element_id) != -1) {
+        if (targets.indexOf(token.data.name) != -1) {
           result = true;
         }
       }
-      if (pair) {
+      if (pair && token.droppedInto) {
+        console.log(token);
         type = 'pair';
         targets.forEach(function(target) {
           // Comprobar si el id del area que contiene al token es igual que el origen del objetivo.
           // if( === target.origen)
-          if (token.element_id === target.origen || token.area_id === target.origen) {
-            if (target.targets.indexOf(token.targetName) != -1) {
+          if (token.data.name === target.origen || token.area_id === target.origen) {
+            if (target.targets.indexOf(token.droppedInto.name) != -1) {
               if(!target.tokenMeter) {
                 result = true;
                 console.log('EMPAREJAMIENTO_CORRECTO');
@@ -197,7 +198,7 @@ exports.activity = {
         activity_result = false;
       }
       tokens_result.push({
-        id: token.id,
+        id: token.data.id,
         type: type,
         valid: result
       });
