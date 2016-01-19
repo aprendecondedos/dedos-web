@@ -34,6 +34,7 @@ exports.load = wrap(function*(req, res, next, id) {
  * Inicio del juego
  */
 exports.index = wrap(function*(req, res) {
+  console.log('SHOW');
   const project = req.project;
   var view = 'play/index';
   if (lib.isEmptyObject(req.player) || !req.player) {
@@ -91,6 +92,7 @@ exports.activity = {
    * Mostrar la actividad dado una id
    */
   show: wrap(function*(req, res) {
+
     const project = req.project;
     var activity = req.activity;
     // Socket emit
@@ -109,6 +111,7 @@ exports.activity = {
     // Target si los objetivos son de emparejamiento
     var targets = [];
     activity.objectives.forEach(function(objective) {
+      //console.log('OBJETIVOS: ' + objective);
       if (objective.targets && objective.type == 'pair') {
         targets.push(objective.targets.join());
       }
@@ -129,17 +132,22 @@ exports.activity = {
     const activity = req.activity;
     var selection = false;
     var pair = false;
-    var type = "tipo de objetivo";
+    var tokenmeter = false;
+    var type = 'tipo de objetivo';
     var targets = [];
     var tokens_result = [];
     var activity_result = true;
+    console.log(req.body.tokens);
     activity.objectives.forEach(function(objective) {
-      if (objective.obj) {
+      console.log(objective);
+      if (objective.type == 'sel') {
         targets.push(objective.obj);
         selection = true;
-      } else if (objective.targets) {
+      } else if (objective.type == 'Pair') {
         targets.push({origen: objective.origen, targets: objective.targets});
         pair = true;
+      }else if (objective.type == 'tokenMeter') {
+        tokenmeter = true;
       };
     });
     // @TODO insertar respuestas en el modelo Answer
@@ -160,13 +168,17 @@ exports.activity = {
     tokens.forEach(function(token) {
       var result = false;
       if (selection) {
+        console.log("comprueba");
         type = 'selection';
         if (targets.indexOf(token.element_id) != -1) {
           result = true;
         }
-      } else if (pair) {
+      }
+      if (pair) {
         type = 'pair';
         targets.forEach(function(target) {
+          // Comprobar si el id del area que contiene al token es igual que el origen del objetivo.
+          // if( === target.origen)
           if (token.element_id === target.origen) {
             if (target.targets.indexOf(token.targetName) != -1) {
               result = true;

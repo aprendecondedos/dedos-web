@@ -111,7 +111,7 @@
           self.elements.load();
           // @TODO
           $container.find('.token-movable').draggable({
-            revert: true,
+            revert: false,
             cursor: 'move',
             //opacity: 0.7,
             helper: 'clone',
@@ -135,6 +135,8 @@
                 id: ui.draggable.context.id,
                 element_id: $container.find(
                     '#' + ui.draggable.context.id).data('element'),
+                area_id: $container.find(
+                  '#' + ui.draggable.context.id).parent().data('element'),
                 targetId: event.target.id,
                 targetName: $container.find('#' + event.target.id)
                     .data('element')
@@ -163,23 +165,20 @@
         var area_data = {};
         // Si pertenece a un area, se obtiene sus propiedades
         if ($(this).parent('.area').length > 0) {
-          area_data = {
-            area: {
-              id: area.attr('id'),
-              element_id: area.data('element')
-            }
-          };
+          area_data = area.data('element');
         }
-        tokens_array.push($.extend({
+        tokens_array.push({
           id: $(this).attr('id'),
-          element_id: $(this).data('element')}
-        ), area_data);
+          element_id: $(this).data('element'),
+          area_id: area_data
+        });
       });
       // Se recorre todos los elementos que han sido arrastrados y soltados
       $container.find('.dropped').each(function() {
         tokens_array.push({
           id: $(this).attr('id'),
           element_id: $(this).data('element'),
+          area_id: area_data,
           targetId: $(this).data('droppedin'),
           targetName: $container.find('#' + $(this).data('droppedin'))
             .data('element')
@@ -231,6 +230,7 @@
         return false;
       } else {
         // Se emite un socket con la información del token
+        console.log(token);
         socket.emit('event:click:token', {id: token.element});
         $.ajax({
           type: 'POST',
@@ -292,10 +292,12 @@
       });
     });
     $document.on('click', '.token-clickable', function() {
+      //console.log('hola' + $(this).parent().data('element'));
       elements.tokens.check({
         id: $(this).attr('id'),
         element_id: $(this).data('element'),
-        checked: $(this).hasClass('checked')
+        checked: $(this).hasClass('checked'),
+        area_id:  $(this).parent().data('element')
       });
     });
 

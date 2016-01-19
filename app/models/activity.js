@@ -91,6 +91,7 @@ ActivitySchema.methods = {
               var token = new Token({
                 element_id: token_data.$.id,
                 type: token_data.$.type,
+                value: token_data.$.numValue,
                 position: token_data.pos.pop().$,
                 size: token_data.size.pop().$,
                 clickable: token_data.clickable.pop(),
@@ -99,7 +100,6 @@ ActivitySchema.methods = {
                 movable: token_data.movable.pop(),
                 feedback: token_data.content[0].feedback.pop()
               });
-
               if (token_data.$.type == 'img') {
                 token.setUrls(token_data.content[0].urlList[0].url);
               } else if (token_data.$.type == 'txt') {

@@ -12,6 +12,7 @@ var Project = mongoose.model('Project');
 var Activity = mongoose.model('Activity');
 var Selection = mongoose.model('Selection');
 var Pair = mongoose.model('Pair');
+var TokenMeter = mongoose.model('TokenMeter');
 var Area = mongoose.model('Area');
 var Token = mongoose.model('Token');
 
@@ -49,7 +50,7 @@ exports.new = wrap(function*(req, res) {
       // Extracción del zip
       var zip = new AdmZip(original_path);
       // Se recorre cada archivo para reconocer los objetos
-      zip.getEntries().forEach(function (zipEntry) {
+      zip.getEntries().forEach(function(zipEntry) {
         if (zipEntry.isDirectory == false) {
           if (zipEntry.name.indexOf('.xml') != -1) {
             xml = zipEntry.entryName; // Archivo XML
@@ -68,7 +69,7 @@ exports.new = wrap(function*(req, res) {
       fs.unlink('./' + original_path);
 
       // Lectura del XML para la creación del proyecto
-      var xml_file = new_path + "/" + xml;
+      var xml_file = new_path + '/' + xml;
       var xml_data = fs.readFileSync(xml_file);
 
       var project = new Project({
@@ -89,15 +90,15 @@ exports.new = wrap(function*(req, res) {
       }
 
       parser.parseString(xml_data);
-      parser.on('error', function (err) {
+      parser.on('error', function(err) {
         console.log(err);
       });
-      parser.on('end', function (XML) {
+      parser.on('end', function(XML) {
         // Guardamos la resolución del proyecto
         project.resolution = XML.Project.resolution.pop().$;
 
         var activities = [];
-        XML.Project.Activity.forEach(function(activity_data){
+        XML.Project.Activity.forEach(function(activity_data) {
           if (typeof activity_data != 'object') { return; }
 
           // Set activities
@@ -123,6 +124,32 @@ exports.new = wrap(function*(req, res) {
                   });
                 });
                 objective.setTargets(targets);
+              } else if (objective_data.$.type == 'tokenMeter') {
+                var objective = new TokenMeter(objective_data.$);
+                var origzones = [];
+                if (objective_data.OriginZones) {
+                  objective_data.OriginZones.forEach(function(target_data) {
+                    target_data.zone.forEach(function(target_data) {
+                      origzones.push(target_data.$.id);
+                    });
+                  });
+                  objective.setOriginZones(origzones);
+                }
+
+                console.log(objective_data);
+                console.log(objective_data.OriginTokens);
+                if (objective_data.OriginTokens) {
+                  var origtokens = [];
+                  objective_data.OriginTokens.forEach(function(target_data) {
+                    if (target_data.tok) {
+                      target_data.tok.forEach(function(target_data) {
+                        origtokens.push(target_data.$.id);
+                      });
+                    }
+                  });
+                  objective.setOriginTokens(origtokens);
+                }
+
               }
               //var objective = new Objective(objective_data.$);
               if (objective) {
@@ -137,26 +164,27 @@ exports.new = wrap(function*(req, res) {
           // Set elements
           var elements = [];
           activity_data.Arealist.forEach(function(area_list) {
-            if(typeof area_list != 'object') return;
+            if (typeof area_list != 'object') return;
 
-            area_list.Area.forEach(function(area_data){
+            area_list.Area.forEach(function(area_data) {
               var area = new Area({
-                element_id  : area_data.$.id,
-                type        : area_data.$.type,
-                position    : area_data.pos.pop().$,
-                size        : area_data.size.pop().$,
-                bg          : area_data.bg.pop().$.url
+                element_id: area_data.$.id,
+                type: area_data.$.type,
+                position: area_data.pos.pop().$,
+                size: area_data.size.pop().$,
+                bg: area_data.bg.pop().$.url
               });
 
               // Set tokens (cards)
               var tokens = [];
-              area_data.Tokenlist.forEach(function(tokens_data){
-                if(typeof tokens_data != 'object') return;
+              area_data.Tokenlist.forEach(function(tokens_data) {
+                if (typeof tokens_data != 'object') return;
 
                 tokens_data.Token.forEach(function(token_data) {
                   var token = new Token({
-                    element_id  : token_data.$.id,
+                    element_id: token_data.$.id,
                     type: token_data.$.type,
+                    value: token_data.$.numValue,
                     position: token_data.pos.pop().$,
                     size: token_data.size.pop().$,
                     clickable: token_data.clickable.pop(),
@@ -166,10 +194,10 @@ exports.new = wrap(function*(req, res) {
                     feedback: token_data.content[0].feedback.pop()
                   });
 
-                  if(token_data.$.type == 'img') {
+                  if (token_data.$.type == 'img') {
                     token.setUrls(token_data.content[0].urlList[0].url);
-                  } else if(token_data.$.type == 'txt') {
-                    token.text = token_data.content[0].text[0]
+                  } else if (token_data.$.type == 'txt') {
+                    token.text = token_data.content[0].text[0];
                   }
                   token.activity = activity._id;
                   token.save();

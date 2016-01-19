@@ -5,6 +5,7 @@ require('./element');
 var Element = mongoose.model('Element');
 
 var TokenSchema = new Schema({
+  value: Number,
   clickable: Boolean,
   rotatable: Boolean,
   resizable: Boolean,
