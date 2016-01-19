@@ -122,6 +122,7 @@
               $(this).css('opacity', 1);
             }
           });
+          //$container.find('.tokenMeter').attr('data-currentValue',0);
           $('.token-droppable').droppable({
             drop: function(event, ui) {
               //$container.find('.token-target').droppable({

@@ -110,17 +110,21 @@ exports.activity = {
     project.save();
     // Target si los objetivos son de emparejamiento
     var targets = [];
+    var tokenMeter = [];
     activity.objectives.forEach(function(objective) {
-      //console.log('OBJETIVOS: ' + objective);
-      if (objective.targets && objective.type == 'pair') {
+      console.log('OBJETIVOS: ' + objective);
+      if (objective.type == 'pair') {
         targets.push(objective.targets.join());
+      } else if (objective.type == 'tokenMeter'){
+        tokenMeter.push(objective.id);
       }
     });
     res.render('play/show', {
       title: gettext('play'),
       project: project,
       activity: activity,
-      targets: targets
+      targets: targets,
+      tokenmeter: tokenMeter
     });
   }),
   /**
@@ -144,11 +148,9 @@ exports.activity = {
         targets.push(objective.obj);
         selection = true;
       } else if (objective.type == 'Pair') {
-        targets.push({origen: objective.origen, targets: objective.targets});
+        targets.push({origen: objective.origen, targets: objective.targets, tokenMeter: objectibe.tokenMeter});
         pair = true;
-      }else if (objective.type == 'tokenMeter') {
-        tokenmeter = true;
-      };
+      }
     });
     // @TODO insertar respuestas en el modelo Answer
     var answer_data = {
@@ -179,14 +181,18 @@ exports.activity = {
         targets.forEach(function(target) {
           // Comprobar si el id del area que contiene al token es igual que el origen del objetivo.
           // if( === target.origen)
-          if (token.element_id === target.origen) {
+          if (token.element_id === target.origen || token.area_id === target.origen) {
             if (target.targets.indexOf(token.targetName) != -1) {
-              result = true;
-              console.log('EMPAREJAMIENTO_CORRECTO');
+              if(!target.tokenMeter) {
+                result = true;
+                console.log('EMPAREJAMIENTO_CORRECTO');
+              } else {
+                //Cosas para hacer si hay que sumar valores
+              }
             }
           }
         });
-      };
+      }
       if (!result) {
         activity_result = false;
       }
