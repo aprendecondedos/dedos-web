@@ -164,6 +164,7 @@ exports.activity = {
       var result = false;
       if (selection) {
         type = 'selection';
+        console.log(targets);
         if (targets.indexOf(token.element_id) != -1) {
           result = true;
         }
@@ -182,7 +183,7 @@ exports.activity = {
         activity_result = false;
       }
       tokens_result.push({
-        id: token.token_id,
+        id: token.id,
         type: type,
         valid: result
       });

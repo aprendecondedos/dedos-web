@@ -132,7 +132,7 @@
               //      .addClass( "ui-state-highlight" );
               //    ui.draggable.draggable('option', 'revert', false);
               elements.tokens.check({
-                token_id: ui.draggable.context.id,
+                id: ui.draggable.context.id,
                 element_id: $container.find(
                     '#' + ui.draggable.context.id).data('element'),
                 targetId: event.target.id,
@@ -165,20 +165,20 @@
         if ($(this).parent('.area').length > 0) {
           area_data = {
             area: {
-              token_id: area.attr('id'),
+              id: area.attr('id'),
               element_id: area.data('element')
             }
           };
         }
         tokens_array.push($.extend({
-          token_id: $(this).attr('id'),
+          id: $(this).attr('id'),
           element_id: $(this).data('element')}
         ), area_data);
       });
       // Se recorre todos los elementos que han sido arrastrados y soltados
       $container.find('.dropped').each(function() {
         tokens_array.push({
-          token_id: $(this).attr('id'),
+          id: $(this).attr('id'),
           element_id: $(this).data('element'),
           targetId: $(this).data('droppedin'),
           targetName: $container.find('#' + $(this).data('droppedin'))
@@ -221,8 +221,8 @@
     tokens.check = function(token) {
       if (self.options.properties.delayed) {
         if (token.targetId) {
-          $container.find('#' + token.token_id).addClass('dropped');
-          $container.find('#' + token.token_id).attr('data-droppedin',token.targetId);
+          $container.find('#' + token.id).addClass('dropped');
+          $container.find('#' + token.id).attr('data-droppedin',token.targetId);
         }else {
           $container.find('#' + token.id).toggleClass('clicked');
         }
@@ -241,6 +241,7 @@
           },
           success: function(data) {
             var token_data = data.tokens[0];
+            console.log(token_data);
             $container.find('#' + token_data.id).addClass(function() {
               if (token_data.valid) { return 'correct checked'; } else { return 'wrong checked'; }
             });
@@ -293,7 +294,7 @@
     $document.on('click', '.token-clickable', function() {
       elements.tokens.check({
         id: $(this).attr('id'),
-        element: $(this).data('element'),
+        element_id: $(this).data('element'),
         checked: $(this).hasClass('checked')
       });
     });
