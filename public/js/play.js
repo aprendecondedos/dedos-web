@@ -61,6 +61,29 @@
      */
     var tokens = this.elements.tokens = {};
     /**
+     * Añade propiedades a la clase
+     *
+     * @param {(Object|String[])} arguments
+     */
+    this.setOption = function() {
+      if (arguments[0] && typeof arguments[0] === 'object') {
+        var properties = arguments[0];
+      } else {
+        var properties = {};
+        properties[arguments[0]] = arguments[1];
+      }
+      this.options = $.extend(this.options, properties);
+    };
+    /**
+     * Obtiene una propiedad de la clase
+     *
+     * @param {String} property Propiedad de la clase
+     * @returns {*}
+     */
+    this.getOption = function(property) {
+      return this.options[property];
+    };
+    /**
      * Carga de una actividad
      *
      * @param {Object} activity_data
@@ -69,6 +92,10 @@
      * @property {String} activity.url Dirección URL
      */
     activity.load = function(activity_data) {
+      // Se necesita tener el jugador seleccionado
+      if (self.options.player.id.length == 0) {
+        return false;
+      }
       // Se inicia las variables relacionadas
       // con la actividad
       activity.id = activity_data.id;
@@ -133,9 +160,29 @@
     activity.check = function() {
       var tokens_array = [];
       $container.find('.clicked').each(function() {
+        var area_data = {};
+        // Si pertenece a un area, se obtiene sus propiedades
+        if ($(this).parent('.area').length > 0) {
+          area_data = {
+            area: {
+              token_id: area.attr('id'),
+              element_id: area.data('element')
+            }
+          };
+        }
+        tokens_array.push($.extend({
+          token_id: $(this).attr('id'),
+          element_id: $(this).data('element')}
+        ), area_data);
+      });
+      // Se recorre todos los elementos que han sido arrastrados y soltados
+      $container.find('.dropped').each(function() {
         tokens_array.push({
           token_id: $(this).attr('id'),
-          element_id: $(this).data('element')
+          element_id: $(this).data('element'),
+          targetId: $(this).data('droppedin'),
+          targetName: $container.find('#' + $(this).data('droppedin'))
+            .data('element')
         });
       });
       if (tokens_array.length == 0) {
@@ -168,11 +215,17 @@
      * @param {Object} token
      * @property {Number} token.id Identificador dada por la BD
      * @property {Number} token.element Identificador nativo del token
+     * @property {Number} token.targetId Identificador del objeto sobre el que ha sido arrastrado
      * @property {Boolean} token.checked Comprobador si el token ya ha sido seleccionado
      */
     tokens.check = function(token) {
       if (self.options.properties.delayed) {
-        $container.find('#' + token.id).toggleClass('clicked');
+        if (token.targetId) {
+          $container.find('#' + token.token_id).addClass('dropped');
+          $container.find('#' + token.token_id).attr('data-droppedin',token.targetId);
+        }else {
+          $container.find('#' + token.id).toggleClass('clicked');
+        }
       // Se comprueba si ya se ha comprobado el token
       } else if (token.checked) {
         return false;
@@ -184,7 +237,7 @@
           dataType: 'json',
           url: activity.url + '/check',
           data: {
-            tokens: [{token_id: token.id, element_id: token.element}]
+            tokens: [token]
           },
           success: function(data) {
             var token_data = data.tokens[0];

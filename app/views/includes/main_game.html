@@ -1,25 +1,30 @@
 <script>
     $(function() {
         <!-- -->
-        Play({
+        var play = Play({
             id: '{{project.project}}',
             project: '{{project.id}}',
             width: '{{project.resolution.x}}',
             height: '{{project.resolution.y}}',
             room: '{{project.id}}',
-            player: {
-                id: '{{player.user.id}}',
-                name: '{{player.user.name}}'
-            },
             properties: {
                 delayed: {{project.properties.delayed}},
                 required: {{project.properties.required}}
             }
-        })
-        .activity.load({
-            id: '{{activity.id}}',
-            num: {{activity.num}},
         });
+        {% if player %}
+        play.setOption('player', {
+            id: '{{player.user.id}}',
+            name: '{{player.user.name}}'
+        });
+        {% endif %}
+        {% if activity %}
+        play.activity.load({
+            id: '{{activity.id}}',
+            num: {{activity.num}}
+        });
+        {% endif %}
+
         <!-- -->
 
         var $user = '';
@@ -41,6 +46,7 @@
                     player_id: user_id
                 },
                 success: function(data){
+                    location.reload();
                     console.log(data);
                     socket.emit('server project:player:connected', {room: '{{project.id}}', player: data});
                 }

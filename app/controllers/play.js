@@ -116,7 +116,6 @@ exports.activity = {
       title: gettext('play'),
       project: project,
       activity: activity,
-      areas: activity.elements.area,
       targets: targets
     });
   }),
