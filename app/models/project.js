@@ -20,6 +20,7 @@ var ProjectSchema = mongoose.Schema({
     user: {type: Schema.Types.ObjectId, ref: 'User'},
     status: {type: Number, default: 0}, // types: {0: Sin empezar, x: Numero de la actividad, -1: Terminado}
     online: {type: Boolean, default: false},
+    // @TODO
     answers: [{type: Schema.Types.ObjectId, ref: 'Answer'}]
   }],
   activities: [{type: Schema.Types.ObjectId, ref: 'Activity'}],

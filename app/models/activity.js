@@ -6,7 +6,8 @@ var util = require('util');
 var ActivitySchema = new Schema({
   project: {type: Schema.Types.ObjectId, ref: 'Project'},
   objectives: [{type: Schema.Types.ObjectId, ref: 'Objective'}],
-  elements: [{type: Schema.Types.ObjectId, ref: 'Element'}]
+  elements: [{type: Schema.Types.ObjectId, ref: 'Element'}],
+  answers: [{type: Schema.Types.ObjectId, ref: 'Answer'}]
 });
 
 /**

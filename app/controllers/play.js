@@ -1,6 +1,7 @@
 var wrap = require('co-express');
 var lib = require('../../lib/functions');
 var gettext = require('../../i18n/i18n').gettext;
+var _ = require('underscore');
 var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
 var Activity = mongoose.model('Activity');
@@ -142,29 +143,24 @@ exports.activity = {
       };
     });
     // @TODO insertar respuestas en el modelo Answer
-    var answer = new Answer({
+    var answer_data = {
       player: req.player.user.id,
-      activity: activity.id,
-      answered: true
-    });
-    var answer_options = {
-      criteria: {
-        player: req.player.user.id,
-        activity: activity._id
-      }
+      activity: activity._id
     };
-    var answer = yield Answer.load(answer_options);
+    var answer = yield Answer.load({
+      criteria: answer_data
+    });
     if (answer) {
-     // stuff
-    } else {
       //answer.save();
+      //console.log(answer);
+    } else {
+      var answer = new Answer(answer_data);
     }
 
     tokens.forEach(function(token) {
       var result = false;
       if (selection) {
         type = 'selection';
-        console.log(targets);
         if (targets.indexOf(token.element_id) != -1) {
           result = true;
         }
@@ -187,6 +183,18 @@ exports.activity = {
         type: type,
         valid: result
       });
+      // Se añade como respuesta
+      answer.addElement({token: token.id, valid: result, action: type});
+      //answer.elements.push({token: token.id, valid: result, action: type});
+      console.log(_.where(answer.elements, {token: {id: token.id} }));
+      console.log(_.where(answer.elements, {id: token.id}));
+      console.log(_.where(answer.elements[0].token, {'id': token.id}));
+      //console.log(_.where(answer.elements, {action: type}));
+      console.log(typeof token.id + " - " + token.id);
+      console.log(typeof answer.elements[0].token.id + " - " + token.id);
+
+      answer.valid = activity_result;
+      answer.save();
     });
 
     res.send({

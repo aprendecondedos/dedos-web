@@ -1,17 +1,18 @@
+var _ = require('underscore');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 // Answer model
 var AnswerSchema = mongoose.Schema({
-  player: {type: Schema.Types.ObjectId, ref: 'User'},
+  player: {type: Schema.Types.ObjectId, ref: 'Player'},
   activity: {type: Schema.Types.ObjectId, ref: 'Activity'},
   elements: [{
-    token: {type: Schema.Types.ObjectId, ref: 'Element'},
-    target: String,
-    done: Boolean
+    token: {type: Schema.Types.ObjectId, ref: 'Token'},
+    target: {type: Schema.Types.ObjectId, ref: 'Token'},
+    action: String,
+    valid: Boolean
   }],
-  action: String,
-  answered: Boolean,
+  valid: Boolean,
   createdDate: {type: Date, default: Date.now},
   updatedDate: {type: Date, default: Date.now}
 });
@@ -31,11 +32,22 @@ AnswerSchema.pre('save', function(next) {
  * @type {{}}
  */
 AnswerSchema.methods = {
-  setActivities: function(activities) {
-    if (util.isArray(activities)) {
-      this.activities = activities;
-      return this;
+  addElement: function(element_data) {
+    var self = this;
+    var elementExists = false;
+    this.elements.forEach(function(element, index) {
+      if (element.token == element_data.token) {
+        elementExists = true;
+        self.elements[index] = _.extendOwn(self.elements[index], {
+          valid: element_data.valid,
+          type: element_data.type
+        });
+      }
+    });
+    if (!elementExists) {
+      this.elements.push(element_data);
     }
+    return this;
   }
 };
 /**
