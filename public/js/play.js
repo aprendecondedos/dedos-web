@@ -246,8 +246,8 @@
      */
     tokens.check = function(token) {
 
-      console.log('ESTO SE PASA: ' + $container.find('#' + token.droppedInto.id).data('currentvalue'));
-      console.log($container.find('#' + token.droppedInto.id).attr('data-currentvalue'));
+      //console.log('ESTO SE PASA: ' + $container.find('#' + token.droppedInto.id).data('currentvalue'));
+      //console.log($container.find('#' + token.droppedInto.id).attr('data-currentvalue'));
       if (self.options.properties.delayed) {
         if (token.droppedInto) {
           $container.find('#' + token.data.id).addClass('dropped');
