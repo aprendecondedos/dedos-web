@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var util = require('util');
+var wrap = require('co-express');
+var _ = require('underscore');
 
 // Activity model
 var ActivitySchema = new Schema({
@@ -130,6 +132,38 @@ ActivitySchema.methods = {
       this.elements = elements;
       return this;
     }
+  },
+  addAnswer: function(answer_id) {
+    var answerExists = false;
+    _.find(this.answers, function(answer) {
+      if (answer == answer_id) {
+        answerExists = true;
+      }
+    });
+    if (!answerExists) {
+      this.answers.push(answer_id);
+    }
+    return this;
+  },
+  addAnswerx: function(answer) {
+    this.answers.push(answer);
+    return this;
+  },
+  setAnswers: function(answers) {
+    var self = this;
+    this.answers = [];
+    answers.forEach(function(answer) {
+      self.addAnswer(answers);
+    });
+    return this;
+  },
+  getAnswers: function(options) {
+    var defaults = {
+      criteria: {
+        '_id': {$in: this.answers}
+      }
+    };
+    return this.model('Answer').list(_.extend(defaults, options));
   }
 };
 
@@ -151,8 +185,30 @@ ActivitySchema.statics = {
     const criteria = options.criteria || {_id: options};
     return this.findOne(criteria)
         .populate('objectives')
+        .populate('answers')
         .populate('elements')
         .exec();
+  },
+  /**
+   * Listar actividades y filtrarlos
+   *
+   * @param {Object} options
+   * @property {Object} criteria
+   * @property {Number} page
+   * @property {Number} limit
+   * @property {Array} populate
+   */
+  list: function(options, cb) {
+    const criteria = options.criteria || {};
+    const page = options.page || 0;
+    const limit = options.limit || 30;
+    const populate = options.populate || [];
+    return this.find(criteria)
+      .sort({createdDate: -1})
+      .limit(limit)
+      .populate(populate)
+      .skip(limit * page)
+      .exec(cb);
   }
 };
 

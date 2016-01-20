@@ -32,16 +32,21 @@ AnswerSchema.pre('save', function(next) {
  * @type {{}}
  */
 AnswerSchema.methods = {
+  /**
+   * Modifica propiedades a un elemento existente
+   * si no existiera se crea y añade el elemento
+   *
+   * @param {Object} element_data Propiedades del nuevo/existente elemento
+   * @returns {AnswerSchema}
+   */
   addElement: function(element_data) {
-    var self = this;
     var elementExists = false;
-    this.elements.forEach(function(element, index) {
+    _.find(this.elements, function(element) {
       if (element.token == element_data.token) {
         elementExists = true;
-        self.elements[index] = _.extendOwn(self.elements[index], {
-          valid: element_data.valid,
-          type: element_data.type
-        });
+        // Se elimina el objeto token para evitar incompatibilidades con Mongo
+        delete element_data.token;
+        _.extendOwn(element, element_data);
       }
     });
     if (!elementExists) {
@@ -66,19 +71,26 @@ AnswerSchema.statics = {
       .exec();
   },
   /**
-   * Listar proyectos y filtrarlos
+   * Listar respuestas y filtrarlos
    *
    * @param {Object} options
+   * @property {Object} criteria
+   * @property {Number} page
+   * @property {Number} limit
+   * @property {Array} populate
    */
-  list: function(options) {
+  list: function(options, cb) {
     const criteria = options.criteria || {};
     const page = options.page || 0;
     const limit = options.limit || 30;
+    const populate = options.populate || [];
     return this.find(criteria)
       .sort({createdDate: -1})
       .limit(limit)
+      .populate(populate)
+      //.populate('player', 'name')
       .skip(limit * page)
-      .exec();
+      .exec(cb);
   }
 };
 

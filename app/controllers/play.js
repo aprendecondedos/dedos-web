@@ -228,15 +228,9 @@ exports.activity = {
       });
       // Se añade como respuesta
       answer.addElement({token: token.data.id, valid: result, action: type});
-      //answer.elements.push({token: token.id, valid: result, action: type});
-      console.log(_.where(answer.elements, {token: {id: token.data.id}}));
-      console.log(_.where(answer.elements, {id: token.data.id}));
-      console.log(_.where(answer.elements[0].token, {'id': token.data.id}));
-      //console.log(_.where(answer.elements, {action: type}));
-      console.log(typeof token.data.id + ' - ' + token.data.id);
-      // console.log(typeof answer.elements[0].token.data.id + " - " + token.data.id);
-
       answer.valid = activity_result;
+      activity.addAnswer(answer.id);
+      activity.save();
       answer.save();
     });
 

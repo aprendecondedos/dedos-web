@@ -42,7 +42,8 @@ $(function(){
 
 <div class="row">
     <!-- Activities list -->
-    {% set activities_count = project.activities.length %}
+    {{answers|json|raw}}
+    {% set activities_count = activities.length %}
     <div class="col-md-6">
         <div class="panel">
             <div class="panel-heading">
@@ -62,7 +63,15 @@ $(function(){
                             <div class="col-md-6" style="border-right: 1px solid #e4eaec;">
                                 Correcto
                                 <div class="check">
-
+                                    <!--{{activity.answers|json}}-->
+                                    {{answers[activity.id]|json|raw}}
+                                    {% for answer in answers[activity.id] %}
+                                        {% if answer.valid %}
+                                        <span class="avatar" style="width: 25px">
+                                           <img data-name="{{answer.player.name}}" class="profile img-circle">
+                                        </span>
+                                        {% endif %}
+                                    {% endfor%}
                                 </div>
                             </div>
                             <div class="col-md-6">
