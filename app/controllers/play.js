@@ -115,7 +115,7 @@ exports.activity = {
       console.log('OBJETIVOS: ' + objective);
       if (objective.type == 'pair') {
         targets.push(objective.targets.join());
-      } else if (objective.type == 'tokenMeter'){
+      } else if (objective.type == 'tokenMeter') {
         tokenMeter.push(objective.id);
       }
     });
@@ -140,16 +140,24 @@ exports.activity = {
     var type = 'tipo de objetivo';
     var targets = [];
     var tokens_result = [];
+    var tokensMeter = [];
     var activity_result = true;
-    console.log(req.body.tokens);
     activity.objectives.forEach(function(objective) {
+     // console.log(objective);
       if (objective.type == 'sel') {
         targets.push(objective.obj);
         selection = true;
       } else if (objective.type == 'pair') {
-        console.log('detecta objetivo');
+
         targets.push({origen: objective.origen, targets: objective.targets, tokenMeter: objective.tokenMeter});
         pair = true;
+      } else if (objective.type == 'tokenMeter') {
+        tokenmeter = true;
+        tokensMeter.push({
+          id: objective.id,
+          numValue: objective.numValue,
+          currentValue: 0
+        });
       }
     });
     // @TODO insertar respuestas en el modelo Answer
@@ -168,27 +176,43 @@ exports.activity = {
     }
 
     tokens.forEach(function(token) {
+      console.log(token.droppedInto);
       var result = false;
       if (selection) {
-        console.log("comprueba");
         type = 'selection';
         if (targets.indexOf(token.data.name) != -1) {
           result = true;
         }
       }
       if (pair && token.droppedInto) {
-        console.log(token);
         type = 'pair';
         targets.forEach(function(target) {
           // Comprobar si el id del area que contiene al token es igual que el origen del objetivo.
           // if( === target.origen)
           if (token.data.name === target.origen || token.area_id === target.origen) {
             if (target.targets.indexOf(token.droppedInto.name) != -1) {
-              if(!target.tokenMeter) {
+              if (!target.tokenMeter) {
                 result = true;
-                console.log('EMPAREJAMIENTO_CORRECTO');
+               // console.log('EMPAREJAMIENTO_CORRECTO');
               } else {
-                //Cosas para hacer si hay que sumar valores
+                //Cosas para hacer si hay matemáticas
+                type = 'tokenmeter';
+                tokensMeter.forEach(function(tokmeter) {
+                  if (tokmeter.currentValue === 0) {
+                    tokmeter.currentValue = Number(token.droppedInto.currentValue);
+                  }
+                  if (tokmeter.id === token.droppedInto.name) {
+                    tokmeter.currentValue = Number(tokmeter.currentValue) + Number(token.data.value);
+                  }
+                  if (tokmeter.currentValue < tokmeter.numValue) {
+                    result = true;
+                  }else if (tokmeter.currentValue == tokmeter.numValue) {
+                    result = true;
+                  } else {
+                    activity_result = false;
+                    result = false;
+                  }
+                });
               }
             }
           }
@@ -203,14 +227,14 @@ exports.activity = {
         valid: result
       });
       // Se añade como respuesta
-      answer.addElement({token: token.id, valid: result, action: type});
+      answer.addElement({token: token.data.id, valid: result, action: type});
       //answer.elements.push({token: token.id, valid: result, action: type});
-      console.log(_.where(answer.elements, {token: {id: token.id} }));
-      console.log(_.where(answer.elements, {id: token.id}));
-      console.log(_.where(answer.elements[0].token, {'id': token.id}));
+      console.log(_.where(answer.elements, {token: {id: token.data.id}}));
+      console.log(_.where(answer.elements, {id: token.data.id}));
+      console.log(_.where(answer.elements[0].token, {'id': token.data.id}));
       //console.log(_.where(answer.elements, {action: type}));
-      console.log(typeof token.id + " - " + token.id);
-      console.log(typeof answer.elements[0].token.id + " - " + token.id);
+      console.log(typeof token.data.id + ' - ' + token.data.id);
+      // console.log(typeof answer.elements[0].token.data.id + " - " + token.data.id);
 
       answer.valid = activity_result;
       answer.save();
@@ -221,7 +245,8 @@ exports.activity = {
       activity: {
         id: activity.id,
         valid: activity_result
-      }
+      },
+      tokensMeter: tokensMeter
     });
   })
 };

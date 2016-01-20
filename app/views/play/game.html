@@ -15,7 +15,8 @@
              data-element="{{token.element_id}}"
              data-position="{{ token.position|json_encode }}"
              data-size="{{ token.size|json_encode }}"
-             {% if tokenmeter.indexOf(token.element_id) != -1 %} data-value="0"{% endif %}
+             data-value="{{token.value}}"
+             data-currentvalue="0"
         >
             <div class="check">
                 <div>

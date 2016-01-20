@@ -136,14 +136,18 @@
                 data: {
                   id: ui.draggable.context.id,
                   name: $container.find(
-                      '#' + ui.draggable.context.id).data('element')
+                      '#' + ui.draggable.context.id).data('element'),
+                  value: $container.find(
+                      '#' + ui.draggable.context.id).data('value')
                 },
                 area_id: $container.find(
                   '#' + ui.draggable.context.id).parent().data('element'),
-                droppedInto:{
+                droppedInto: {
                   id: event.target.id,
                   name: $container.find('#' + event.target.id)
-                      .data('element')
+                      .data('element'),
+                  currentValue: $container.find('#' + event.target.id)
+                    .attr('data-currentvalue')
                 }
               });
               $(this).addClass('ui-state-highlight');
@@ -185,13 +189,16 @@
         tokens_array.push({
           data: {
             id: $(this).attr('id'),
-            name: $(this).data('element')
+            name: $(this).data('element'),
+            value: $(this).data('value')
           },
           area_id: area_data,
           droppedInto: {
             id: $(this).data('droppedin'),
             name: $container.find('#' + $(this).data('droppedin'))
-                .data('element')
+                .data('element'),
+            currentValue: $container.find('#' + $(this).data('droppedin'))
+              .attr('data-currentvalue')
           }
         });
       });
@@ -207,8 +214,17 @@
           $.each(data.tokens, function(i, token) {
             $container.find('#' + token.id).addClass(function() {
               if (token.valid) { return 'correct checked'; } else { return 'wrong checked'; }
+              if(token_data.type='tokenmeter' && token_data.valid == false) {
+                // La actividad es de matemáticas y el usuario se ha pasado del número pedido
+                // La actividad finaliza
+              }
             });
           });
+          data.tokensMeter.forEach(function(tokenmeter) {
+            $container.find('[data-element=' + tokenmeter.id + ']').attr(
+              'data-currentvalue', tokenmeter.currentValue);
+          });
+
         }
       });
     };
@@ -229,6 +245,9 @@
      * @property {Boolean} token.checked Comprobador si el token ya ha sido seleccionado
      */
     tokens.check = function(token) {
+
+      console.log('ESTO SE PASA: ' + $container.find('#' + token.droppedInto.id).data('currentvalue'));
+      console.log($container.find('#' + token.droppedInto.id).attr('data-currentvalue'));
       if (self.options.properties.delayed) {
         if (token.droppedInto) {
           $container.find('#' + token.data.id).addClass('dropped');
@@ -252,10 +271,17 @@
           },
           success: function(data) {
             var token_data = data.tokens[0];
-            console.log(token_data);
             $container.find('#' + token_data.id).addClass(function() {
               if (token_data.valid) { return 'correct checked'; } else { return 'wrong checked'; }
             });
+            data.tokensMeter.forEach(function(tokenmeter) {
+              $container.find('[data-element=' + tokenmeter.id + ']').attr(
+                'data-currentvalue', tokenmeter.currentValue);
+            });
+            if (token_data.type = 'tokenmeter' && token_data.valid == false) {
+              // La actividad es de matemáticas y el usuario se ha pasado del número pedido
+              // La actividad finaliza
+            }
           }
         });
       };
