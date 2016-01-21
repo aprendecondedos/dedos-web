@@ -16,6 +16,21 @@ var TokenMeterSchema = new Schema({
  * @type {{}}
  */
 TokenMeterSchema.methods = {
+  checkToken: function(token) {
+    if (this.origTokens.indexOf(token.data.name) || this.origZones.indexOf(token.area_id)) {
+      if (token.droppedInto.name == this.id) {
+        return true;
+      }
+    }
+    return false;
+  },
+  getData: function() {
+    return {
+      id: this.id,
+      numValue: this.numValue,
+      currentValue: 0
+    };
+  },
   setOriginZones: function(origzones) {
     if (util.isArray(origzones)) {
       this.origZones = origzones;

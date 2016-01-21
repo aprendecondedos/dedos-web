@@ -5,6 +5,7 @@ var ObjectiveSchema = new Schema({
   activity: {type: Schema.Types.ObjectId, ref: 'Activity'},
   type: String
 });
+
 /**
  * Hooks
  */

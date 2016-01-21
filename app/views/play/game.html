@@ -8,8 +8,9 @@
          id="{{area.id}}"
          data-element="{{area.element_id}}"
         >
+        {{tokenmeter}}
         {% for token in area.tokens %}
-        <div class="element token{% if tokenmeter.indexOf(token.element_id) != -1 %} tokenMeter{% endif %}{% if token.clickable %} token-clickable{% endif %}{% if token.movable %} token-movable{% endif %}{% if targets.indexOf(token.element_id) != -1 %} token-droppable{% endif %}"
+        <div class="element token{% if token.clickable %} token-clickable{% endif %}{% if token.movable %} token-movable{% endif %}{% if targets.indexOf(token.element_id) != -1 %} token-droppable{% endif %}"
              style="display: none;width: 200px;"
              id="{{token.id}}"
              data-element="{{token.element_id}}"

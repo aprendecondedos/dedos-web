@@ -174,7 +174,7 @@
         var area_data = {};
         // Si pertenece a un area, se obtiene sus propiedades
         if ($(this).parent('.area').length > 0) {
-          area_data = area.data('element');
+          area_data = $(this).parent('.area').data('element');
         }
         tokens_array.push({
           data: {
@@ -192,7 +192,7 @@
             name: $(this).data('element'),
             value: $(this).data('value')
           },
-          area_id: area_data,
+          area_id: $(this).parent('.area').data('element'),
           droppedInto: {
             id: $(this).data('droppedin'),
             name: $container.find('#' + $(this).data('droppedin'))
@@ -242,12 +242,10 @@
      * @property {Number} token.id Identificador dada por la BD
      * @property {Number} token.element Identificador nativo del token
      * @property {Number} token.targetId Identificador del objeto sobre el que ha sido arrastrado
+     * @property {String} token.type Tipo de token, aceptados: {selection, pair, tokenmeter}
      * @property {Boolean} token.checked Comprobador si el token ya ha sido seleccionado
      */
     tokens.check = function(token) {
-
-      //console.log('ESTO SE PASA: ' + $container.find('#' + token.droppedInto.id).data('currentvalue'));
-      //console.log($container.find('#' + token.droppedInto.id).attr('data-currentvalue'));
       if (self.options.properties.delayed) {
         if (token.droppedInto) {
           $container.find('#' + token.data.id).addClass('dropped');
@@ -260,7 +258,6 @@
         return false;
       } else {
         // Se emite un socket con la información del token
-        console.log(token);
         socket.emit('event:click:token', {id: token.element});
         $.ajax({
           type: 'POST',
@@ -270,24 +267,33 @@
             tokens: [token]
           },
           success: function(data) {
+            /**
+             * Propiedades objeto data recibido del servidor
+             * @param {Object} token_data
+             * @property {String} token_data.type Tipo de token, aceptados: {selection, pair, tokenmeter}
+             */
             var token_data = data.tokens[0];
             $container.find('#' + token_data.id).addClass(function() {
               if (token_data.valid) { return 'correct checked'; } else { return 'wrong checked'; }
             });
-            data.tokensMeter.forEach(function(tokenmeter) {
-              $container.find('[data-element=' + tokenmeter.id + ']').attr(
-                'data-currentvalue', tokenmeter.currentValue);
-            });
-            if (token_data.type = 'tokenmeter' && token_data.valid == false) {
-              // La actividad es de matemáticas y el usuario se ha pasado del número pedido
-              // La actividad finaliza
+            // Si la actividad es de Matemáticas
+            if (token_data.type = 'tokenmeter') {
+              data.tokensMeter.forEach(function(tokenmeter) {
+                $container.find('[data-element=' + tokenmeter.id + ']').attr(
+                  'data-currentvalue', tokenmeter.currentValue);
+              });
+              if (!token_data.valid) {
+
+              }
             }
           }
         });
       };
     };
     /**
-     * Ajuste de la resolución en tamaño y posición de un elemento
+     * Ajuste de la resolución en tamaño y posición de cada elemento
+     *
+     * @private
      */
     function elementsAdjustSize() {
       var $elements = $container.find('.element');
@@ -316,7 +322,9 @@
     sockets.activity = {
       join: 'server project:activity:join'
     };
-    // Eventos
+    /**
+     * Eventos del usuario
+     */
 
     // Función para comprobar respuestas en caso de demorada
     $document.on('click', '#check-activity', activity.check);
@@ -329,14 +337,13 @@
       });
     });
     $document.on('click', '.token-clickable', function() {
-      //console.log('hola' + $(this).parent().data('element'));
       elements.tokens.check({
         data: {
           id: $(this).attr('id'),
           name: $(this).data('element'),
           checked: $(this).hasClass('checked')
         },
-        area_id:  $(this).parent().data('element')
+        area_id:  $(this).parent('.area').data('element')
       });
     });
 

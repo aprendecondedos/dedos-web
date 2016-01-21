@@ -110,21 +110,16 @@ exports.activity = {
     project.save();
     // Target si los objetivos son de emparejamiento
     var targets = [];
-    var tokenMeter = [];
     activity.objectives.forEach(function(objective) {
-      console.log('OBJETIVOS: ' + objective);
       if (objective.type == 'pair') {
         targets.push(objective.targets.join());
-      } else if (objective.type == 'tokenMeter') {
-        tokenMeter.push(objective.id);
       }
     });
     res.render('play/show', {
       title: gettext('play'),
       project: project,
       activity: activity,
-      targets: targets,
-      tokenmeter: tokenMeter
+      targets: targets
     });
   }),
   /**
@@ -134,59 +129,86 @@ exports.activity = {
   check: wrap(function*(req, res) {
     const tokens = req.body.tokens;
     const activity = req.activity;
+    var tokens_result = [];
+
     var selection = false;
     var pair = false;
     var tokenmeter = false;
     var type = 'tipo de objetivo';
     var targets = [];
-    var tokens_result = [];
     var tokensMeter = [];
     var activity_result = true;
+    /**
+     *
+     * @type {Object} objectives
+     * @property {String} objectives.select Objetivo de tipo Selección
+     * @property {Array} objectives.pair Objetivo de tipo Emparejamiento
+     * @property {Array} objectives.tokenmeter Objetivo de tipo Matemáticas
+     */
+    var objectives = {};
+    var result = false;
+    var value = 0;
+    var token_results = [];
     activity.objectives.forEach(function(objective) {
-     // console.log(objective);
-      if (objective.type == 'sel') {
-        targets.push(objective.obj);
-        selection = true;
-      } else if (objective.type == 'pair') {
-
-        targets.push({origen: objective.origen, targets: objective.targets, tokenMeter: objective.tokenMeter});
-        pair = true;
-      } else if (objective.type == 'tokenMeter') {
-        tokenmeter = true;
-        tokensMeter.push({
-          id: objective.id,
-          numValue: objective.numValue,
-          currentValue: 0
-        });
+      if (!objectives[objective.type]) {
+        objectives[objective.type] = [];
       }
+      objectives[objective.type].push(objective.getData());
+
+      tokens.forEach(function(token) {
+        if(!token_results[token.data.id]){
+          token_results[token.data.id] = {};
+        }
+        if (!token_results[token.data.id] || !token_results[token.data.id].valid) {
+          result = objective.checkToken(token);
+          token_results[token.data.id] = {
+            id: token.data.id,
+            type: objective.type,
+            valid: result,
+            //value: objective.tokenValue(objective.getData()),
+          };
+
+          if (result) {
+            if (token.droppedInto && token.droppedInto.currentValue > 0) {
+              value = token.droppedInto.currentValue;
+            }
+            value += Number(token.data.value);
+          }
+        }
+      });
     });
+    console.log('Valor: ' + value);
+    console.log(token_results);
+
     // @TODO insertar respuestas en el modelo Answer
-    var answer_data = {
+    var answer_options = {
       player: req.player.user.id,
       activity: activity._id
     };
     var answer = yield Answer.load({
-      criteria: answer_data
+      criteria: answer_options
     });
-    if (answer) {
-      //answer.save();
-      //console.log(answer);
-    } else {
-      var answer = new Answer(answer_data);
+    if (!answer) {
+      var answer = new Answer(answer_options);
     }
 
     tokens.forEach(function(token) {
-      console.log(token.droppedInto);
+
+      // let result
       var result = false;
-      if (selection) {
+      //tokensCheck();
+      //activity.checkToken(token, objectives);
+      // Seleccion
+
+      if (objectives['sel']) {
         type = 'selection';
-        if (targets.indexOf(token.data.name) != -1) {
+        if (objectives['sel'].indexOf(token.data.name) != -1) {
           result = true;
         }
       }
-      if (pair && token.droppedInto) {
+      if (objectives['pair'] && token.droppedInto) {
         type = 'pair';
-        targets.forEach(function(target) {
+        objectives['pair'].forEach(function(target) {
           // Comprobar si el id del area que contiene al token es igual que el origen del objetivo.
           // if( === target.origen)
           if (token.data.name === target.origen || token.area_id === target.origen) {
@@ -233,7 +255,6 @@ exports.activity = {
       activity.save();
       answer.save();
     });
-
     res.send({
       tokens: tokens_result,
       activity: {

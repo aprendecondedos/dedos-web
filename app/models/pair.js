@@ -15,6 +15,23 @@ var PairSchema = new Schema({
  * @type {{}}
  */
 PairSchema.methods = {
+  checkToken: function(token) {
+    if (token.data.name === this.origen || token.area_id === this.origen) {
+      if (this.targets.indexOf(token.droppedInto.name) != -1) {
+        return true;
+      }
+    }
+    return false;
+  },
+  tokenValue: function(data) {
+
+  },
+  getData: function() {
+    return {
+      origen: this.origen,
+      targets: this.targets
+    };
+  },
   setTargets: function(targets) {
     if (util.isArray(targets)) {
       this.targets = targets;

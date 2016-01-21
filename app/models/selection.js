@@ -12,6 +12,14 @@ var SelectionSchema = new Schema({
  * @type {{}}
  */
 SelectionSchema.methods = {
-
+  checkToken: function(token) {
+    if (this.obj == token.data.name) {
+      return true;
+    }
+    return false;
+  },
+  getData: function() {
+    return this.obj;
+  }
 };
 var Selection = Objective.discriminator('Selection', SelectionSchema);
