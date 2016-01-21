@@ -220,11 +220,12 @@
               }
             });
           });
-          data.tokensMeter.forEach(function(tokenmeter) {
-            $container.find('[data-element=' + tokenmeter.id + ']').attr(
-              'data-currentvalue', tokenmeter.currentValue);
-          });
-
+          if(data.tokensMeter) {
+            data.tokensMeter.forEach(function (tokenmeter) {
+              $container.find('[data-element=' + tokenmeter.id + ']').attr(
+                'data-currentvalue', tokenmeter.currentValue);
+            });
+          }
         }
       });
     };
@@ -271,13 +272,16 @@
           },
           success: function(data) {
             var token_data = data.tokens[0];
+            console.log(token_data);
             $container.find('#' + token_data.id).addClass(function() {
               if (token_data.valid) { return 'correct checked'; } else { return 'wrong checked'; }
             });
-            data.tokensMeter.forEach(function(tokenmeter) {
-              $container.find('[data-element=' + tokenmeter.id + ']').attr(
-                'data-currentvalue', tokenmeter.currentValue);
-            });
+            if(data.tokensMeter) {
+              data.tokensMeter.forEach(function (tokenmeter) {
+                $container.find('[data-element=' + tokenmeter.id + ']').attr(
+                  'data-currentvalue', tokenmeter.currentValue);
+              });
+            }
             if (token_data.type = 'tokenmeter' && token_data.valid == false) {
               // La actividad es de matemáticas y el usuario se ha pasado del número pedido
               // La actividad finaliza

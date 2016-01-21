@@ -141,9 +141,10 @@ exports.activity = {
     var targets = [];
     var tokens_result = [];
     var tokensMeter = [];
+    var finishedActivity = false;
     var activity_result = true;
     activity.objectives.forEach(function(objective) {
-     // console.log(objective);
+      // console.log(objective);
       if (objective.type == 'sel') {
         targets.push(objective.obj);
         selection = true;
@@ -208,9 +209,11 @@ exports.activity = {
                     result = true;
                   }else if (tokmeter.currentValue == tokmeter.numValue) {
                     result = true;
+                    finishedActivity = true;
                   } else {
                     activity_result = false;
                     result = false;
+                    finishedActivity = true;
                   }
                 });
               }
@@ -232,13 +235,18 @@ exports.activity = {
       activity.addAnswer(answer.id);
       activity.save();
       answer.save();
+
     });
+    if (answer.elements.length === targets.length) {
+      finishedActivity = true;
+    }
 
     res.send({
       tokens: tokens_result,
       activity: {
         id: activity.id,
-        valid: activity_result
+        valid: activity_result,
+        finished:  finishedActivity
       },
       tokensMeter: tokensMeter
     });
