@@ -5,6 +5,7 @@ var _ = require('underscore');
 var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
 var Activity = mongoose.model('Activity');
+var Answer = mongoose.model('Answer');
 var Area = mongoose.model('Area');
 var Token = mongoose.model('Token');
 var Player = mongoose.model('Player');
@@ -115,10 +116,18 @@ exports.activity = {
         targets.push(objective.targets.join());
       }
     });
+    var answer_options = {
+      criteria: {
+        activity: activity.id,
+        player: req.player.user.id
+      }
+    };
+    const answer = yield Answer.load(answer_options);
     res.render('play/show', {
       title: gettext('play'),
       project: project,
       activity: activity,
+      answer: answer,
       targets: targets
     });
   }),

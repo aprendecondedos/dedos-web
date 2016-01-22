@@ -53,6 +53,22 @@ AnswerSchema.methods = {
       this.elements.push(element_data);
     }
     return this;
+  },
+  isTokenAnswered: function(token_id) {
+    if (this.elements.length == 0) {
+      return false;
+    }
+    return this.elements.some(function(element) {
+      return element.token.equals(token_id);
+    });
+  },
+  getTokenById: function(token_id) {
+    if (this.elements.length == 0) {
+      return false;
+    }
+    return this.elements.find(function(element) {
+      return element.token.equals(token_id);
+    });
   }
 };
 /**
@@ -91,6 +107,20 @@ AnswerSchema.statics = {
       //.populate('player', 'name')
       .skip(limit * page)
       .exec(cb);
+  },
+  /**
+   * Obtener answers dado una o varias actividades
+   *
+   * @param {Array|String} activities
+   * @returns {*}
+   */
+  getFromActivities: function(activities) {
+    return this.list({
+      criteria: {
+        'activity': {$in: activities}
+      },
+      populate:  [{path: 'player', select: 'name'}]
+    });
   }
 };
 

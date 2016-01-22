@@ -11,6 +11,7 @@ var _ = require('underscore');
 var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
 var Activity = mongoose.model('Activity');
+var Answer = mongoose.model('Answer');
 var Selection = mongoose.model('Selection');
 var Pair = mongoose.model('Pair');
 var TokenMeter = mongoose.model('TokenMeter');
@@ -239,108 +240,23 @@ exports.new = wrap(function*(req, res) {
  */
 exports.show = wrap(function*(req, res) {
   const project = req.project;
-
-  // Socket
-  var socketio = req.app.get('socket.io');
-  socketio.on('connection', function(socket) {
-    //console.log(io.sockets.manager.roomClients[socket.id]);
-    //socket.join('admin/'+req.project.id);
-  });
-  //var socketio = req.app.get('socket.io');
-  //socketio.of('/admin-'+req.project.id);
-  var options = {
-    criteria: {
-      '_id': {$in: project.activities}
-    }
-  };
-  //const activities = yield Activity.list(options);
-  var Answer = mongoose.model('Answer');
-
-  //var activities = yield Activity.list(options);
-  //var activities_data = [];
-  //activities.forEach(wrap(function*(activity) {
-  //  var answers = Answer.list({
-  //    criteria: {
-  //      '_id': {$in: activity.answers}
-  //    },
-  //    populate:  [{path:'player', select:'name'}]
-  //  });
-  //  activities_data.push({
-  //    activity: activity,
-  //    answers: answers
-  //  });
-  //}));
-  //console.log(activities_data);
-  var _ = require('underscore');
-  var activities_data = [];
-  _.each(project.activities, function*(activity) {
-    var answers = yield Answer.list({
-      criteria: {
-        '_id': {$in: activity.answers}
-      },
-      populate:  [{path:'player', select:'name'}]
-    });
-    activities_data.push({
-      activity: activity,
-      answers: answers
-    });
-  });
-  console.log(activities_data);
-
-  //var p = yield Answer.list({
-  //  criteria: {
-  //    'activity': {$in: project.activities}
-  //  },
-  //  populate:  [{path:'player', select:'name'}]
-  //});
-
-  //var Q = require('q');
-  //yield _.each(project.activities, Q.async(function*(activity) {
-  //  var x = yield activity.getAnswers();
-  //  console.log('cargando');
-  //}));
-  //var x = [];
-  //var obj = {
-  //  '1a2b3c': [
-  //    {name: 'jose'},
-  //    {name: 'manuel'},
-  //  ],
-  //  '2c4nh': [
-  //    {name: 'miguel'},
-  //    {name: 'antonio'},
-  //  ]
-  //};
-  //obj['7bn9'] = [
-  //  {name: 'miguel'},
-  //  {name: 'antonio'},
-  //];
-  //obj['7bn9'].push({name: 'manolito'});
-  //
-  //console.log(obj);
-
-  var answers = yield Answer.list({
-    criteria: {
-      'activity': {$in: project.activities}
-    },
-    populate:  [{path: 'player', select: 'name'}]
-  });
-  var activities_data = [];
+  // Respuestas ordenadas por actividad y valido o incorrecto
+  const answers = yield Answer.getFromActivities(project.activities);
+  var answers_data = [];
   answers.forEach(function(answer) {
-    //activities_data[answer.activity] = answer;
-    if (_.isUndefined(activities_data[answer.activity])) {
-      activities_data[answer.activity] = [];
+    if (_.isUndefined(answers_data[answer.activity])) {
+      answers_data[answer.activity] = {valid: [], wrong: []};
+    }
+    if (answer.valid && answers_data[answer.activity]) {
+      answers_data[answer.activity].valid.push(answer);
+    } else {
+      answers_data[answer.activity].wrong.push(answer);
     }
   });
-
-  //const answers = yield Activity.getAnswers();
-  //activities = [{
-  //  activity: activity,
-  //  answers: answers
-  //}];
   res.render('project/show', {
     title: project.name,
     project: project,
-    answers: activities_data
+    answers: answers_data
   });
 });
 

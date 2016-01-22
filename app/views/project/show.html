@@ -39,10 +39,13 @@ $(function(){
 });
 </script>
 
-
+<style>
+.activities-list .answers .avatar{
+    margin-right: 5px;
+}
+</style>
 <div class="row">
     <!-- Activities list -->
-    {{answers|json|raw}}
     {% set activities_count = activities.length %}
     <div class="col-md-6">
         <div class="panel">
@@ -50,7 +53,7 @@ $(function(){
                 <h3 class="panel-title">{{gettext('activities')}}</h3>
             </div>
             <div class="panel-body">
-                <div class="list-group list-group-dividered list-group-full">
+                <div class="activities-list list-group list-group-full">
                 {% for activity in project.activities %}
                     <div class="list-group-item" data-activity="{{activity.id}}">
                         <div class="media-left">
@@ -58,30 +61,34 @@ $(function(){
                         </div>
                         <div class="media-body">
                             <h4>{{gettext('activity')}} {{loop.index}}</h4>
-                        </div>
-                        <div class="row margin-bottom-10 margin-top-10">
-                            <div class="col-md-6" style="border-right: 1px solid #e4eaec;">
-                                Correcto
-                                <div class="check">
-                                    <!--{{activity.answers|json}}-->
-                                    {{answers[activity.id]|json|raw}}
-                                    {% for answer in answers[activity.id] %}
-                                        {% if answer.valid %}
+                            <!-- Answers -->
+                            <div class="answers row margin-bottom-10 margin-top-10">
+                                {% set answers_data = answers[activity.id] %}
+                                <div class="col-md-6" style="border-right: 1px solid #e4eaec;">
+                                    Correcto
+                                    <div class="check margin-top-5">
+                                        {% for answer in answers_data.valid %}
                                         <span class="avatar" style="width: 25px">
-                                           <img data-name="{{answer.player.name}}" class="profile img-circle">
+                                           <img data-name="{{answer.player.name}}" data-toggle="tooltip" data-original-title="{{answer.player.name}}" class="profile img-circle">
                                         </span>
-                                        {% endif %}
-                                    {% endfor%}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    Incorrecto
+                                    <div class="wrong margin-top-5">
+                                        {% for answer in answers_data.wrong %}
+                                        <span class="avatar" style="width: 25px">
+                                           <img data-name="{{answer.player.name}}" data-toggle="tooltip" data-original-title="{{answer.player.name}}" class="profile img-circle">
+                                        </span>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                Incorrecto
-                                <div class="uncheck">
-
-                                </div>
-                            </div>
+                            <!-- Answers end -->
                         </div>
                     </div>
+                    <hr>
                 {% endfor %}
                 </div>
             </div>
