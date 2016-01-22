@@ -211,19 +211,25 @@
         url: activity.url + '/check',
         data: {tokens: tokens_array},
         success: function(data) {
-          $.each(data.tokens, function(i, token) {
-            $container.find('#' + token.id).addClass(function() {
-              if (token.valid) { return 'correct checked'; } else { return 'wrong checked'; }
-              if(token_data.type='tokenmeter' && token_data.valid == false) {
-                // La actividad es de matemáticas y el usuario se ha pasado del número pedido
-                // La actividad finaliza
-              }
+
+          for (var key in data.tokens) {
+            $container.find('#' + data.tokens[key].id).addClass(function() {
+              if (data.tokens[key].valid) { return 'correct checked'; } else { return 'wrong checked'; }
             });
-          });
-          data.tokensMeter.forEach(function(tokenmeter) {
-            $container.find('[data-element=' + tokenmeter.id + ']').attr(
-              'data-currentvalue', tokenmeter.currentValue);
-          });
+          }
+          /* $.each(data.tokens, function(i, token) {
+             $container.find('#' + token.id).addClass(function() {
+               if (token.valid) { return 'correct checked'; } else { return 'wrong checked'; }
+               if(token_data.type='tokenmeter' && token_data.valid == false) {
+                 // La actividad es de matemáticas y el usuario se ha pasado del número pedido
+                 // La actividad finaliza
+               }
+             });
+           });
+           data.tokensMeter.forEach(function(tokenmeter) {
+             $container.find('[data-element=' + tokenmeter.id + ']').attr(
+               'data-currentvalue', tokenmeter.currentValue);
+           });*/
 
         }
       });
@@ -270,18 +276,16 @@
             tokens: [token]
           },
           success: function(data) {
-            var token_data = data.tokens[0];
-            $container.find('#' + token_data.id).addClass(function() {
-              if (token_data.valid) { return 'correct checked'; } else { return 'wrong checked'; }
+            //var token_data = data.tokens;
+            for (var key in data.tokens) {
+              $container.find('#' + data.tokens[key].id).addClass(function() {
+              if (data.tokens[key].valid) { return 'correct checked'; } else { return 'wrong checked'; }
             });
-            data.tokensMeter.forEach(function(tokenmeter) {
+            };
+            /*data.tokensMeter.forEach(function(tokenmeter) {
               $container.find('[data-element=' + tokenmeter.id + ']').attr(
                 'data-currentvalue', tokenmeter.currentValue);
-            });
-            if (token_data.type = 'tokenmeter' && token_data.valid == false) {
-              // La actividad es de matemáticas y el usuario se ha pasado del número pedido
-              // La actividad finaliza
-            }
+            });*/
           }
         });
       };

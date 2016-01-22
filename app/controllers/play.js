@@ -157,7 +157,7 @@ exports.activity = {
     var objectives = {};
     var result = false;
     var value = 0;
-    var token_results = [];
+    var token_results = {};
     activity.objectives.forEach(function(objective) {
       if (!objectives[objective.type]) {
         objectives[objective.type] = [];
@@ -186,8 +186,7 @@ exports.activity = {
         }
       });
     });
-    console.log('Valor: ' + value);
-    console.log(token_results);
+
 
     // @TODO insertar respuestas en el modelo Answer
     var answer_options = {
@@ -201,7 +200,7 @@ exports.activity = {
       var answer = new Answer(answer_options);
     }
 
-    tokens.forEach(function(token) {
+    /*tokens.forEach(function(token) {
 
       // let result
       var result = false;
@@ -263,9 +262,11 @@ exports.activity = {
       activity.addAnswer(answer.id);
       activity.save();
       answer.save();
-    });
+    });*/
+
+
     res.send({
-      tokens: tokens_result,
+      tokens: token_results,
       activity: {
         id: activity.id,
         valid: activity_result
