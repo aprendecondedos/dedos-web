@@ -1,0 +1,28 @@
+{% extends '../layouts/project.html' %}
+
+{% block project %}
+<form data-validation="true" class="form-horizontal" action="/project/{{project.id}}/settings" method="post" role="form">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-body container-fluid">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{gettext('options')}}</h3>
+                </div>
+                <div class="panel-body container-fluid">
+                    {% set players = project.players %}
+                    {% include "../player/admin/list.html" with players %}
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

@@ -10,6 +10,7 @@ var auth = require('../config/middlewares/authorization');
  * Route middlewares
  */
 var classroomAuth = [auth.requiresLogin, auth.classroom.hasAuthorization];
+var projectAuth = [auth.requiresLogin, auth.project.hasAuthorization];
 
 module.exports = function(app, passport, io) {
   //var project = require('../app/controllers/project')(io);
@@ -78,8 +79,8 @@ module.exports = function(app, passport, io) {
 
   app.param('userId', user.load);
 
-  app.get('/user/settings',auth.requiresLogin, user.edit);
-  app.post('/user/settings',auth.requiresLogin, user.edit);
+  app.get('/user/settings', auth.requiresLogin, user.edit);
+  app.post('/user/settings', auth.requiresLogin, user.edit);
 
   // Classroom routes
   app.param('classroomId', classroom.load);
@@ -87,10 +88,12 @@ module.exports = function(app, passport, io) {
   app.get('/classrooms', auth.requiresLogin, classroom.index);
   app.get('/classroom/new', auth.requiresLogin, classroom.new);
   app.post('/classroom/new', auth.requiresLogin, classroom.new);
-  app.get('/classroom/:classroomId', classroomAuth, classroom.show);
   app.get('/classroom/:classroomId/edit', classroomAuth, classroom.edit);
-  app.put('/classroom/:classroomId', classroomAuth, classroom.update);
-  app.delete('/classroom/:classroomId', classroomAuth, classroom.destroy);
+
+  app.route('/classroom/:classroomId').all(classroomAuth)
+    .get(classroom.show)
+    .put(classroom.update)
+    .delete(classroom.destroy);
 
   // Player routes
   app.get('/player/new', auth.requiresLogin, player.new);
@@ -104,11 +107,12 @@ module.exports = function(app, passport, io) {
   app.get('/projects', auth.requiresLogin, project.index);
   app.get('/project/new', auth.requiresLogin, project.new);
   app.post('/project/new', auth.requiresLogin, project.new);
-  app.get('/project/:projectId', auth.requiresLogin, project.show);
-  app.get('/project/:projectId/settings', auth.requiresLogin, project.settings);
-  app.post('/project/:projectId/settings', auth.requiresLogin, project.edit);
-  app.delete('/project/:projectId', auth.requiresLogin, project.destroy);
-  app.get('/project/:projectId/copy', auth.requiresLogin, project.copy);
+  app.get('/project/:projectId', projectAuth, project.show);
+  app.get('/project/:projectId/settings', projectAuth, project.settings);
+  app.post('/project/:projectId/settings', projectAuth, project.edit);
+  app.get('/project/:projectId/students', projectAuth, project.students);
+  app.delete('/project/:projectId', projectAuth, project.destroy);
+  app.get('/project/:projectId/copy', projectAuth, project.copy);
 
   // Other routes
   app.get('/faq', auth.requiresLogin, function(req, res) {
@@ -123,7 +127,7 @@ module.exports = function(app, passport, io) {
   app.post('/play/:playId/player', play.player);
   app.get('/play/:playId/activity/:activityId', auth.requiresPlayerLogin, play.activity.show);
   app.post('/play/:playId/activity/:activityId/check', auth.requiresPlayerLogin, play.activity.check);
-    //app.get( "/strings/:lang?", i18n.stringsRoute( "en-US" ) );
+  //app.get( "/strings/:lang?", i18n.stringsRoute( "en-US" ) );
 
   //// Play routes
   //app.get('/play/:id', play.show);

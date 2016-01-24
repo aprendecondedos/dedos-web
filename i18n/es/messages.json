@@ -93,6 +93,8 @@
   "select:all": "Seleccionar todos",
   "loading": "Cargando",
 
+  "subject": "Asignatura",
+  "subjects": "Asignatura(s)",
   "subject:maths": "Matemáticas",
   "subject:nat_sciences": "Ciencias naturales",
   "subject:spanish_language": "Lengua Castellana y Literatura",

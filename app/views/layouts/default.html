@@ -43,7 +43,6 @@
     <script src="/assets/vendor/breakpoints/breakpoints.min.js"></script>
     <script>
         Breakpoints();
-        var socket = io.connect('');
         $.ajaxSetup({
             headers: {"X-CSRF-Token": "{{csrf_token}}" }
         });

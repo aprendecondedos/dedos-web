@@ -1,5 +1,6 @@
 var AdmZip = require('adm-zip');
 var lib = require('../../lib/functions');
+var edu = require('../../lib/education');
 var fs = require('fs');
 var xml2js = require('xml2js');
 var parser = new xml2js.Parser({async: true});
@@ -39,7 +40,6 @@ exports.new = wrap(function*(req, res) {
   if (req.method == 'POST') {
     var project_prop = req.body;
     var upload = lib.upload('file_upload');
-
     // Subida de archivos para creación del proyecto
     upload(req, res, function(err) {
       var xml = '';
@@ -76,6 +76,9 @@ exports.new = wrap(function*(req, res) {
 
       var project = new Project({
         name: project_prop.name,
+        description: project_prop.description,
+        educationLevel: project_prop.educationLevel,
+        subjects: project_prop.subjects,
         project: project_id,
         screenshots: screenshots_array,
         path: '/uploads/' + project_id + '/' + xml.split('/')[0],
@@ -230,7 +233,11 @@ exports.new = wrap(function*(req, res) {
   } else {
     res.render('project/new', {
       title: gettext('project:new'),
-      project: new Project()
+      project: new Project(),
+      education: {
+        levels: edu.education_levels(),
+        subjects: edu.subjects()
+      }
     });
   }
 });
@@ -261,7 +268,7 @@ exports.show = wrap(function*(req, res) {
 });
 
 /**
- *  Propiedades del proyecto
+ *  Configuración de las propiedades del proyecto
  *
  * @param {Object} req
  * @param {Object} res
@@ -271,18 +278,35 @@ exports.settings = function(req, res) {
 
   res.render('project/settings', {
     title: project.name,
+    project: project,
+    education: {
+      levels: edu.education_levels(),
+      subjects: edu.subjects()
+    }
+  });
+};
+
+/**
+ *  Página de información/modificación de estudiantes
+ *
+ * @param {Object} req
+ * @param {Object} res
+ */
+exports.students = function(req, res) {
+  const project = req.project;
+  res.render('project/players', {
+    title: project.name,
     project: project
   });
 };
 
 /**
- *  Propiedades del proyecto
+ *  Edición de las propiedades del proyecto
  *
  * @param {Object} req
  * @param {Object} res
  */
 exports.edit = function(req, res) {
-  var project = req.project;
   var project = extend(req.project, req.body);
   var prop = req.body.properties || {};
   // Propiedades del proyecto seleccionadas
@@ -297,6 +321,9 @@ exports.edit = function(req, res) {
 
 /**
  * Mostrar listado de proyectos creado por el usuario
+ *
+ * @param {Object} req
+ * @param {Object} res
  */
 exports.my = wrap(function*(req, res) {
   var options = {
@@ -314,6 +341,9 @@ exports.my = wrap(function*(req, res) {
 
 /**
  * Eliminar proyecto
+ *
+ * @param {Object} req
+ * @param {Object} res
  */
 exports.destroy = wrap(function*(req, res) {
   yield req.project.remove();
@@ -323,6 +353,9 @@ exports.destroy = wrap(function*(req, res) {
 
 /**
  * Copiar/Clonar proyecto
+ *
+ * @param {Object} req
+ * @param {Object} res
  */
 // @TODO implementar metodos para clonar todas las referencias incluidas
 exports.copy = wrap(function*(req, res) {

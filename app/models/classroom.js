@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 
 var ClassroomSchema = new Schema({
   name: String,
-  education_level: String,
+  educationLevel: String,
   players: [{
     avatar: String,
     user: {type: Schema.Types.ObjectId, ref: 'User'}
@@ -13,10 +13,7 @@ var ClassroomSchema = new Schema({
   createdDate: {type: Date, default: Date.now},
   updatedDate: {type: Date, default: Date.now}
 });
-var educationLevels = [
-  'infant',
-  'primary'
-];
+
 /**
  * Hooks
  */
@@ -67,9 +64,6 @@ ClassroomSchema.methods = {
   },
   setStudents: function(players) {
     this.students = players;
-  },
-  getEducationLevels: function() {
-    return educationLevels;
   }
 };
 
@@ -87,11 +81,11 @@ ClassroomSchema.statics = {
    * @api private
    */
 
-  load: function(id, cb) {
-    this.findOne({_id: id})
+  load: function(id) {
+    return this.findOne({_id: id})
       //.populate('teachers', 'name')
       .populate({path: 'players.user', select: 'name', options: {sort: {_id: -1}}}) // Order by name DESC
-      .exec(cb);
+      .exec();
   },
   list: function(options, cb) {
       var criteria = options.criteria || {};

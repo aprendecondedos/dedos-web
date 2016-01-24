@@ -41,14 +41,27 @@ exports.user = {
 };
 
 /*
- *  Classroom authorization routing middleware
+ *  Autorización de la Clase routing middleware
  */
-
 exports.classroom = {
   hasAuthorization: function(req, res, next) {
     if (req.classroom.teachers.indexOf(req.user._id) == -1) {
       req.flash('info', 'You are not authorized');
       return res.redirect('/classrooms');
+    }
+
+    next();
+  }
+};
+
+/*
+ *  Autorización del Proyecto routing middleware
+ */
+exports.project = {
+  hasAuthorization: function(req, res, next) {
+    if (req.project.createdBy == req.user._id) {
+      req.flash('info', 'You are not authorized');
+      return res.redirect('/projects');
     }
 
     next();

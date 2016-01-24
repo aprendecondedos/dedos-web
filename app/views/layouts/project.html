@@ -1,4 +1,10 @@
 {% extends 'default.html' %}
+{% block head %}
+{% parent %}
+<script>
+    var socket = io.connect('');
+</script>
+{% endblock %}
 
 {% block content %}
 {% set projectUrl = '/project/' + project.id; %}
@@ -14,7 +20,7 @@
         </a>
     </li>
     <li class="col-sm-2 col-xs-4">
-        <a href="javascript:void(0)">
+        <a href="{{projectUrl}}/students">
             <i class="icon wb-users" aria-hidden="true"></i> {{gettext('students')}}
         </a>
     </li>

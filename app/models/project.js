@@ -9,6 +9,8 @@ var ProjectSchema = mongoose.Schema({
   name: String,
   project: String,
   description: String,
+  educationLevel: String,
+  subjects: [],
   screenshots: [],
   path: String,
   resolution: {
@@ -124,17 +126,6 @@ ProjectSchema.methods = {
       }
     };
     return false;
-  },
-  getSubjects: function() {
-    var subjects = [
-      {icon: 'edu-188', name: 'subject:maths'},
-      //{icon: 'edu-108', name: 'subject:nat_sciences'},
-      {icon: 'edu-014', name: 'subject:nat_sciences'},
-      {icon: 'edu-036', name: 'subject:spanish_language'},
-      {icon: 'edu-044', name: 'subject:social_sciences'},
-      {icon: 'edu-107', name: 'subject:english_language'},
-    ];
-    return subjects;
   }
 };
 
