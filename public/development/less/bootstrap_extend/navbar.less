@@ -67,7 +67,10 @@
 
 .navbar-brand {
   font-weight: @font-weight-bold;
-  padding: @navbar-padding-vertical @navbar-brand-padding-horizontal;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  line-height: 40px;
   > .navbar-brand-logo {
     display: inline-block;
   }
@@ -75,13 +78,12 @@
 
 .navbar-brand-logo {
   margin-top: (-(@navbar-brand-logo-height - @line-height-computed)/2);
-  height: @navbar-brand-logo-height;
+  height: 40px;
 }
 
 .navbar-brand-text {
   margin-left: 6px;
 }
-
 
 @media (max-width: @grid-float-breakpoint-max) {
   .navbar-brand-center {
