@@ -158,35 +158,6 @@ exports.activity = {
     var result = false;
     var value = 0;
     var token_results = {};
-    activity.objectives.forEach(function(objective) {
-      if (!objectives[objective.type]) {
-        objectives[objective.type] = [];
-      }
-      objectives[objective.type].push(objective.getData());
-
-      tokens.forEach(function(token) {
-        if(!token_results[token.data.id]){
-          token_results[token.data.id] = {};
-        }
-        if (!token_results[token.data.id] || !token_results[token.data.id].valid) {
-          result = objective.checkToken(token);
-          token_results[token.data.id] = {
-            id: token.data.id,
-            type: objective.type,
-            valid: result,
-            //value: objective.tokenValue(objective.getData()),
-          };
-
-          if (result) {
-            if (token.droppedInto && token.droppedInto.currentValue > 0) {
-              value = token.droppedInto.currentValue;
-            }
-            value += Number(token.data.value);
-          }
-        }
-      });
-    });
-
 
     // @TODO insertar respuestas en el modelo Answer
     var answer_options = {
@@ -199,7 +170,42 @@ exports.activity = {
     if (!answer) {
       var answer = new Answer(answer_options);
     }
+    activity.objectives.forEach(function(objective) {
+      if (!objectives[objective.type]) {
+        objectives[objective.type] = [];
+      }
+      objectives[objective.type].push(objective.getData());
 
+      tokens.forEach(function(token) {
+        if (!token_results[token.data.id]) {
+          token_results[token.data.id] = {};
+        }
+        if (!token_results[token.data.id] ||
+          !token_results[token.data.id].valid) {
+          result = objective.checkToken(token);
+          token_results[token.data.id] = {
+            id: token.data.id,
+            type: objective.type,
+            valid: result
+            //value: objective.tokenValue(objective.getData()),
+          };
+          console.log(token_results[token.data.id]);
+          if (_.isFunction(objective.getSpecialProperties)) {
+            token_results[token.data.id] = _.extend(
+              token_results[token.data.id],
+              objective.getSpecialProperties(token)
+            );
+          }
+          answer.addElement({token: token.data.id, valid: result, action: objective.type});
+          answer.valid = activity_result;
+          activity.addAnswer(answer.id);
+          activity.save();
+          answer.save();
+        }
+      });
+
+    });
+   // console.log(token_results);
     /*tokens.forEach(function(token) {
 
       // let result
@@ -263,8 +269,7 @@ exports.activity = {
       activity.save();
       answer.save();
     });*/
-
-
+   // console.log(tokensMeter);
     res.send({
       tokens: token_results,
       activity: {

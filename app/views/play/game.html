@@ -14,14 +14,10 @@
                 {% if token.clickable %} token-clickable {% endif %}
                 {% if token.movable %} token-movable {% endif %}
                 {% if targets.indexOf(token.element_id) != -1 %} token-droppable {% endif %}
-                {% if answered %}
+               {#{% if answered %}
                     clicked
                     {% if answered.valid %} checked correct {% else %} checked wrong {% endif %}
-                {% endif %}
-                {% if answer.isTokenAnswered(token.id) %}
-                    <!-- El usuario ha seleccionado-->
-                {% endif %}
-                "
+                {% endif %}#}"
              style="display: none;width: 200px;"
              id="{{token.id}}"
              data-element="{{token.element_id}}"
@@ -39,6 +35,9 @@
                 </div>
             </div>
             <span class="badge badge-primary badge-radius" style="display:none;position: absolute;right: 10px;bottom: 10px;box-shadow: 0 2px 0 0 #3E7CB5;"></span>
+            {% if answer.isTokenAnswered(token.id) %}
+                <!-- El usuario ha seleccionado-->
+            {% endif %}
             {% if token.type == 'txt' %}
                 {% include 'tokens/txt.html' %}
             {% elseif token.type == 'img' %}

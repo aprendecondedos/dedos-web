@@ -8,7 +8,8 @@ var TokenMeterSchema = new Schema({
   id: String,
   numValue: String,
   origZones: [],
-  origTokens: []
+  origTokens: [],
+  currentValue: {type: Number, default: 0}
 });
 /**
  * Methods
@@ -23,6 +24,26 @@ TokenMeterSchema.methods = {
       }
     }
     return false;
+  },
+  checkValue: function(value) {
+    if (value < this.numValue || value == this.numValue) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+  getSpecialProperties: function(token) {
+    var value = this.currentValue;
+    if (token.droppedInto && token.droppedInto.currentValue > 0) {
+      value = Number(token.droppedInto.currentValue);
+    }
+    value += Number(token.data.value);
+    this.currentValue = value;
+    return {
+      valid: this.checkValue(value),
+      value: value,
+      targetName: this.id
+    };
   },
   getData: function() {
     return {

@@ -16,12 +16,16 @@ var PairSchema = new Schema({
  */
 PairSchema.methods = {
   checkToken: function(token) {
-    if (token.data.name === this.origen || token.area_id === this.origen) {
-      if (this.targets.indexOf(token.droppedInto.name) != -1) {
-        return true;
+    if(!this.tokenMeter) {
+      if (token.data.name === this.origen || token.area_id === this.origen) {
+        if (this.targets.indexOf(token.droppedInto.name) != -1) {
+          return true;
+        }
       }
+      return false;
+    } else {
+      return false;
     }
-    return false;
   },
   tokenValue: function(data) {
 

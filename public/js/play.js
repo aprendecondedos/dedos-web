@@ -192,7 +192,7 @@
             name: $(this).data('element'),
             value: $(this).data('value')
           },
-          area_id: area_data,
+          area_id: $(this).parent().data('element'),
           droppedInto: {
             id: $(this).data('droppedin'),
             name: $container.find('#' + $(this).data('droppedin'))
@@ -211,11 +211,16 @@
         url: activity.url + '/check',
         data: {tokens: tokens_array},
         success: function(data) {
-
           for (var key in data.tokens) {
             $container.find('#' + data.tokens[key].id).addClass(function() {
               if (data.tokens[key].valid) { return 'correct checked'; } else { return 'wrong checked'; }
             });
+            console.log(data.tokens[key].value);
+            if (data.tokens[key].value) {
+              $container.find('[data-element=' + data.tokens[key].targetName + ']').attr(
+                'data-currentvalue', data.tokens[key].value);
+            }
+
           }
           /* $.each(data.tokens, function(i, token) {
              $container.find('#' + token.id).addClass(function() {
@@ -225,11 +230,11 @@
                  // La actividad finaliza
                }
              });
-           });
-           data.tokensMeter.forEach(function(tokenmeter) {
+           });*/
+          data.tokensMeter.forEach(function(tokenmeter) {
              $container.find('[data-element=' + tokenmeter.id + ']').attr(
                'data-currentvalue', tokenmeter.currentValue);
-           });*/
+           });
 
         }
       });
@@ -277,15 +282,17 @@
           },
           success: function(data) {
             //var token_data = data.tokens;
+            console.log(data.tokens);
             for (var key in data.tokens) {
               $container.find('#' + data.tokens[key].id).addClass(function() {
               if (data.tokens[key].valid) { return 'correct checked'; } else { return 'wrong checked'; }
             });
+              if (data.tokens[key].value) {
+                $container.find('[data-element=' + data.tokens[key].targetName + ']').attr(
+                  'data-currentvalue', data.tokens[key].value);
+              }
             };
-            /*data.tokensMeter.forEach(function(tokenmeter) {
-              $container.find('[data-element=' + tokenmeter.id + ']').attr(
-                'data-currentvalue', tokenmeter.currentValue);
-            });*/
+
           }
         });
       };
