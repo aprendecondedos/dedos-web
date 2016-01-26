@@ -1,0 +1,58 @@
+{% extends '../layouts/default.html' %}
+
+{% block content %}
+{% if project.isNew %}
+    {% set action = '/project/new' %}
+{% else %}
+    {% set action = '/project/' + project.id %}
+    {% include 'includes/header.html' %}
+{% endif %}
+<form data-validation="true" enctype="multipart/form-data" class="form-horizontal" action="{{action}}" method="post" role="form">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    {% if not project.isNew %}
+    <input type="hidden" name="_method" value="PUT">
+    {% endif %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="nav-tabs-horizontal nav-tabs-inverse">
+                <ul class="nav nav-tabs nav-tabs-solid" data-plugin="nav-tabs" role="tablist">
+                    <li class="active" role="presentation">
+                        <a data-toggle="tab" href="#tab-settings" aria-controls="exampleTabsSolidInverseOne"
+                           role="tab">
+                            {{gettext('settings')}}
+                        </a>
+                    </li>
+                    <li role="presentation">
+                        <a data-toggle="tab" href="#tab-advanced" aria-controls="exampleTabsSolidInverseTwo"
+                           role="tab">
+                            <i class="icon wb-settings" aria-hidden="true"></i>
+                            {{gettext('advanced')}}
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab-settings" role="tabpanel">
+                        {% include 'forms/general.html' %}
+                    </div>
+                    <div class="tab-pane" id="tab-advanced" role="tabpanel">
+                        {% include 'forms/properties.html' %}
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-primary">{{gettext('submit')}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <!-- Classroom / students -->
+            <div class="panel">
+                <div class="panel-body container-fluid">
+                    {% set players = project.players %}
+                    {% include "../player/admin/list.html" with players %}
+                </div>
+            </div>
+            <!-- Classroom / students end -->
+        </div>
+    </div>
+</form>
+{% endblock %}

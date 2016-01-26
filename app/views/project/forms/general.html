@@ -36,7 +36,7 @@
 <div class="form-group">
     <label class="col-sm-3 control-label">{{gettext('subjects')}}</label>
     <div class="col-sm-9">
-        <select name="subjects" multiple data-plugin="selectpicker" data-selected-text-format="count">
+        <select required name="subjects" multiple data-plugin="selectpicker" data-selected-text-format="count">
             {% for subject in education.subjects %}
             <option value="{{subject.name}}" data-icon="{{subject.icon}}" {% if project.subjects.indexOf(subject.name)  != -1 %} selected {% endif %}>
                 {{gettext('subject:' + subject.name)}}

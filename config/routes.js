@@ -107,12 +107,13 @@ module.exports = function(app, passport, io) {
   app.get('/projects', auth.requiresLogin, project.index);
   app.get('/project/new', auth.requiresLogin, project.new);
   app.post('/project/new', auth.requiresLogin, project.new);
-  app.get('/project/:projectId', projectAuth, project.show);
   app.get('/project/:projectId/settings', projectAuth, project.settings);
-  app.post('/project/:projectId/settings', projectAuth, project.edit);
-  app.get('/project/:projectId/students', projectAuth, project.students);
-  app.delete('/project/:projectId', projectAuth, project.destroy);
   app.get('/project/:projectId/copy', projectAuth, project.copy);
+
+  app.route('/project/:projectId').all(projectAuth)
+    .get(project.show)
+    .put(project.update)
+    .delete(project.destroy);
 
   // Other routes
   app.get('/faq', auth.requiresLogin, function(req, res) {

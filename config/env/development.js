@@ -23,6 +23,7 @@ if (fs.existsSync(envFile)) {
  */
 
 module.exports = {
+  baseUrl: process.env.BASE_URL,
   db: 'mongodb://' + process.env.DATABASE_SERVER + '/' + process.env.DATABASE_TABLE,
   mailer: {
     from: 'info@aprendecondedos.es',

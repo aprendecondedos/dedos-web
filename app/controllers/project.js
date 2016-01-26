@@ -61,8 +61,6 @@ exports.new = wrap(function*(req, res) {
           } else {
             image_array.push(zipEntry.entryName); // Imagenes encontradas
           }
-        } else {
-          console.log(zipEntry.entryName);
         }
       });
 
@@ -93,7 +91,7 @@ exports.new = wrap(function*(req, res) {
         }
         project.setPlayers(users);
       }
-
+console.log(project);
       parser.parseString(xml_data);
       parser.on('error', function(err) {
         console.log(err);
@@ -287,27 +285,26 @@ exports.settings = function(req, res) {
 };
 
 /**
- *  Página de información/modificación de estudiantes
- *
- * @param {Object} req
- * @param {Object} res
- */
-exports.students = function(req, res) {
-  const project = req.project;
-  res.render('project/players', {
-    title: project.name,
-    project: project
-  });
-};
-
-/**
  *  Edición de las propiedades del proyecto
  *
  * @param {Object} req
  * @param {Object} res
  */
-exports.edit = function(req, res) {
-  var project = extend(req.project, req.body);
+exports.update = function(req, res) {
+  var project = req.project;
+  var players = req.body.players;
+  if (players) {
+    var users = [];
+    for (player in players) {
+      users.push(players[player]);
+    }
+    project.setPlayers(users);
+  }
+  delete req.body.players;
+  delete req.body.players_name;
+  delete req.body.file_upload;
+  delete req.body.classroom;
+  project = extend(project, req.body);
   var prop = req.body.properties || {};
   // Propiedades del proyecto seleccionadas
   prop.required = prop.required || false;

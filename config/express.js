@@ -73,6 +73,7 @@ module.exports = function(app, passport) {
   // expose package.json to views
   app.use(function(req, res, next) {
     res.locals.pkg = pkg;
+    res.locals.baseURL = config.baseUrl;
     res.locals.env = env;
     next();
   });

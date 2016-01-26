@@ -68,6 +68,7 @@
   "dashboard": "Inicio",
   "analytics": "Estadísticas",
   "settings": "Configuración",
+  "advanced": "Avanzado",
   "options": "Opciones",
 
   "error:404:title": "Página no encontrada",

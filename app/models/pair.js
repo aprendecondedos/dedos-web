@@ -35,7 +35,6 @@ PairSchema.methods = {
   setTargets: function(targets) {
     if (util.isArray(targets)) {
       this.targets = targets;
-      console.log("ENTRA AQUI " + this.targets);
       return this;
     }
   }
