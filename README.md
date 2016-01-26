@@ -43,6 +43,16 @@ Editar el archivo
 npm install
 ```
 ### Ejecutar
+Puedes ejecutar el proyecto simplemente con el comando ```node pencilblue```, pero recomendamos usar [nodemon](https://www.npmjs.org/package/nodemon) para desarrollo y [forever](https://www.npmjs.org/package/forever) para producción. Nodemon reiniciará DEDOS-web sobre cada cambio que se realize y Forever garantiza que DEDOS-web siempre se esté ejecutando.
+ ```
+ # Desarollo
+ nodemon server
+
+ o
+
+ # Producción
+ sudo forever start server.js
+ ```
 
 * Desarrollo
 
