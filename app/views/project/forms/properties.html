@@ -50,4 +50,27 @@
         <label class="padding-top-3" for="delayed">Activar</label>
     </div>
 </div>
+<hr>
+<a href="javascript:;" data-toggle="collapse" data-target="#toggle-advanced" aria-expanded="false" aria-controls="toggle-advanced">
+    Mostrar configuración avanzada
+</a>
+<div class="collapse example-well" id="toggle-advanced" style="background: #f3f7f9;padding: 20px 0;">
+    <div class="form-group">
+        <label class="col-sm-7 control-label">
+            Mostrar todas las actividades
+            <span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>
+        </label>
+        <div class="col-sm-5">
+            <div class="pull-left margin-right-20">
+                <input type="checkbox" value="1" data-plugin="switchery"
+                       id="showActivities"
+                       name="properties[showActivities]"
+                       {% if project.properties.showActivities %}checked{% endif %}
+                        >
+            </div>
+            <label class="padding-top-3" for="showActivities">Activar</label>
+        </div>
+    </div>
+</div>
+
 

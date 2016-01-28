@@ -30,7 +30,8 @@ var ProjectSchema = mongoose.Schema({
   // Propiedades extra del proyectos
   properties: {
     required: {type: Boolean, default: false},
-    delayed: {type: Boolean, default: false}
+    delayed: {type: Boolean, default: false},
+    showActivities: {type: Boolean, default: false}
   },
   createdDate: {type: Date, default: Date.now},
   createdBy: {type: Schema.Types.ObjectId, ref: 'User'}

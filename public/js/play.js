@@ -359,7 +359,7 @@
         $(this).fadeIn('fast');
       });
     }
-    $(window).on('resize', elementsAdjustSize);
+    $(window).on('resize', self.elements.load);
 
     // Sockets
     sockets.activity = {
