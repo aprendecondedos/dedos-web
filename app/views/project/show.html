@@ -1,6 +1,7 @@
-{% extends '../layouts/project.html' %}
+{% extends '../layouts/default.html' %}
 
-{% block project %}
+{% block content %}
+{% include 'includes/header.html' %}
 <script>
 $(function(){
     socket.on('player:connected', function (data) {

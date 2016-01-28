@@ -2,7 +2,6 @@
   "preset": "google",
   "maxErrors": 3000,
   "esnext": true,
-//  "requireCamelCaseOrUpperCaseIdentifiers": false
-  "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
+  "requireCamelCaseOrUpperCaseIdentifiers": null,
   "validateIndentation": 2
 }
