@@ -220,22 +220,32 @@
               $container.find('[data-element=' + data.tokens[key].targetName + ']').attr(
                 'data-currentvalue', data.tokens[key].value);
             }
-
           }
-          /* $.each(data.tokens, function(i, token) {
-             $container.find('#' + token.id).addClass(function() {
-               if (token.valid) { return 'correct checked'; } else { return 'wrong checked'; }
-               if(token_data.type='tokenmeter' && token_data.valid == false) {
-                 // La actividad es de matemáticas y el usuario se ha pasado del número pedido
-                 // La actividad finaliza
-               }
-             });
-           });*/
-          data.tokensMeter.forEach(function(tokenmeter) {
-             $container.find('[data-element=' + tokenmeter.id + ']').attr(
-               'data-currentvalue', tokenmeter.currentValue);
-           });
-
+          /* Ejecuta esta parte porque la opción de respuesta demorada está activa,
+          por lo que automáticamente la actividad se dará por terminada una vez el usuario de sus respuestas
+           */
+          /*Por tanto, sólo tenemos que comprobar si ha resuelto la actividad correctamente o no y contrastarlo con
+           la opción dónde se establece si se requiere éxito o no en la respuesta
+            */
+          /* La ejecución será diferente dependiendo de si se hace por turnos o no.
+          Por ejemplo: Si hay turnos, el usuario no podrá avanzar a la siguiente actividad hasta
+          que todos los jugadores hayan completado dicha actividad.
+           */
+          if (self.options.required) {
+            if (data.activity.finished && data.activity.valid) {
+              disableElements();
+                 // Permitimos que el usuario navegue a la siguiente actividad
+            } else {
+              disableElements();
+              /* El usuario no ha completado la actividad con éxito por lo que se le mostraría un botón
+              para reiniciar la actividad */
+            }
+          } else {
+            disableElements();
+            /* El usuario ha contestado y no nos interesa si las respuestas que ha dado son correctas o no
+            por lo que le permitimos avanzar a la siguiente actividad
+             */
+          }
         }
       });
     };
@@ -292,11 +302,39 @@
                   'data-currentvalue', data.tokens[key].value);
               }
             };
+            if (self.options.required) {
+              if (data.activity.finished) {
+                if (data.activity.valid) {
+                  // Permitimos que el usuario navegue a la siguiente actividad
+                  disableElements();
+                } else {
+                  disableElements();
+                  /* El usuario ha contestad mal a la actividad por lo que hay que mostrarle un botón
+                  para que la reinicie.
+                   */
+                }
+              } else {
+                /* Si no ha terminado la actividad puede seguir haciéndola*/
+              }
+            } else {
+              if (data.activity.finished) {
+                disableElements();
+                /* El usuario ha terminado la actividad y no nos interesa si ha contestado bien o mal
+                por lo que le permitimos avanzar a la siguiente actividad.
+                 */
+              }
+            }
 
           }
         });
       };
     };
+    function disableElements() {
+      $container.find('.token-clickable').toggleClass('token-clickable');
+      var disabled = $('.token-movable').draggable('option', 'disabled');
+      $container.find('.token-movable').draggable('option', 'disabled', !disabled);
+    }
+
     /**
      * Ajuste de la resolución en tamaño y posición de un elemento
      */
@@ -339,8 +377,14 @@
         num: $(this).data('num')
       });
     });
+
+    $document.on('click', '.token-disable', function(e) {
+      alert('Hola');
+      e.preventDefault();
+      return false;
+    });
+
     $document.on('click', '.token-clickable', function() {
-      //console.log('hola' + $(this).parent().data('element'));
       elements.tokens.check({
         data: {
           id: $(this).attr('id'),

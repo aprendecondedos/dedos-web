@@ -164,6 +164,46 @@ ActivitySchema.methods = {
       }
     };
     return this.model('Answer').list(_.extend(defaults, options));
+  },
+  /**
+   * Comprobación si la actividad se ha resuelto correctamente
+   * y si se puede dar por finalizada
+   *
+   * @param {Object} answer
+   * @returns {{finishedActivity: boolean, activityResult: boolean}}
+   */
+  check: function(answer) {
+    var activity_result = true;
+    var activity_finished = false;
+    var totalObjectives = new Array(this.objectives.length).fill(false);
+    if (_.where(answer.elements, {valid: false}).length > 0) {
+      console.log('He fracasado como persona y ser humano');
+      return {
+        activityResult: false,
+        finishedActivity: true
+      };
+    }
+    this.objectives.forEach(function(objective, index) {
+      totalObjectives[index] = objective.isDone(answer);
+    });
+    // Comprobación si la actividad está completada
+    // si todos los objetivos han sido respondidos
+
+    // Recogemos todos los objetivos que esten correctos
+    var numberOfCorrectAnswers = _.countBy(totalObjectives, _.identity).true;
+    activity_finished = false;
+    if (answer.elements.length == numberOfCorrectAnswers ||
+      answer.elements.length > numberOfCorrectAnswers) {
+      if (totalObjectives.indexOf(false) == -1) {
+        activity_finished = true;
+      } else {
+        activity_finished = false;
+      }
+    }
+    return {
+      activityResult: activity_result,
+      finishedActivity: activity_finished
+    };
   }
 };
 

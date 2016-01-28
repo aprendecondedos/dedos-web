@@ -17,6 +17,17 @@ var TokenMeterSchema = new Schema({
  * @type {{}}
  */
 TokenMeterSchema.methods = {
+  isDone: function() {
+    var done = false;
+    if (this.currentValue == this.numValue) {
+      done = true;
+    } else if (this.currentValue > this.numValue) {
+      done = false;
+    } else if (this.currentValue < this.numValue) {
+      done = false;
+    }
+    return done;
+  },
   checkToken: function(token) {
     if (this.origTokens.indexOf(token.data.name) || this.origZones.indexOf(token.area_id)) {
       if (token.droppedInto.name == this.id) {

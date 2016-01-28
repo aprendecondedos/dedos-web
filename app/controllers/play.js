@@ -138,25 +138,8 @@ exports.activity = {
   check: wrap(function*(req, res) {
     const tokens = req.body.tokens;
     const activity = req.activity;
-    var tokens_result = [];
-
-    var selection = false;
-    var pair = false;
-    var tokenmeter = false;
-    var type = 'tipo de objetivo';
-    var targets = [];
-    var tokensMeter = [];
-    var activity_result = true;
-    /**
-     *
-     * @type {Object} objectives
-     * @property {String} objectives.select Objetivo de tipo Selección
-     * @property {Array} objectives.pair Objetivo de tipo Emparejamiento
-     * @property {Array} objectives.tokenmeter Objetivo de tipo Matemáticas
-     */
-    var objectives = {};
     var result = false;
-    var value = 0;
+    var activityResult = true;
     var token_results = {};
 
     // @TODO insertar respuestas en el modelo Answer
@@ -171,112 +154,53 @@ exports.activity = {
       var answer = new Answer(answer_options);
     }
     activity.objectives.forEach(function(objective) {
-      if (!objectives[objective.type]) {
-        objectives[objective.type] = [];
-      }
-      objectives[objective.type].push(objective.getData());
-
       tokens.forEach(function(token) {
         if (!token_results[token.data.id]) {
           token_results[token.data.id] = {};
         }
         if (!token_results[token.data.id] ||
-          !token_results[token.data.id].valid) {
+          (!token_results[token.data.id].valid && !(token_results[token.data.id].type == 'tokenMeter'))) {
           result = objective.checkToken(token);
           token_results[token.data.id] = {
             id: token.data.id,
             type: objective.type,
             valid: result
-            //value: objective.tokenValue(objective.getData()),
           };
-          console.log(token_results[token.data.id]);
+
           if (_.isFunction(objective.getSpecialProperties)) {
             token_results[token.data.id] = _.extend(
               token_results[token.data.id],
               objective.getSpecialProperties(token)
             );
           }
-          answer.addElement({token: token.data.id, valid: result, action: objective.type});
-          answer.valid = activity_result;
+          if (!token_results[token.data.id].valid) {
+            activityResult = false;
+          }
+          answer.addElement({
+            token: token.data.id,
+            valid: token_results[token.data.id].valid,
+            action: objective.type,
+            objective: objective
+          });
+          answer.valid = activityResult;
           activity.addAnswer(answer.id);
-          activity.save();
-          answer.save();
+
         }
       });
 
     });
-   // console.log(token_results);
-    /*tokens.forEach(function(token) {
+    activity.save();
+    answer.save();
 
-      // let result
-      var result = false;
-      //tokensCheck();
-      //activity.checkToken(token, objectives);
-      // Seleccion
+    activity.check(answer);
 
-      if (objectives['sel']) {
-        type = 'selection';
-        if (objectives['sel'].indexOf(token.data.name) != -1) {
-          result = true;
-        }
-      }
-      if (objectives['pair'] && token.droppedInto) {
-        type = 'pair';
-        objectives['pair'].forEach(function(target) {
-          // Comprobar si el id del area que contiene al token es igual que el origen del objetivo.
-          // if( === target.origen)
-          if (token.data.name === target.origen || token.area_id === target.origen) {
-            if (target.targets.indexOf(token.droppedInto.name) != -1) {
-              if (!target.tokenMeter) {
-                result = true;
-               // console.log('EMPAREJAMIENTO_CORRECTO');
-              } else {
-                //Cosas para hacer si hay matemáticas
-                type = 'tokenmeter';
-                tokensMeter.forEach(function(tokmeter) {
-                  if (tokmeter.currentValue === 0) {
-                    tokmeter.currentValue = Number(token.droppedInto.currentValue);
-                  }
-                  if (tokmeter.id === token.droppedInto.name) {
-                    tokmeter.currentValue = Number(tokmeter.currentValue) + Number(token.data.value);
-                  }
-                  if (tokmeter.currentValue < tokmeter.numValue) {
-                    result = true;
-                  }else if (tokmeter.currentValue == tokmeter.numValue) {
-                    result = true;
-                  } else {
-                    activity_result = false;
-                    result = false;
-                  }
-                });
-              }
-            }
-          }
-        });
-      }
-      if (!result) {
-        activity_result = false;
-      }
-      tokens_result.push({
-        id: token.data.id,
-        type: type,
-        valid: result
-      });
-      // Se añade como respuesta
-      answer.addElement({token: token.data.id, valid: result, action: type});
-      answer.valid = activity_result;
-      activity.addAnswer(answer.id);
-      activity.save();
-      answer.save();
-    });*/
-   // console.log(tokensMeter);
     res.send({
       tokens: token_results,
       activity: {
         id: activity.id,
-        valid: activity_result
-      },
-      tokensMeter: tokensMeter
+        finished: activityResult.finishedActivity,
+        valid: activityResult.activityResult
+      }
     });
   })
 };

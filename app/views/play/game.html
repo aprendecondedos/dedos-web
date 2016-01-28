@@ -17,6 +17,9 @@
                {#{% if answered %}
                     clicked
                     {% if answered.valid %} checked correct {% else %} checked wrong {% endif %}
+                {% endif %}
+                {% if answer.isTokenAnswered(token.id) %}
+                    <!-- El usuario ha seleccionado-->
                 {% endif %}#}"
              style="display: none;width: 200px;"
              id="{{token.id}}"
@@ -35,9 +38,6 @@
                 </div>
             </div>
             <span class="badge badge-primary badge-radius" style="display:none;position: absolute;right: 10px;bottom: 10px;box-shadow: 0 2px 0 0 #3E7CB5;"></span>
-            {% if answer.isTokenAnswered(token.id) %}
-                <!-- El usuario ha seleccionado-->
-            {% endif %}
             {% if token.type == 'txt' %}
                 {% include 'tokens/txt.html' %}
             {% elseif token.type == 'img' %}

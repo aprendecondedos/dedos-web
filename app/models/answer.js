@@ -10,7 +10,8 @@ var AnswerSchema = mongoose.Schema({
     token: {type: Schema.Types.ObjectId, ref: 'Token'},
     target: {type: Schema.Types.ObjectId, ref: 'Token'},
     action: String,
-    valid: Boolean
+    valid: Boolean,
+    objective: {type: Schema.Types.ObjectId, ref: 'Objective'},
   }],
   valid: Boolean,
   createdDate: {type: Date, default: Date.now},

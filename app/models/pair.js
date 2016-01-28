@@ -15,8 +15,22 @@ var PairSchema = new Schema({
  * @type {{}}
  */
 PairSchema.methods = {
+  isDone: function(answers) {
+    const self = this;
+    var done = false;
+    if (this.tokenMeter) {
+      done = true;
+    } else {
+      answers.elements.forEach(function(element) {
+        if (element.objective == self.id && element.valid == true) {
+          done = true;
+        }
+      });
+    }
+    return done;
+  },
   checkToken: function(token) {
-    if(!this.tokenMeter) {
+    if (!this.tokenMeter) {
       if (token.data.name === this.origen || token.area_id === this.origen) {
         if (this.targets.indexOf(token.droppedInto.name) != -1) {
           return true;
