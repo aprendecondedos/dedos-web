@@ -127,12 +127,17 @@ $(function(){
                 <h3 class="panel-title">{{gettext('students')}}</h3>
             </div>
             <div class="panel-body">
+                {% if project.players.length == 0 %}
+                {{gettext('students:none')}}
+                <br>
+                <a href="{{projectUrl}}/settings">{{gettext('students:add')}}</a>
+                {% else %}
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>Estudiante</th>
-                        <th class="width-100">Progreso</th>
-                        <th class="width-100">Estado</th>
+                        <th>{{gettext('student')}}</th>
+                        <th class="width-100">{{gettext('progress')}}</th>
+                        <th class="width-100">{{gettext('status')}}</th>
                     </tr>
                     </thead>
                     {% for player in project.players %}
@@ -155,32 +160,7 @@ $(function(){
                     </tr>
                     {% endfor %}
                 </table>
-                <div class="list-group list-group-dividered list-group-full hide">
-                {% for player in project.players %}
-                <div class="list-group-item">
-                    <div class="media-left margin-right-10 margin-left-5">
-                        <span id="{{player.user.id}}" class="avatar avatar-{% if player.online %}online{% else %}off{% endif %}" style="width: 25px">
-                           <img data-name="{{player.user.name}}" class="profile img-circle">
-                            <i></i>
-                        </span>
-                    </div>
-                    <div class="media-body">
-                        {{player.user.name}}
-                        <div class="pull-right context">
-                            {% if loop.index == 1 %}
-                            <span class="label label-default">Sin empezar</span>
-                            {% endif %}
-                            {% if loop.index == 2 %}
-                            <span class="label label-success">Terminado</span>
-                            {% endif %}
-                            {% if loop.index == 3 %}
-                            <span class="label label-warning"><i class="wb-eye"></i> Actividad 2</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -35,6 +35,8 @@
   "player": "Jugador",
 
   "students": "Estudiantes",
+  "students:add": "Añadir estudiantes",
+  "students:none": "No se han añadido estudiantes",
   "student": "Estudiante",
 
   "mail:subject:user:register": "Bienvenido a dedos player",
@@ -93,6 +95,9 @@
   "rename": "Renombrar",
   "select:all": "Seleccionar todos",
   "loading": "Cargando",
+
+  "progress": "Progreso",
+  "status": "Estado",
 
   "subject": "Asignatura",
   "subjects": "Asignatura(s)",
