@@ -109,21 +109,32 @@
           $container.attr('id', activity.id);
           // Renderizado de elementos/tokens
           self.elements.load();
+          var helper = 'original';
+          var revert = true;
+          opacity = 1;
+          var hardcore = true;
+          if (hardcore){
+            helper = 'clone';
+            revert = false;
+            opacity = 0;
+          }
           // @TODO
           $container.find('.token-movable').draggable({
-            revert: false,
+            //revert: true, //if self.options.failpermitted { revert == true } else { revert == false }
+            revert: revert,
             cursor: 'move',
             //opacity: 0.7,
-            helper: 'clone',
+            helper: helper,
             drag: function(event, ui) {
-              $(this).css('opacity', 0.3);
+              $(this).css('opacity', opacity);
             },
             stop: function(event, ui) {
-              $(this).css('opacity', 1);
+              //$(this).css('opacity', 1);
             }
           });
           //$container.find('.tokenMeter').attr('data-currentValue',0);
-          $('.token-droppable').droppable({
+          $container.find('.token-droppable').droppable({
+
             drop: function(event, ui) {
               //$container.find('.token-target').droppable({
               //  drop: function(event, ui) {
@@ -132,6 +143,7 @@
               //    $(this)
               //      .addClass( "ui-state-highlight" );
               //    ui.draggable.draggable('option', 'revert', false);
+              //ui.draggable.draggable({ revert: true });
               elements.tokens.check({
                 data: {
                   id: ui.draggable.context.id,
@@ -212,10 +224,22 @@
         data: {tokens: tokens_array},
         success: function(data) {
           for (var key in data.tokens) {
-            $container.find('#' + data.tokens[key].id).addClass(function() {
-              if (data.tokens[key].valid) { return 'correct checked'; } else { return 'wrong checked'; }
-            });
+            if (data.tokens[key].type == 'sel') {
+              $container.find('#' + data.tokens[key].id).addClass(function() {
+                if (data.tokens[key].valid) {
+                  return 'correct checked';
+                } else {
+                  return 'wrong checked';
+                }
+              });
+            }else if (data.tokens[key].type == 'pair') {
+              console.log('Comprueba emparejamiento');
+              if (data.tokens[key].valid) {
+                $container.find('#' + data.tokens[key].id).hide();//draggable('option', 'disabled', true);
+              }
+            }
             console.log(data.tokens[key].value);
+
             if (data.tokens[key].value) {
               $container.find('[data-element=' + data.tokens[key].targetName + ']').attr(
                 'data-currentvalue', data.tokens[key].value);
@@ -266,7 +290,7 @@
      * @property {Boolean} token.checked Comprobador si el token ya ha sido seleccionado
      */
     tokens.check = function(token) {
-
+     // $('#569e54248b3a7184049cf354').draggable( "option", "revert", false );
       //console.log('ESTO SE PASA: ' + $container.find('#' + token.droppedInto.id).data('currentvalue'));
       //console.log($container.find('#' + token.droppedInto.id).attr('data-currentvalue'));
       if (self.options.properties.delayed) {
@@ -292,11 +316,32 @@
           },
           success: function(data) {
             //var token_data = data.tokens;
-            console.log(data.tokens);
             for (var key in data.tokens) {
-              $container.find('#' + data.tokens[key].id).addClass(function() {
-              if (data.tokens[key].valid) { return 'correct checked'; } else { return 'wrong checked'; }
-            });
+              if (data.tokens[key].type == 'sel') {
+                $container.find('#' + data.tokens[key].id).addClass(function() {
+                  if (data.tokens[key].valid) {
+                    return 'correct checked';
+                  } else {
+                    return 'wrong checked';
+                  }
+                });
+              }else if (data.tokens[key].type == 'pair') {
+                console.log('Comprueba emparejamiento');
+
+                if (data.tokens[key].valid) {
+                  $container.find('#' + data.tokens[key].id).css('opacity',0);
+                  /*$container.find('#' + data.tokens[key].id).draggable({
+                    revert: function(event, ui) {
+                      $(this).hide();
+                      return false;
+                    }
+                  });*/
+                  //$container.find('#' + data.tokens[key].id).draggable( "option", "revert", false );
+                  //$container.find('#' + data.tokens[key].id).hide();//draggable('option', 'disabled', true);
+                } else {
+                  $container.find('#' + data.tokens[key].id).css('opacity',1);
+                }
+              }
               if (data.tokens[key].value) {
                 $container.find('[data-element=' + data.tokens[key].targetName + ']').attr(
                   'data-currentvalue', data.tokens[key].value);
@@ -304,6 +349,7 @@
             };
             if (self.options.required) {
               if (data.activity.finished) {
+                pointObjectivesNotDone(data.activity.objectivesNotDone);
                 if (data.activity.valid) {
                   // Permitimos que el usuario navegue a la siguiente actividad
                   disableElements();
@@ -318,7 +364,9 @@
               }
             } else {
               if (data.activity.finished) {
+
                 disableElements();
+                pointObjectivesNotDone(data.activity.objectivesNotDone);
                 /* El usuario ha terminado la actividad y no nos interesa si ha contestado bien o mal
                 por lo que le permitimos avanzar a la siguiente actividad.
                  */
@@ -331,8 +379,57 @@
     };
     function disableElements() {
       $container.find('.token-clickable').toggleClass('token-clickable');
-      var disabled = $('.token-movable').draggable('option', 'disabled');
-      $container.find('.token-movable').draggable('option', 'disabled', !disabled);
+       var disabled = $('.token-movable').draggable('option', 'disabled');
+       $container.find('.token-movable').draggable('option', 'disabled', !disabled);
+    }
+
+    function pointObjectivesNotDone(objectives) {
+      console.log(objectives);
+
+      objectives.forEach(function(objective) {
+        if (objective.type == 'sel') {
+          $container.find('[data-element=' + objective.obj + ']').addClass('correct checked');
+        } else if (objective.type == 'pair') {
+          objective.targets.forEach(function(target) {
+            connect(
+              $container.find('[data-element=' + objective.origen + ']').attr('id'),
+              $container.find('[data-element=' + target + ']').attr('id')
+            );
+          });
+        }
+      });
+    }
+
+    function connect(id1, id2) {
+      console.log('ID2: ' + id2);
+
+      /*jsPlumb.makeSource($('.token'), {
+        connector: 'StateMachine'
+      });*/
+      jsPlumb.makeTarget($('.element'), {
+        anchor: 'Continuous'
+      });
+      /* var endpointOptions = {
+         isSource:true,
+         isTarget:true,
+         endpoint: [ "Dot", {radius:30} ],
+         style:{ fillStyle:'blue' },
+         maxConnections:-1,
+         connector : "Straight",
+         connectorStyle: { lineWidth:20, strokeStyle:'blue' },
+         scope:"blueline",
+       };
+       jsPlumb.addEndpoint(id1, { uuid:"abcdefg" }, endpointOptions );
+       jsPlumb.addEndpoint(id2, { uuid:"hijklmn" }, endpointOptions );
+       jsPlumb.connect({uuids:["abcdefg", "hijklmn"]});*/
+      jsPlumb.ready(function() {
+        jsPlumb.connect({
+          source: id1,
+          target: id2,
+          anchors: ['Center', 'Center'],
+          endpoint: 'Rectangle'
+        });
+      });
     }
 
     /**

@@ -14,13 +14,13 @@
                 {% if token.clickable %} token-clickable {% endif %}
                 {% if token.movable %} token-movable {% endif %}
                 {% if targets.indexOf(token.element_id) != -1 %} token-droppable {% endif %}
-                {% if answered %}
+                {#{% if answered %}
                     clicked
                     {% if answered.valid %} checked correct {% else %} checked wrong {% endif %}
                 {% endif %}
                 {% if answer.isTokenAnswered(token.id) %}
                     <!-- El usuario ha seleccionado-->
-                {% endif %}"
+                {% endif %}#}"
              style="display: none;width: 200px;"
              id="{{token.id}}"
              data-element="{{token.element_id}}"

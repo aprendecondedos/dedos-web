@@ -192,14 +192,16 @@ exports.activity = {
     activity.save();
     answer.save();
 
-    activity.check(answer);
+    activityResult = activity.check(answer);
+    console.log(activityResult.objectivesNotDone);
 
     res.send({
       tokens: token_results,
       activity: {
         id: activity.id,
         finished: activityResult.finishedActivity,
-        valid: activityResult.activityResult
+        valid: activityResult.activityResult,
+        objectivesNotDone: activityResult.objectivesNotDone
       }
     });
   })

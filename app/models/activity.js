@@ -176,16 +176,29 @@ ActivitySchema.methods = {
     var activity_result = true;
     var activity_finished = false;
     var totalObjectives = new Array(this.objectives.length).fill(false);
+    var objectivesNotDone = [];
+
+    this.objectives.forEach(function(objective, index) {
+      totalObjectives[index] = objective.isDone(answer);
+      // Si el objetivo no ha sido completado lo añadimos a un array.
+      if (totalObjectives[index] == false) {
+        objectivesNotDone.push(objective);
+      }
+    });
+    /* Si hay algun elemento que hemos contestado incorrectamente finalizamos la actividad aunque el usuario
+    haya completado objetivos de forma correcta
+     */
+  // if (_.where(answer.elements, {valid: false, action: 'sel'}).length > 0 ||
+  //    _.where(answer.elements, {valid: false, action: 'tokenMeter'}).length > 0) {
     if (_.where(answer.elements, {valid: false}).length > 0) {
       console.log('He fracasado como persona y ser humano');
       return {
         activityResult: false,
-        finishedActivity: true
+        finishedActivity: true,
+        objectivesNotDone: objectivesNotDone
       };
     }
-    this.objectives.forEach(function(objective, index) {
-      totalObjectives[index] = objective.isDone(answer);
-    });
+
     // Comprobación si la actividad está completada
     // si todos los objetivos han sido respondidos
 
