@@ -138,6 +138,7 @@ exports.activity = {
   check: wrap(function*(req, res) {
     const tokens = req.body.tokens;
     const activity = req.activity;
+    const properties = req.body.properties;
     var result = false;
     var activityResult = true;
     var token_results = {};
@@ -192,7 +193,7 @@ exports.activity = {
     activity.save();
     answer.save();
 
-    activityResult = activity.check(answer);
+    activityResult = activity.check(answer, properties);
     console.log(activityResult.objectivesNotDone);
 
     res.send({

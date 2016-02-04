@@ -172,7 +172,7 @@ ActivitySchema.methods = {
    * @param {Object} answer
    * @returns {{finishedActivity: boolean, activityResult: boolean}}
    */
-  check: function(answer) {
+  check: function(answer, properties) {
     var activity_result = true;
     var activity_finished = false;
     var totalObjectives = new Array(this.objectives.length).fill(false);
@@ -185,18 +185,20 @@ ActivitySchema.methods = {
         objectivesNotDone.push(objective);
       }
     });
+
     /* Si hay algun elemento que hemos contestado incorrectamente finalizamos la actividad aunque el usuario
     haya completado objetivos de forma correcta
      */
-  // if (_.where(answer.elements, {valid: false, action: 'sel'}).length > 0 ||
-  //    _.where(answer.elements, {valid: false, action: 'tokenMeter'}).length > 0) {
-    if (_.where(answer.elements, {valid: false}).length > 0) {
-      console.log('He fracasado como persona y ser humano');
-      return {
-        activityResult: false,
-        finishedActivity: true,
-        objectivesNotDone: objectivesNotDone
-      };
+    if (properties.failAllowed == 'false') {
+      console.log('PASA AQUI');
+      if (_.where(answer.elements, {valid: false}).length > 0) {
+        console.log('He fracasado como persona y ser humano');
+        return {
+          activityResult: false,
+          finishedActivity: true,
+          objectivesNotDone: objectivesNotDone
+        };
+      }
     }
 
     // Comprobación si la actividad está completada
@@ -215,7 +217,8 @@ ActivitySchema.methods = {
     }
     return {
       activityResult: activity_result,
-      finishedActivity: activity_finished
+      finishedActivity: activity_finished,
+      objectivesNotDone: objectivesNotDone
     };
   }
 };

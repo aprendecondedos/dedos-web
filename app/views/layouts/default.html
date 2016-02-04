@@ -46,6 +46,9 @@
         $.ajaxSetup({
             headers: {"X-CSRF-Token": "{{csrf_token}}" }
         });
+        $.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
+            options.async = true;
+        });
     </script>
 </head>
 

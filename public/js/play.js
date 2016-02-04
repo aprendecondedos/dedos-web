@@ -13,6 +13,7 @@
       },
       properties: {
         delayed: false,
+        failAllowed: false,
         required: false
       },
       room: '',
@@ -112,38 +113,34 @@
           var helper = 'original';
           var revert = true;
           opacity = 1;
-          var hardcore = true;
-          if (hardcore){
+          if (!self.options.properties.failAllowed) {
             helper = 'clone';
             revert = false;
             opacity = 0;
           }
           // @TODO
+
           $container.find('.token-movable').draggable({
             //revert: true, //if self.options.failpermitted { revert == true } else { revert == false }
-            revert: revert,
+            revert: true,
+            containment: $('.play-table'),
             cursor: 'move',
+            zIndex: 2500,
             //opacity: 0.7,
-            helper: helper,
+            helper: 'original',
             drag: function(event, ui) {
-              $(this).css('opacity', opacity);
+              $(this).css('opacity', 1);
+              //jsPlumb.repaint($(this));
             },
             stop: function(event, ui) {
-              //$(this).css('opacity', 1);
+              $(this).css('opacity', 1);
             }
           });
           //$container.find('.tokenMeter').attr('data-currentValue',0);
           $container.find('.token-droppable').droppable({
 
             drop: function(event, ui) {
-              //$container.find('.token-target').droppable({
-              //  drop: function(event, ui) {
-              //    $(this).afster($(ui.draggable).clone());
-              //    $(this).addClass('checked correct');
-              //    $(this)
-              //      .addClass( "ui-state-highlight" );
-              //    ui.draggable.draggable('option', 'revert', false);
-              //ui.draggable.draggable({ revert: true });
+              $(ui.draggable.context).addClass('dragged');
               elements.tokens.check({
                 data: {
                   id: ui.draggable.context.id,
@@ -162,6 +159,7 @@
                     .attr('data-currentvalue')
                 }
               });
+              jsPlumb.repaint(ui.draggable.context.id);
               $(this).addClass('ui-state-highlight');
             }
           });
@@ -221,7 +219,7 @@
         type: 'POST',
         dataType: 'json',
         url: activity.url + '/check',
-        data: {tokens: tokens_array},
+        data: {tokens: tokens_array, options: self.options},
         success: function(data) {
           for (var key in data.tokens) {
             if (data.tokens[key].type == 'sel') {
@@ -255,7 +253,7 @@
           Por ejemplo: Si hay turnos, el usuario no podrá avanzar a la siguiente actividad hasta
           que todos los jugadores hayan completado dicha actividad.
            */
-          if (self.options.required) {
+          if (self.options.properties.required) {
             if (data.activity.finished && data.activity.valid) {
               disableElements();
                  // Permitimos que el usuario navegue a la siguiente actividad
@@ -290,9 +288,8 @@
      * @property {Boolean} token.checked Comprobador si el token ya ha sido seleccionado
      */
     tokens.check = function(token) {
-     // $('#569e54248b3a7184049cf354').draggable( "option", "revert", false );
-      //console.log('ESTO SE PASA: ' + $container.find('#' + token.droppedInto.id).data('currentvalue'));
-      //console.log($container.find('#' + token.droppedInto.id).attr('data-currentvalue'));
+      console.log('FAIL ALLOWED: ' + typeof self.options.properties.failAllowed);
+
       if (self.options.properties.delayed) {
         if (token.droppedInto) {
           $container.find('#' + token.data.id).addClass('dropped');
@@ -309,14 +306,17 @@
         socket.emit('event:click:token', {id: token.element});
         $.ajax({
           type: 'POST',
+          async: false,
           dataType: 'json',
           url: activity.url + '/check',
           data: {
-            tokens: [token]
+            tokens: [token],
+            properties: self.options.properties
           },
           success: function(data) {
             //var token_data = data.tokens;
             for (var key in data.tokens) {
+              console.log(data.tokens[key]);
               if (data.tokens[key].type == 'sel') {
                 $container.find('#' + data.tokens[key].id).addClass(function() {
                   if (data.tokens[key].valid) {
@@ -329,25 +329,23 @@
                 console.log('Comprueba emparejamiento');
 
                 if (data.tokens[key].valid) {
+                  $container.find('#' + data.tokens[key].id).draggable('option', 'revert', false);
+                  $container.find('#' + data.tokens[key].id).hide();
+                  //$container.find('#' + data.tokens[key].id).css('opacity',0);
+                } else {
+                  //$container.find('#' + data.tokens[key].id).css('opacity',1);
+                }
+              } else if (data.tokens[key].type = 'tokenMeter') {
+                $container.find('[data-element=' + data.tokens[key].targetName + ']').attr(
+                  'data-currentvalue', data.tokens[key].value);
+                if (data.tokens[key].valid) {
                   $container.find('#' + data.tokens[key].id).css('opacity',0);
-                  /*$container.find('#' + data.tokens[key].id).draggable({
-                    revert: function(event, ui) {
-                      $(this).hide();
-                      return false;
-                    }
-                  });*/
-                  //$container.find('#' + data.tokens[key].id).draggable( "option", "revert", false );
-                  //$container.find('#' + data.tokens[key].id).hide();//draggable('option', 'disabled', true);
                 } else {
                   $container.find('#' + data.tokens[key].id).css('opacity',1);
                 }
               }
-              if (data.tokens[key].value) {
-                $container.find('[data-element=' + data.tokens[key].targetName + ']').attr(
-                  'data-currentvalue', data.tokens[key].value);
-              }
             };
-            if (self.options.required) {
+            if (self.options.properties.required) {
               if (data.activity.finished) {
                 pointObjectivesNotDone(data.activity.objectivesNotDone);
                 if (data.activity.valid) {
@@ -364,12 +362,12 @@
               }
             } else {
               if (data.activity.finished) {
-
                 disableElements();
+                console.log('busca objetivos no hechos');
                 pointObjectivesNotDone(data.activity.objectivesNotDone);
                 /* El usuario ha terminado la actividad y no nos interesa si ha contestado bien o mal
-                por lo que le permitimos avanzar a la siguiente actividad.
-                 */
+por lo que le permitimos avanzar a la siguiente actividad.
+ */
               }
             }
 
@@ -379,57 +377,91 @@
     };
     function disableElements() {
       $container.find('.token-clickable').toggleClass('token-clickable');
-       var disabled = $('.token-movable').draggable('option', 'disabled');
-       $container.find('.token-movable').draggable('option', 'disabled', !disabled);
+      var disabled = $('.token-movable').draggable('option', 'disabled');
+      //$container.find('.token-movable').draggable('option', 'disabled', !disabled);
     }
 
     function pointObjectivesNotDone(objectives) {
       console.log(objectives);
-
+      const paintStyle = [{ fillStyle:"blue", strokeStyle: 'blue', lineWidth: 1},
+        {fillStyle:"green", strokeStyle: 'green', lineWidth: 1},
+        {fillStyle: 'red', strokeStyle: 'red', lineWidth: 1}];
+      const lineStyle = [{strokeStyle: 'blue', lineWidth: 7},
+        {strokeStyle: 'green', lineWidth: 7},
+        {strokeStyle: 'red', lineWidth: 7}]
+      var lineStyleTargets = [];
+      var paintStyleTargets = [];
+      var index = 0;
       objectives.forEach(function(objective) {
         if (objective.type == 'sel') {
           $container.find('[data-element=' + objective.obj + ']').addClass('correct checked');
         } else if (objective.type == 'pair') {
           objective.targets.forEach(function(target) {
-            connect(
-              $container.find('[data-element=' + objective.origen + ']').attr('id'),
-              $container.find('[data-element=' + target + ']').attr('id')
-            );
+            $container.find('[data-element=' + objective.origen + ']').draggable({
+              stop: function(event, ui) {
+                if (!paintStyleTargets[target]) {
+                  paintStyleTargets[target] = paintStyle[index];
+                  lineStyleTargets[target] = lineStyle[index];
+                  index++;
+                }
+                connect(
+                  $container.find('[data-element=' + objective.origen + ']').attr('id'),
+                  $container.find('[data-element=' + target + ']').attr('id'),
+                  paintStyleTargets[target],
+                  lineStyleTargets[target]
+                );
+              }
+            });
+            if (!$container.find('[data-element=' + objective.origen + ']').hasClass('dragged')) {
+              if (!paintStyleTargets[target]) {
+                paintStyleTargets[target] = paintStyle[index];
+                lineStyleTargets[target] = lineStyle[index];
+                index++;
+              }
+              connect(
+                $container.find('[data-element=' + objective.origen + ']').attr('id'),
+                $container.find('[data-element=' + target + ']').attr('id'),
+                paintStyleTargets[target],
+                lineStyleTargets[target]
+              );
+            }
           });
         }
       });
+
     }
 
-    function connect(id1, id2) {
-      console.log('ID2: ' + id2);
-
-      /*jsPlumb.makeSource($('.token'), {
-        connector: 'StateMachine'
-      });*/
+    function connect(id1, id2, paintStyle, lineStyle) {
       jsPlumb.makeTarget($('.element'), {
-        anchor: 'Continuous'
+        anchor: 'Continuous',
       });
-      /* var endpointOptions = {
-         isSource:true,
-         isTarget:true,
-         endpoint: [ "Dot", {radius:30} ],
-         style:{ fillStyle:'blue' },
-         maxConnections:-1,
-         connector : "Straight",
-         connectorStyle: { lineWidth:20, strokeStyle:'blue' },
-         scope:"blueline",
-       };
-       jsPlumb.addEndpoint(id1, { uuid:"abcdefg" }, endpointOptions );
-       jsPlumb.addEndpoint(id2, { uuid:"hijklmn" }, endpointOptions );
-       jsPlumb.connect({uuids:["abcdefg", "hijklmn"]});*/
+
+      var e1 = jsPlumb.addEndpoint(id1, {
+        //connectionType:"basic",
+        anchor: 'Top',
+        paintStyle: paintStyle,
+        endpointStyle: paintStyle,
+        isSource: true
+      });
+
+      var e2 = jsPlumb.addEndpoint(id2, {
+        isTarget: true,
+        anchor: 'Center',
+        endpoint: 'Blank'
+      });
+
       jsPlumb.ready(function() {
         jsPlumb.connect({
-          source: id1,
-          target: id2,
-          anchors: ['Center', 'Center'],
-          endpoint: 'Rectangle'
+          source: e1,//id1,
+          target: e2,//id2,
+          detachable: false,
+          overlays: [
+            ['Arrow' , {width: 25, length: 25, location: 0.99}]
+          ],
+          paintStyle: lineStyle//{strokeStyle: 'green', lineWidth: 7},
         });
       });
+
     }
 
     /**
