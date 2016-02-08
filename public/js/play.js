@@ -13,7 +13,7 @@
       },
       properties: {
         delayed: false,
-        failAllowed: false,
+        failNotAllowed: false,
         required: false
       },
       room: '',
@@ -113,7 +113,7 @@
           var helper = 'original';
           var revert = true;
           opacity = 1;
-          if (!self.options.properties.failAllowed) {
+          if (self.options.properties.failNotAllowed) {
             helper = 'clone';
             revert = false;
             opacity = 0;
@@ -288,8 +288,6 @@
      * @property {Boolean} token.checked Comprobador si el token ya ha sido seleccionado
      */
     tokens.check = function(token) {
-      console.log('FAIL ALLOWED: ' + typeof self.options.properties.failAllowed);
-
       if (self.options.properties.delayed) {
         if (token.droppedInto) {
           $container.find('#' + token.data.id).addClass('dropped');
@@ -302,7 +300,6 @@
         return false;
       } else {
         // Se emite un socket con la información del token
-        console.log(token);
         socket.emit('event:click:token', {id: token.element});
         $.ajax({
           type: 'POST',
@@ -316,7 +313,6 @@
           success: function(data) {
             //var token_data = data.tokens;
             for (var key in data.tokens) {
-              console.log(data.tokens[key]);
               if (data.tokens[key].type == 'sel') {
                 $container.find('#' + data.tokens[key].id).addClass(function() {
                   if (data.tokens[key].valid) {
@@ -326,7 +322,6 @@
                   }
                 });
               }else if (data.tokens[key].type == 'pair') {
-                console.log('Comprueba emparejamiento');
 
                 if (data.tokens[key].valid) {
                   $container.find('#' + data.tokens[key].id).draggable('option', 'revert', false);

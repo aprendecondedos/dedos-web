@@ -30,6 +30,9 @@ PlayerSchema.methods = {
   setProject: function() {
 
   },
+  getAnswers: function(project_id) {
+
+  },
   getProjects: function() {
 
   }

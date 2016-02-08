@@ -30,7 +30,7 @@ var ProjectSchema = mongoose.Schema({
   // Propiedades extra del proyectos
   properties: {
     required: {type: Boolean, default: false},
-    failAllowed: {type: Boolean, default: false},
+    failNotAllowed: {type: Boolean, default: false},
     delayed: {type: Boolean, default: false},
     showActivities: {type: Boolean, default: false}
   },

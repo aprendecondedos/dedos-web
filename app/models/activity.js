@@ -189,10 +189,8 @@ ActivitySchema.methods = {
     /* Si hay algun elemento que hemos contestado incorrectamente finalizamos la actividad aunque el usuario
     haya completado objetivos de forma correcta
      */
-    if (properties.failAllowed == 'false') {
-      console.log('PASA AQUI');
+    if (properties.failNotAllowed == 'true') {
       if (_.where(answer.elements, {valid: false}).length > 0) {
-        console.log('He fracasado como persona y ser humano');
         return {
           activityResult: false,
           finishedActivity: true,

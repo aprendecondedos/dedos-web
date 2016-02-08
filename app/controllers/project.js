@@ -309,7 +309,7 @@ exports.update = function(req, res) {
   // Propiedades del proyecto seleccionadas
   prop.required = prop.required || false;
   prop.delayed = prop.delayed || false;
-  prop.failAllowed = prop.failAllowed || false;
+  prop.failNotAllowed = prop.failNotAllowed || false;
   project.properties = prop;
   project.save();
 

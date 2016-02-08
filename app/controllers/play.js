@@ -1,3 +1,4 @@
+"use strict";
 var wrap = require('co-express');
 var lib = require('../../lib/functions');
 var gettext = require('../../i18n/i18n').gettext;
@@ -50,10 +51,55 @@ exports.index = wrap(function*(req, res) {
   //var activity = player.getPrevActivity(activity.id);
   //var activity = player.getNextActivity(activity.id);
   //var activity = player.getLastActivity(activity.id);
-  const activity_data = {
-    id: activity.id,
-    num: project.getActivityNum(activity.id)
+  var answer_options = {
+    criteria: {
+      'activityData.activity': {$in: project.activities},
+      player: req.player.user.id
+    },
+    sort: {
+      updatedDate: -1
+    }
   };
+  var answers = yield Answer.list(answer_options);
+  var activities_array = [];
+  project.activities.forEach(function(activity) {
+    let isFinished = false;
+    let filtered = _.filter(answers, function(answer) {
+      return answer.activityData.activity.toString() === activity.id;
+    });
+    if (filtered.length > 0) {
+      filtered = filtered[0];
+      isFinished = filtered.activityData.finished;
+    }
+    activities_array.push({
+      id: activity.id,
+      num: project.getActivityNum(activity.id),
+      finished: isFinished
+    });
+  });
+
+  console.log(activities_array);
+  var activity_data = {prev: false, current: false, next: false};
+  var activitiesAnswered = _.where(activities_array, {finished: false});
+  var currentIndex = 0;
+  var current = activities_array[currentIndex];
+  if (activitiesAnswered.length > 0) {
+    current = _.min(activitiesAnswered, function(o) {
+      return o.num;
+    });
+    currentIndex = _.findLastIndex(activities_array, current);
+    //currentIndex++;
+  }
+  var activity_data = {
+    prev: activities_array[currentIndex - 1] ? activities_array[currentIndex - 1] : false,
+    current: activities_array[currentIndex],
+    next: activities_array[currentIndex + 1] ? activities_array[currentIndex + 1] : false
+  };
+  console.log(activity_data);
+  //const activity_data = {
+  //  id: activity.id,
+  //  num: project.getActivityNum(activity.id)
+  //};
   res.render(view, {
     title: gettext('play'),
     project: req.project,
@@ -118,10 +164,11 @@ exports.activity = {
     });
     var answer_options = {
       criteria: {
-        activity: activity.id,
+        'activityData.activity': activity.id,
         player: req.player.user.id
       }
     };
+
     const answer = yield Answer.load(answer_options);
     res.render('play/show', {
       title: gettext('play'),
@@ -146,7 +193,7 @@ exports.activity = {
     // @TODO insertar respuestas en el modelo Answer
     var answer_options = {
       player: req.player.user.id,
-      activity: activity._id
+      'activityData.activity': activity.id
     };
     var answer = yield Answer.load({
       criteria: answer_options
@@ -174,27 +221,24 @@ exports.activity = {
               objective.getSpecialProperties(token)
             );
           }
-          if (!token_results[token.data.id].valid) {
-            activityResult = false;
-          }
+
           answer.addElement({
             token: token.data.id,
             valid: token_results[token.data.id].valid,
             action: objective.type,
             objective: objective
           });
-          answer.valid = activityResult;
           activity.addAnswer(answer.id);
-
         }
       });
 
     });
+    activityResult = activity.check(answer, properties);
+    answer.activityData.valid = activityResult.activityResult;
+    answer.activityData.finished = activityResult.finishedActivity;
+
     activity.save();
     answer.save();
-
-    activityResult = activity.check(answer, properties);
-    console.log(activityResult.objectivesNotDone);
 
     res.send({
       tokens: token_results,

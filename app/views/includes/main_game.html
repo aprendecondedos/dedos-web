@@ -10,7 +10,7 @@
             properties: {
                 delayed: {{project.properties.delayed}},
                 required: {{project.properties.required}},
-                failAllowed: {{project.properties.failAllowed}}
+                failNotAllowed: {{project.properties.failNotAllowed}}
             }
         });
         {% if player %}
@@ -21,8 +21,8 @@
         {% endif %}
         {% if activity %}
         play.activity.load({
-            id: '{{activity.id}}',
-            num: {{activity.num}}
+            id: '{{activity.current.id}}',
+            num: {{activity.current.num}}
         });
         {% endif %}
 

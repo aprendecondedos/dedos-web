@@ -5,7 +5,11 @@ var Schema = mongoose.Schema;
 // Answer model
 var AnswerSchema = mongoose.Schema({
   player: {type: Schema.Types.ObjectId, ref: 'Player'},
-  activity: {type: Schema.Types.ObjectId, ref: 'Activity'},
+  activityData: {
+    activity: {type: Schema.Types.ObjectId, ref: 'Activity'},
+    valid: {type: Boolean, default: false},
+    finished: {type: Boolean, default: false}
+  },
   elements: [{
     token: {type: Schema.Types.ObjectId, ref: 'Token'},
     target: {type: Schema.Types.ObjectId, ref: 'Token'},
@@ -13,7 +17,6 @@ var AnswerSchema = mongoose.Schema({
     valid: Boolean,
     objective: {type: Schema.Types.ObjectId, ref: 'Objective'},
   }],
-  valid: Boolean,
   createdDate: {type: Date, default: Date.now},
   updatedDate: {type: Date, default: Date.now}
 });

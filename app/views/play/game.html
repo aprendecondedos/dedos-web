@@ -3,7 +3,7 @@
     margin-bottom: 30px;
 ">
   <span class="fa wb-check-circle" style="
-    font-size: 90px;
+    font-size: 70px;
     float: left;
     color: rgba(70, 190, 138, 1);
 "></span>
@@ -20,7 +20,10 @@
     height: 65px;
     line-height: 65px;
     padding-right: 5px;
-"><i class="fa fa-chevron-left"></i></a> <a class="btn btn-primary btn-floating animated" style="
+"><i class="fa fa-chevron-left"></i></a>
+    <a  data-activity="{{activity.next.id}}" data-num="{{activity.next.num}}"
+        href="/play/{{project.project}}/activity/{{activity.next.id}}"
+        class="select-activity btn btn-primary btn-floating animated" style="
     border-radius: 100%;
     font-size: 30px;
     margin-left: 50px;
@@ -46,13 +49,13 @@
                 {% if token.clickable %} token-clickable {% endif %}
                 {% if token.movable %} token-movable {% endif %}
                 {% if targets.indexOf(token.element_id) != -1 %} token-droppable {% endif %}
-                {#{% if answered %}
+                {% if answered %}
                     clicked
                     {% if answered.valid %} checked correct {% else %} checked wrong {% endif %}
                 {% endif %}
                 {% if answer.isTokenAnswered(token.id) %}
                     <!-- El usuario ha seleccionado-->
-                {% endif %}#}"
+                {% endif %}"
              style="display: none;width: 200px;"
              id="{{token.id}}"
              data-element="{{token.element_id}}"
