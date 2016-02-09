@@ -13,7 +13,9 @@
     display: none;
     color: rgba(249, 104, 104, 1);
 "></span>
-    <a class="btn btn-primary btn-floating disabled" style="
+    <a  data-activity="{{posActivities.prev.id}}" data-num="{{posActivities.prev.num}}"
+        href="/play/{{project.project}}/activity/{{posActivities.prev.id}}"
+        class="select-activity btn btn-primary btn-floating {% if !posActivities.prev || posActivities.prev.finished %}disabled{% endif %}" style="
     border-radius: 100%;
     font-size: 30px;
     width: 65px;
@@ -21,9 +23,9 @@
     line-height: 65px;
     padding-right: 5px;
 "><i class="fa fa-chevron-left"></i></a>
-    <a  data-activity="{{activity.next.id}}" data-num="{{activity.next.num}}"
-        href="/play/{{project.project}}/activity/{{activity.next.id}}"
-        class="select-activity btn btn-primary btn-floating animated" style="
+    <a  data-activity="{{posActivities.next.id}}" data-num="{{posActivities.next.num}}"
+        href="/play/{{project.project}}/activity/{{posActivities.next.id}}"
+        class="select-activity btn btn-primary btn-floating animated {% if !posActivities.next || posActivities.next.finished %}disabled{% endif %}" style="
     border-radius: 100%;
     font-size: 30px;
     margin-left: 50px;

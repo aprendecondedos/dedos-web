@@ -1,8 +1,10 @@
+'use strict';
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var fs = require('fs');
 var util = require('util');
 var wrap = require('co-express');
+var _ = require('underscore');
 
 // Project model
 var ProjectSchema = mongoose.Schema({
@@ -68,6 +70,49 @@ ProjectSchema.methods = {
       this.activities = activities;
       return this;
     }
+  },
+  /**
+   * Obtiene las actividades ordenadas por su posición
+   *
+   * @param {Object} answers listado de respuestas por actividad
+   * @returns {{prev: {Object}, current: {Object}, next: {Object}}}
+   */
+  getPositionsActivities: function(answers, val) {
+    const self = this;
+    var activities_array = [];
+    this.activities.forEach(function(activity) {
+      let isFinished = false;
+      let filtered = _.filter(answers, function(answer) {
+        return answer.activityData.activity.toString() === activity.id;
+      });
+      if (filtered.length > 0) {
+        filtered = filtered[0];
+        isFinished = filtered.activityData.finished;
+      }
+      activities_array.push({
+        id: activity.id,
+        num: self.getActivityNum(activity.id),
+        finished: isFinished
+      });
+    });
+    console.log(activities_array);
+    var activity_data = {prev: false, current: false, next: false};
+    var activitiesAnswered = _.where(activities_array, {finished: false});
+    var currentIndex = 0;
+    var current = activities_array[currentIndex];
+    if (activitiesAnswered.length > 0) {
+      // Se obtiene la actividad mínima
+      current = _.min(activitiesAnswered, function(element) {
+        return element.num;
+      });
+      currentIndex = _.findLastIndex(activities_array, current);
+    }
+    activity_data = {
+      prev: activities_array[currentIndex - 1] ? activities_array[currentIndex - 1] : false,
+      current: activities_array[currentIndex],
+      next: activities_array[currentIndex + 1] ? activities_array[currentIndex + 1] : false
+    };
+    return activity_data;
   },
   saveFromXML: function(XML_data) {
     var self = this;

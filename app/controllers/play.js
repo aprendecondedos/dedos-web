@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 var wrap = require('co-express');
 var lib = require('../../lib/functions');
 var gettext = require('../../i18n/i18n').gettext;
@@ -10,7 +10,6 @@ var Answer = mongoose.model('Answer');
 var Area = mongoose.model('Area');
 var Token = mongoose.model('Token');
 var Player = mongoose.model('Player');
-var Answer = mongoose.model('Answer');
 
 exports.load = wrap(function*(req, res, next, id) {
   const options = {
@@ -36,75 +35,34 @@ exports.load = wrap(function*(req, res, next, id) {
  * Inicio del juego
  */
 exports.index = wrap(function*(req, res) {
-  console.log('SHOW');
   const project = req.project;
   var view = 'play/index';
   if (lib.isEmptyObject(req.player) || !req.player) {
     // @TODO
     //view = 'play/select_player';
   }
-  var activity = project.activities[0];
-  // @TODO
-  // obtener la última actividad donde se tenga respuestas
-  // o donde Answer tenga done = true
-
-  //var activity = player.getPrevActivity(activity.id);
-  //var activity = player.getNextActivity(activity.id);
-  //var activity = player.getLastActivity(activity.id);
-  var answer_options = {
-    criteria: {
-      'activityData.activity': {$in: project.activities},
-      player: req.player.user.id
-    },
-    sort: {
-      updatedDate: -1
-    }
-  };
-  var answers = yield Answer.list(answer_options);
-  var activities_array = [];
-  project.activities.forEach(function(activity) {
-    let isFinished = false;
-    let filtered = _.filter(answers, function(answer) {
-      return answer.activityData.activity.toString() === activity.id;
-    });
-    if (filtered.length > 0) {
-      filtered = filtered[0];
-      isFinished = filtered.activityData.finished;
-    }
-    activities_array.push({
-      id: activity.id,
-      num: project.getActivityNum(activity.id),
-      finished: isFinished
-    });
-  });
-
-  console.log(activities_array);
-  var activity_data = {prev: false, current: false, next: false};
-  var activitiesAnswered = _.where(activities_array, {finished: false});
-  var currentIndex = 0;
-  var current = activities_array[currentIndex];
-  if (activitiesAnswered.length > 0) {
-    current = _.min(activitiesAnswered, function(o) {
-      return o.num;
-    });
-    currentIndex = _.findLastIndex(activities_array, current);
-    //currentIndex++;
+  var positions_activity = {};
+  if (!_.isEmpty(req.player)) {
+    var answer_options = {
+      criteria: {
+        'activityData.activity': {$in: project.activities},
+        player: req.player.user.id
+      },
+      sort: {
+        updatedDate: -1
+      }
+    };
+    var answers = yield Answer.list(answer_options);
+    positions_activity = project.getPositionsActivities(answers);
   }
-  var activity_data = {
-    prev: activities_array[currentIndex - 1] ? activities_array[currentIndex - 1] : false,
-    current: activities_array[currentIndex],
-    next: activities_array[currentIndex + 1] ? activities_array[currentIndex + 1] : false
-  };
-  console.log(activity_data);
-  //const activity_data = {
-  //  id: activity.id,
-  //  num: project.getActivityNum(activity.id)
-  //};
+  console.log(positions_activity.current);
+  console.log(positions_activity);
+
   res.render(view, {
     title: gettext('play'),
     project: req.project,
     player: req.player,
-    activity: activity_data
+    posActivities: positions_activity
   });
 });
 
@@ -114,6 +72,9 @@ exports.index = wrap(function*(req, res) {
  * @type {{load: *, show: *, check: *}}
  */
 exports.activity = {
+  /**
+   * Carga de una activdad completa
+   */
   load: wrap(function*(req, res, next, id) {
     var options = {
       criteria: {
@@ -170,10 +131,26 @@ exports.activity = {
     };
 
     const answer = yield Answer.load(answer_options);
+
+    var positions_activity = {};
+    var answer_options = {
+      criteria: {
+        'activityData.activity': activity.id,
+        player: req.player.user.id
+      },
+      sort: {
+        updatedDate: -1
+      }
+    };
+    var answers = yield Answer.list(answer_options);
+    positions_activity = project.getPositionsActivities(answers);
+    console.log(positions_activity);
+
     res.render('play/show', {
       title: gettext('play'),
       project: project,
       activity: activity,
+      posActivities: positions_activity,
       answer: answer,
       targets: targets
     });

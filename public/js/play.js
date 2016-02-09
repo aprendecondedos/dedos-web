@@ -176,7 +176,6 @@
     /**
      * Comprobación si la actividad esta correcta
      * dado un listado de tokens que pertenece a la actividad
-     *
      */
     activity.check = function() {
       var tokens_array = [];
@@ -272,7 +271,7 @@
       });
     };
     /**
-     * Carga de los elementos
+     * Inicialización de elementos
      */
     elements.load = function() {
       elementsAdjustSize();

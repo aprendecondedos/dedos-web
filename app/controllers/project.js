@@ -91,7 +91,7 @@ exports.new = wrap(function*(req, res) {
         }
         project.setPlayers(users);
       }
-console.log(project);
+      console.log(project);
       parser.parseString(xml_data);
       parser.on('error', function(err) {
         console.log(err);

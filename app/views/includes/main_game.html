@@ -19,10 +19,11 @@
             name: '{{player.user.name}}'
         });
         {% endif %}
-        {% if activity %}
+
+        {% if posActivities.current %}
         play.activity.load({
-            id: '{{activity.current.id}}',
-            num: {{activity.current.num}}
+            id: '{{posActivities.current.id}}',
+            num: {{posActivities.current.num}}
         });
         {% endif %}
 
