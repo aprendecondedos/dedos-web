@@ -54,9 +54,8 @@ exports.index = wrap(function*(req, res) {
     };
     var answers = yield Answer.list(answer_options);
     positions_activity = project.getPositionsActivities(answers);
-  }
-  console.log(positions_activity.current);
-  console.log(positions_activity);
+  };
+
 
   res.render(view, {
     title: gettext('play'),
@@ -129,22 +128,9 @@ exports.activity = {
         player: req.player.user.id
       }
     };
-
     const answer = yield Answer.load(answer_options);
-
-    var positions_activity = {};
-    var answer_options = {
-      criteria: {
-        'activityData.activity': activity.id,
-        player: req.player.user.id
-      },
-      sort: {
-        updatedDate: -1
-      }
-    };
-    var answers = yield Answer.list(answer_options);
-    positions_activity = project.getPositionsActivities(answers);
-    console.log(positions_activity);
+    const answers = yield Answer.list(answer_options);
+    var positions_activity = project.getPositionsActivities(answers, activity.id);
 
     res.render('play/show', {
       title: gettext('play'),

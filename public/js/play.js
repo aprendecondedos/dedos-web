@@ -119,7 +119,11 @@
             opacity = 0;
           }
           // @TODO
-
+          var activity_result = $container.find('.game').data('activity-result');
+          activity.valid = activity_result.valid;
+          if (activity_result.finished) {
+            activity.setFinished();
+          }
           $container.find('.token-movable').draggable({
             //revert: true, //if self.options.failpermitted { revert == true } else { revert == false }
             revert: true,
@@ -129,10 +133,12 @@
             //opacity: 0.7,
             helper: 'original',
             drag: function(event, ui) {
+              $container.find('.token').not('.token-droppable').css('opacity', .6);
               $(this).css('opacity', 1);
               //jsPlumb.repaint($(this));
             },
             stop: function(event, ui) {
+              $container.find('.token').not('.token-droppable').css('opacity', 1);
               $(this).css('opacity', 1);
             }
           });
@@ -161,6 +167,13 @@
               });
               jsPlumb.repaint(ui.draggable.context.id);
               $(this).addClass('ui-state-highlight');
+              $(this).removeClass('token-droppable-over');
+            },
+            out: function() {
+              $(this).removeClass('token-droppable-over');
+            },
+            over: function(event, ui) {
+              $(this).addClass('token-droppable-over');
             }
           });
           // Se emite un socket incluyendo información relacionada con la actividad y jugador
@@ -230,7 +243,6 @@
                 }
               });
             }else if (data.tokens[key].type == 'pair') {
-              console.log('Comprueba emparejamiento');
               if (data.tokens[key].valid) {
                 $container.find('#' + data.tokens[key].id).hide();//draggable('option', 'disabled', true);
               }
@@ -252,6 +264,8 @@
           Por ejemplo: Si hay turnos, el usuario no podrá avanzar a la siguiente actividad hasta
           que todos los jugadores hayan completado dicha actividad.
            */
+          activity.valid = data.activity.valid;
+
           if (self.options.properties.required) {
             if (data.activity.finished && data.activity.valid) {
               disableElements();
@@ -270,12 +284,34 @@
         }
       });
     };
+
+    activity.setFinished = function() {
+      activity.finished = true;
+      if (activity.valid) {
+        $container.find('.activity-valid').fadeIn();
+        $container.find('#next-activity').removeClass('disabled');
+      } else {
+        $container.find('.activity-wrong').fadeIn();
+        if (self.options.properties.required) {
+          /** No se permite avanzar a la siguiente actividad
+           * y el usuario tendría que resetear la actividad
+          */
+        } else {
+          $container.find('#next-activity').removeClass('disabled');
+        }
+      };
+      elements.disable();
+    };
     /**
      * Inicialización de elementos
      */
     elements.load = function() {
       elementsAdjustSize();
       // stuff
+    };
+    elements.disable = function() {
+      $container.find('.token-clickable').toggleClass('token-clickable');
+      var disabled = $('.token-movable').draggable('option', 'disabled');
     };
     /**
      * Comprobación por AJAX del token
@@ -333,29 +369,24 @@
                 $container.find('[data-element=' + data.tokens[key].targetName + ']').attr(
                   'data-currentvalue', data.tokens[key].value);
                 if (data.tokens[key].valid) {
-                  $container.find('#' + data.tokens[key].id).css('opacity',0);
-                } else {
+                  $container.find('#' + data.tokens[key].id).hide();
+                } /*else {
                   $container.find('#' + data.tokens[key].id).css('opacity',1);
-                }
+                }*/
               }
             };
+            activity.valid = data.activity.valid;
             if (self.options.properties.required) {
               if (data.activity.finished) {
                 pointObjectivesNotDone(data.activity.objectivesNotDone);
-                if (data.activity.valid) {
-                  // Permitimos que el usuario navegue a la siguiente actividad
-                  disableElements();
-                } else {
-                  disableElements();
-                  /* El usuario ha contestad mal a la actividad por lo que hay que mostrarle un botón
-                  para que la reinicie.
-                   */
-                }
+                activity.setFinished();
+                disableElements();
               } else {
                 /* Si no ha terminado la actividad puede seguir haciéndola*/
               }
             } else {
               if (data.activity.finished) {
+                activity.setFinished();
                 disableElements();
                 console.log('busca objetivos no hechos');
                 pointObjectivesNotDone(data.activity.objectivesNotDone);
@@ -377,12 +408,12 @@ por lo que le permitimos avanzar a la siguiente actividad.
 
     function pointObjectivesNotDone(objectives) {
       console.log(objectives);
-      const paintStyle = [{ fillStyle:"blue", strokeStyle: 'blue', lineWidth: 1},
-        {fillStyle:"green", strokeStyle: 'green', lineWidth: 1},
+      const paintStyle = [{fillStyle: 'blue', strokeStyle: 'blue', lineWidth: 1},
+        {fillStyle: 'green', strokeStyle: 'green', lineWidth: 1},
         {fillStyle: 'red', strokeStyle: 'red', lineWidth: 1}];
       const lineStyle = [{strokeStyle: 'blue', lineWidth: 7},
         {strokeStyle: 'green', lineWidth: 7},
-        {strokeStyle: 'red', lineWidth: 7}]
+        {strokeStyle: 'red', lineWidth: 7}];
       var lineStyleTargets = [];
       var paintStyleTargets = [];
       var index = 0;
@@ -440,7 +471,7 @@ por lo que le permitimos avanzar a la siguiente actividad.
 
       var e2 = jsPlumb.addEndpoint(id2, {
         isTarget: true,
-        anchor: 'Center',
+        anchor: 'Bottom',
         endpoint: 'Blank'
       });
 

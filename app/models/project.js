@@ -77,7 +77,7 @@ ProjectSchema.methods = {
    * @param {Object} answers listado de respuestas por actividad
    * @returns {{prev: {Object}, current: {Object}, next: {Object}}}
    */
-  getPositionsActivities: function(answers, val) {
+  getPositionsActivities: function(answers, activity_id) {
     const self = this;
     var activities_array = [];
     this.activities.forEach(function(activity) {
@@ -95,18 +95,22 @@ ProjectSchema.methods = {
         finished: isFinished
       });
     });
-    console.log(activities_array);
+
     var activity_data = {prev: false, current: false, next: false};
-    var activitiesAnswered = _.where(activities_array, {finished: false});
     var currentIndex = 0;
+    var activitiesNotAnswered = _.where(activities_array, {finished: false});
     var current = activities_array[currentIndex];
-    if (activitiesAnswered.length > 0) {
+
+    if (!activity_id) {
       // Se obtiene la actividad mínima
-      current = _.min(activitiesAnswered, function(element) {
-        return element.num;
-      });
-      currentIndex = _.findLastIndex(activities_array, current);
+      current = _.min(activitiesNotAnswered, function(element) {
+          return element.num;
+        });
+    }else {
+      current = {id: activity_id};
     }
+    currentIndex = _.findLastIndex(activities_array, current);
+
     activity_data = {
       prev: activities_array[currentIndex - 1] ? activities_array[currentIndex - 1] : false,
       current: activities_array[currentIndex],
