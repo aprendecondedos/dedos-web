@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var util = require('util');
+var _ = require('underscore');
 require('./element');
 var Element = mongoose.model('Element');
 
@@ -31,9 +31,15 @@ TokenSchema.pre('save', function(next) {
  */
 TokenSchema.methods = {
   setUrls: function(urls) {
-    if (this.type != 'img')  return false;
-    if (util.isArray(urls)) this.urls = urls;
+    if (this.type != 'img') { return false; }
+    if (_.isArray(urls)) { this.urls = urls; }
     return this;
+  },
+  getRandomUrl: function() {
+    if (_.isEmpty(this.urls)) {
+      return false;
+    }
+    return _.first(_.shuffle(this.urls));
   },
   setText: function(text) {
     if (this.type != 'txt')  return false;

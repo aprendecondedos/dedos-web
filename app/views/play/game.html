@@ -49,6 +49,7 @@
         >
         {% for token in area.tokens %}
 
+        {% set pair = answer.getPair(token.id) %}
         {% set answered = answer.getTokenById(token.id) %}
         {% if targets.indexOf(token.element_id) != -1 && answer %}
             {% set valueTokenMeter = answer.getCurrentValue(token.id) %}
@@ -61,7 +62,8 @@
                 {% if token.movable %} token-movable {% endif %}
                 {% if targets.indexOf(token.element_id) != -1 %} token-droppable {% endif %}
                 {% if answered %}
-                    clicked
+                    {% if token.clickable %} clicked {% endif %}
+                    {% if token.movable %} dropped {% endif %}
                     {% if answered.valid %} checked correct {% else %} checked wrong {% endif %}
                 {% endif %}
                 {% if answer.isTokenAnswered(token.id) %}
@@ -69,6 +71,10 @@
                 {% endif %}"
              style="display: none;width: 200px;"
              id="{{token.id}}"
+             {% if pair %}
+             data-droppedIn="{{pair.target|raw}}"
+             data-connect="{{pair|json}}"
+             {% endif %}
              data-element="{{token.element_id}}"
              data-position="{{ token.position|json_encode }}"
              data-size="{{ token.size|json_encode }}"

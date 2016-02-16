@@ -54,9 +54,7 @@ exports.index = wrap(function*(req, res) {
     };
     var answers = yield Answer.list(answer_options);
     positions_activity = project.getPositionsActivities(answers);
-  };
-
-
+  }
   res.render(view, {
     title: gettext('play'),
     project: req.project,
@@ -171,6 +169,7 @@ exports.activity = {
         }
         if (!token_results[token.data.id] ||
           (!token_results[token.data.id].valid && !(token_results[token.data.id].type == 'tokenMeter'))) {
+
           result = objective.checkToken(token);
           token_results[token.data.id] = {
             id: token.data.id,
@@ -190,7 +189,7 @@ exports.activity = {
             value: token.data.value,
             valid: token_results[token.data.id].valid,
             action: objective.type,
-            target: token.droppedInto ? token.droppedInto.id : false,
+            target: token.droppedInto ? token.droppedInto.id : undefined,
             objective: objective
           });
           activity.addAnswer(answer.id);

@@ -170,6 +170,7 @@ ActivitySchema.methods = {
    * y si se puede dar por finalizada
    *
    * @param {Object} answer
+   * @param {Object} properties Propiedades del proyecto
    * @returns {{finishedActivity: boolean, activityResult: boolean}}
    */
   check: function(answer, properties) {

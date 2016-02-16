@@ -224,6 +224,7 @@
           }
         });
       });
+      console.log(tokens_array);
       if (tokens_array.length == 0) {
         return false;
       }
@@ -231,7 +232,10 @@
         type: 'POST',
         dataType: 'json',
         url: activity.url + '/check',
-        data: {tokens: tokens_array, options: self.options},
+        data: {
+          tokens: tokens_array,
+          properties: self.options.properties
+        },
         success: function(data) {
           for (var key in data.tokens) {
             if (data.tokens[key].type == 'sel') {
@@ -266,26 +270,15 @@
            */
           activity.valid = data.activity.valid;
 
-          if (self.options.properties.required) {
-            if (data.activity.finished && data.activity.valid) {
-              disableElements();
-                 // Permitimos que el usuario navegue a la siguiente actividad
-            } else {
-              disableElements();
-              /* El usuario no ha completado la actividad con éxito por lo que se le mostraría un botón
-              para reiniciar la actividad */
-            }
-          } else {
-            disableElements();
-            /* El usuario ha contestado y no nos interesa si las respuestas que ha dado son correctas o no
-            por lo que le permitimos avanzar a la siguiente actividad
-             */
-          }
+          console.log('Objetivos');
+          console.log(data.activity.objectivesNotDone);
+          pointObjectivesNotDone(data.activity.objectivesNotDone);
         }
       });
     };
 
     activity.setFinished = function() {
+      activity.check();
       activity.finished = true;
       if (activity.valid) {
         $container.find('.activity-valid').fadeIn();
@@ -306,12 +299,48 @@
      * Inicialización de elementos
      */
     elements.load = function() {
-      elementsAdjustSize();
+      elements.adjustSize();
+      elements.connect();
       // stuff
     };
+    /**
+     * Ajuste de la resolución en tamaño y posición de un elemento
+     */
+    elements.adjustSize = function() {
+      var $elements = $container.find('.element');
+      var res = {
+        width: $container.find('.play-table').innerWidth(),
+        height: $container.find('.play-table').height()
+      };
+      var coefficient = {
+        x: (res.width * 1) / self.options.width,
+        y: (res.height * 1) / self.options.height
+      };
+      $elements.hide();
+      $elements.each(function() {
+        $(this).css({
+          'left': ($(this).data('position').x) * coefficient.x,
+          'top': ($(this).data('position').y) * coefficient.y,
+          'width': ($(this).data('size').width) * coefficient.x,
+          'height': ($(this).data('size').height) * coefficient.y
+        });
+        $(this).fadeIn('fast');
+      });
+    };
+    $(window).on('resize', self.elements.load);
     elements.disable = function() {
       $container.find('.token-clickable').toggleClass('token-clickable');
-      var disabled = $('.token-movable').draggable('option', 'disabled');
+      $container.find('.token-movable').draggable('option', 'disabled');
+    };
+    /**
+     * Comprobación si existiera conexión entre un elemento y un target
+     */
+    elements.connect = function() {
+      $container.find('.token-movable[data-connect]').each(function() {
+        var data = $(this).data('connect');
+        console.log(data);
+        connect($('#' + data.origin), $('#' + data.target));
+      });
     };
     /**
      * Comprobación por AJAX del token
@@ -488,32 +517,6 @@ por lo que le permitimos avanzar a la siguiente actividad.
       });
 
     }
-
-    /**
-     * Ajuste de la resolución en tamaño y posición de un elemento
-     */
-    function elementsAdjustSize() {
-      var $elements = $container.find('.element');
-      var res = {
-        width: $container.find('.play-table').innerWidth(),
-        height: $container.find('.play-table').height()
-      };
-      var coefficient = {
-        x: (res.width * 1) / self.options.width,
-        y: (res.height * 1) / self.options.height
-      };
-      $elements.hide();
-      $elements.each(function() {
-        $(this).css({
-          'left': ($(this).data('position').x) * coefficient.x,
-          'top': ($(this).data('position').y) * coefficient.y,
-          'width': ($(this).data('size').width) * coefficient.x,
-          'height': ($(this).data('size').height) * coefficient.y
-        });
-        $(this).fadeIn('fast');
-      });
-    }
-    $(window).on('resize', self.elements.load);
 
     // Sockets
     sockets.activity = {

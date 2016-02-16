@@ -81,13 +81,29 @@ AnswerSchema.methods = {
       return value;
     }
     this.elements.forEach(function(element) {
-      console.log(element.target + " " + token_id + " " + element.value);
       if (element.target == token_id) {
         value = value + Number(element.value);
       }
-      console.log("VALOR: " + value);
     });
     return value;
+  },
+  getPair: function(token_id) {
+    if (this.elements.length == 0) {
+      return false;
+    }
+    var result = false;
+    this.elements.forEach(function(element) {
+      if (element.token == token_id) {
+        if (element.target) {
+          result =  {
+            origin: element.token,
+            target: element.target
+          };
+        }
+      }
+    });
+    return result;
+    return false;
   }
 };
 /**

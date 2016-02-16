@@ -32,10 +32,6 @@
         var $select_player = $('#modal-select-player');
         var $play = $('.play');
 
-        $(document).on('click', '.token-clickable', function () {
-            var element_id = $(this).attr('id');
-            socket.emit('event:click:token', {id: element_id});
-        });
         $(document).on('click', '.select-player', function () {
             var user_id = $(this).data('user');
 //        socket.emit('project:join', '{{project.id}}');
