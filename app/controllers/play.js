@@ -187,8 +187,10 @@ exports.activity = {
 
           answer.addElement({
             token: token.data.id,
+            value: token.data.value,
             valid: token_results[token.data.id].valid,
             action: objective.type,
+            target: token.droppedInto ? token.droppedInto.id : false,
             objective: objective
           });
           activity.addAnswer(answer.id);

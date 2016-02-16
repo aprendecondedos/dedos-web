@@ -12,6 +12,7 @@ var AnswerSchema = mongoose.Schema({
   },
   elements: [{
     token: {type: Schema.Types.ObjectId, ref: 'Token'},
+    value: String,
     target: {type: Schema.Types.ObjectId, ref: 'Token'},
     action: String,
     valid: Boolean,
@@ -73,6 +74,20 @@ AnswerSchema.methods = {
     return this.elements.find(function(element) {
       return element.token.equals(token_id);
     });
+  },
+  getCurrentValue: function(token_id) {
+    var value = 0;
+    if (this.elements.length == 0) {
+      return value;
+    }
+    this.elements.forEach(function(element) {
+      console.log(element.target + " " + token_id + " " + element.value);
+      if (element.target == token_id) {
+        value = value + Number(element.value);
+      }
+      console.log("VALOR: " + value);
+    });
+    return value;
   }
 };
 /**

@@ -47,10 +47,15 @@
          id="{{area.id}}"
          data-element="{{area.element_id}}"
         >
-        {{tokenmeter}}
         {% for token in area.tokens %}
 
         {% set answered = answer.getTokenById(token.id) %}
+        {% if targets.indexOf(token.element_id) != -1 && answer %}
+            {% set valueTokenMeter = answer.getCurrentValue(token.id) %}
+        {% else %}
+            {% set valueTokenMeter = 0 %}
+        {% endif %}
+
         <div class="element token
                 {% if token.clickable %} token-clickable {% endif %}
                 {% if token.movable %} token-movable {% endif %}
@@ -68,7 +73,7 @@
              data-position="{{ token.position|json_encode }}"
              data-size="{{ token.size|json_encode }}"
              data-value="{{token.value}}"
-             data-currentvalue="0"
+             data-currentvalue= {{valueTokenMeter}}
         >
             <div class="check">
                 <div>
