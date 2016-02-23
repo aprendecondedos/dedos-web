@@ -44,6 +44,18 @@
      */
     var activity = this.activity = {};
     /**
+     * Respuestas incluido en actividad
+     *
+     * @type {Object} answer
+     */
+    var answer = this.activity.answers = {};
+    answer.setProperties = function(data) {
+      $.extend(answer, {
+        id: data._id,
+        url: url_play + '/answer/' + data._id
+      });
+    };
+    /**
      * Listado de sockets disponibles
      *
      * @type {Object} sockets
@@ -124,6 +136,11 @@
           if (activity_result.finished) {
             activity.setFinished();
           }
+          var answer_data = $container.find('.game').data('answer');
+          if (answer_data) {
+            answer.setProperties({_id: answer_data});
+          }
+
           $container.find('.token-movable').draggable({
             //revert: true, //if self.options.failpermitted { revert == true } else { revert == false }
             revert: true,
@@ -269,6 +286,7 @@
           que todos los jugadores hayan completado dicha actividad.
            */
           activity.valid = data.activity.valid;
+          answer.setProperties(data.answer);
 
           console.log('Objetivos');
           console.log(data.activity.objectivesNotDone);
@@ -284,6 +302,11 @@
         $container.find('.activity-valid').fadeIn();
         $container.find('#next-activity').removeClass('disabled');
       } else {
+        if (self.options.properties.required) {
+          $container.find('#restart-activity').removeClass('disabled');
+        } else {
+          pointObjectivesNotDone(data.activity.objectivesNotDone);
+        }
         $container.find('.activity-wrong').fadeIn();
         if (self.options.properties.required) {
           /** No se permite avanzar a la siguiente actividad
@@ -292,8 +315,23 @@
         } else {
           $container.find('#next-activity').removeClass('disabled');
         }
-      };
+      }
       elements.disable();
+    };
+
+    activity.restart = function() {
+      $.ajax({
+        type: 'DELETE',
+        url: answer.url,
+        success: function(data) {
+          if (data) {
+            activity.load({
+              id: activity.id,
+              num: activity.num
+            });
+          }
+        }
+      });
     };
     /**
      * Inicialización de elementos
@@ -405,9 +443,10 @@
               }
             };
             activity.valid = data.activity.valid;
+            answer.setProperties(data.answer);
+
             if (self.options.properties.required) {
               if (data.activity.finished) {
-                pointObjectivesNotDone(data.activity.objectivesNotDone);
                 activity.setFinished();
                 disableElements();
               } else {
@@ -418,7 +457,6 @@
                 activity.setFinished();
                 disableElements();
                 console.log('busca objetivos no hechos');
-                pointObjectivesNotDone(data.activity.objectivesNotDone);
                 /* El usuario ha terminado la actividad y no nos interesa si ha contestado bien o mal
 por lo que le permitimos avanzar a la siguiente actividad.
  */
@@ -536,7 +574,6 @@ por lo que le permitimos avanzar a la siguiente actividad.
     });
 
     $document.on('click', '.token-disable', function(e) {
-      alert('Hola');
       e.preventDefault();
       return false;
     });
@@ -551,6 +588,9 @@ por lo que le permitimos avanzar a la siguiente actividad.
         area_id:  $(this).parent().data('element')
       });
     });
+
+    // Reinicio de una actividad
+    $document.on('click', '#restart-activity', activity.restart);
 
     return this;
     console.log(this.options);

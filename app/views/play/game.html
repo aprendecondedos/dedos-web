@@ -2,18 +2,18 @@
     text-align: center;
     margin-bottom: 30px;
 ">
-  <span class="fa wb-check-circle activity-valid" style="
-    font-size: 70px;
-    float: left;
-    color: rgba(70, 190, 138, 1);
-    display: none;
-"></span>
-    <span class="fa fa-times-circle activity-wrong" style="
-    font-size: 90px;
-    float: left;
-    display: none;
-    color: rgba(249, 104, 104, 1);
-"></span>
+    <div class="pull-left" style="position: absolute;">
+      <span class="fa wb-check-circle activity-valid" style="
+        font-size: 70px;
+        color: rgba(70, 190, 138, 1);
+        display: none;
+    "></span>
+        <span class="fa fa-times-circle activity-wrong" style="
+        font-size: 90px;
+        display: none;
+        color: rgba(249, 104, 104, 1);
+    "></span>
+    </div>
     <a  data-activity="{{posActivities.prev.id}}" data-num="{{posActivities.prev.num}}"
         id="prev-activity"
         href="/play/{{project.project}}/activity/{{posActivities.prev.id}}"
@@ -25,6 +25,15 @@
     line-height: 65px;
     padding-right: 5px;
 "><i class="fa fa-chevron-left"></i></a>
+
+    <a class="btn btn-primary btn-outline btn-icon btn-round btn-lg disabled"
+       id="restart-activity"
+       style="
+    font-size: 39px;
+    margin-left: 50px;
+"><i class="wb-refresh"></i>
+    </a>
+
     <a  data-activity="{{posActivities.next.id}}" data-num="{{posActivities.next.num}}"
         id="next-activity"
         href="/play/{{project.project}}/activity/{{posActivities.next.id}}"
@@ -39,7 +48,12 @@
 " id="testing"><i class="fa fa-chevron-right"></i></a>
 </div>
 {% set activity_result = {"finished": posActivities.current.finished, "valid": answer.activityData.valid} %}
-<div class="game" data-activity-result="{{activity_result|json_encode}}" style="position: relative;">
+<div class="game"
+     data-activity-result="{{activity_result|json_encode}}"
+     {% if answer %}
+     data-answer="{{answer.id}}"
+     {% endif %}
+     style="position: relative;">
     {% for area in activity.elements.area %}
     <div class="element area"
          data-position="{{ area.position|json_encode }}"
@@ -84,8 +98,8 @@
             <div class="check">
                 <div>
                     <div>
-                        <i class="wb-close icon-wrong font-size-40" style="background-color: rgba(249, 104, 104, 0.65);display: none;"></i>
-                        <i class="wb-check icon-correct font-size-40" style="background-color: rgba(70, 190, 138, 0.65);display: none;"></i>
+                        <i class="wb-close icon-wrong font-size-20" style="background-color: rgba(249, 104, 104, 1);display: none;"></i>
+                        <i class="wb-check icon-correct font-size-20" style="background-color: rgba(70, 190, 138, 1);display: none;"></i>
                     </div>
                 </div>
             </div>
@@ -141,9 +155,15 @@
     .game .check > div > div i{
         color: #ffffff;
         border-radius: 100%;
-        height: 60px;
-        width: 60px;
-        line-height: 61px;
+        height: 30px;
+        width: 30px;
+        line-height: 30px;
+        position: absolute;
+        right: -10px;
+        bottom: -10px;
+    }
+    .btn-outline.btn-icon.disabled{
+        color: #ffffff;
     }
 </style>
 {% if project.properties.delayed %}

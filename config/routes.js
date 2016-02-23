@@ -123,11 +123,16 @@ module.exports = function(app, passport, io) {
   // Play routes
   app.param('playId', play.load);
   app.param('activityId', play.activity.load);
+  app.param('answerId', play.answer.load);
 
   app.get('/play/:playId',[], play.index);
   app.post('/play/:playId/player', play.player);
   app.get('/play/:playId/activity/:activityId', auth.requiresPlayerLogin, play.activity.show);
   app.post('/play/:playId/activity/:activityId/check', auth.requiresPlayerLogin, play.activity.check);
+
+  app.route('/play/:playId/answer/:answerId').all(auth.requiresPlayerLogin)
+    .delete(play.answer.destroy);
+
   //app.get( "/strings/:lang?", i18n.stringsRoute( "en-US" ) );
 
   //// Play routes

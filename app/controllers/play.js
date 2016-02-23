@@ -211,8 +211,27 @@ exports.activity = {
         finished: activityResult.finishedActivity,
         valid: activityResult.activityResult,
         objectivesNotDone: activityResult.objectivesNotDone
-      }
+      },
+      answer: answer
     });
+  })
+};
+
+exports.answer = {
+  load: wrap(function*(req, res, next, id) {
+    const options = {
+      criteria: {
+        _id: id
+      }
+    };
+    req.answer = yield Answer.load(options);
+    if (!req.answer) { return next(new Error('Not found')); }
+
+    next();
+  }),
+  destroy: wrap(function*(req, res) {
+    yield req.answer.remove();
+    res.send(200);
   })
 };
 
