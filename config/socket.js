@@ -20,12 +20,14 @@ module.exports = function(io, app) {
 
     var cookie = socket.request.headers.cookie;
 
-    socket.on('event:click:token', function(data) {
+    /*socket.on('event:click:token', function(data) {
       // Envia los datos a todos incluido el socket del emisor
       io.sockets.emit('event:token', data);
+
       // TODO añadirlo en una sala (room) por proyecto
-      //socket.in('CLASSID').emit('event:click:tokens', data);
-    });
+     // socket.in('CLASSID').emit('event:click:tokens', data);
+    });*/
+    socket.on('event:click:token', project.activity.check);
 
     socket.on('disconnect', function() {
       console.log('Disconnected ' + socket.id);

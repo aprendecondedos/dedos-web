@@ -295,25 +295,30 @@
       });
     };
 
-    activity.setFinished = function() {
-      activity.check();
-      activity.finished = true;
-      if (activity.valid) {
-        $container.find('.activity-valid').fadeIn();
-        $container.find('#next-activity').removeClass('disabled');
+    activity.setFinished = function(data) {
+      if (!data) {
+        activity.check();
       } else {
-        if (self.options.properties.required) {
-          $container.find('#restart-activity').removeClass('disabled');
-        } else {
-          pointObjectivesNotDone(data.activity.objectivesNotDone);
-        }
-        $container.find('.activity-wrong').fadeIn();
-        if (self.options.properties.required) {
-          /** No se permite avanzar a la siguiente actividad
-           * y el usuario tendría que resetear la actividad
-          */
-        } else {
+        activity.finished = true;
+        if (activity.valid) {
+          $container.find('.activity-valid').fadeIn();
           $container.find('#next-activity').removeClass('disabled');
+        } else {
+          $container.find('.activity-wrong').fadeIn();
+          if (self.options.properties.required) {
+            /** No se permite avanzar a la siguiente actividad
+             * y el usuario tendría que resetear la actividad
+             */
+            $container.find('#restart-activity').removeClass('disabled');
+          } else {
+            /** El usuario ha contestado correcvtamente
+             * por lo que puede acceder a la siguiente actividad
+             **/
+            if (data) {
+              pointObjectivesNotDone(data.activity.objectivesNotDone);
+            }
+            $container.find('#next-activity').removeClass('disabled');
+          }
         }
       }
       elements.disable();
@@ -402,7 +407,7 @@
         return false;
       } else {
         // Se emite un socket con la información del token
-        socket.emit('event:click:token', {id: token.element});
+        socket.emit('event:click:token', {id: token.data.id, activity: activity.id, room: self.options.room});
         $.ajax({
           type: 'POST',
           async: false,
@@ -444,29 +449,22 @@
             };
             activity.valid = data.activity.valid;
             answer.setProperties(data.answer);
-
-            if (self.options.properties.required) {
-              if (data.activity.finished) {
-                activity.setFinished();
-                disableElements();
-              } else {
-                /* Si no ha terminado la actividad puede seguir haciéndola*/
-              }
-            } else {
-              if (data.activity.finished) {
-                activity.setFinished();
-                disableElements();
-                console.log('busca objetivos no hechos');
-                /* El usuario ha terminado la actividad y no nos interesa si ha contestado bien o mal
-por lo que le permitimos avanzar a la siguiente actividad.
- */
-              }
+            if (data.activity.finished) {
+              activity.setFinished(data);
+              disableElements();
             }
-
           }
         });
       };
     };
+    socket.on('event:count:token', function(data) {
+      console.log('holaaaaaaaa');
+      console.log(data.value);
+      console.log(data.id);
+      var $element = $('#' + data.id);
+      $element.find('.badge-radius').text(data.value);
+      $element.find('.badge-radius').css('display','inline');
+    });
     function disableElements() {
       $container.find('.token-clickable').toggleClass('token-clickable');
       var disabled = $('.token-movable').draggable('option', 'disabled');

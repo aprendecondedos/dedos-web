@@ -104,6 +104,21 @@ AnswerSchema.methods = {
     });
     return result;
     return false;
+  },
+  countToken: function(token_id, type) {
+    console.log("VALORES: " + token_id + " " + type);
+    var value = 0;
+    if (this.elements.length == 0) {
+      return value;
+    }
+    this.elements.forEach(function(element) {
+      console.log(element.token + "   " + token_id);
+      if (element.token == token_id && element.action == type) {
+        console.log("PASAR POR AQUI");
+        value = value + 1;
+      }
+    });
+    return value;
   }
 };
 /**
@@ -116,10 +131,10 @@ AnswerSchema.statics = {
    *
    * @param {ObjectId} options
    */
-  load: function(options) {
+  load: function(options,cb) {
     const criteria = options.criteria || {_id: options};
     return this.findOne(criteria)
-      .exec();
+      .exec(cb);
   },
   /**
    * Listar respuestas y filtrarlos

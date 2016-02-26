@@ -190,8 +190,10 @@ ActivitySchema.methods = {
     /* Si hay algun elemento que hemos contestado incorrectamente finalizamos la actividad aunque el usuario
     haya completado objetivos de forma correcta
      */
+    var not_valid_tokens = (_.where(answer.elements, {valid: false}));
+    console.log(not_valid_tokens);
     if (properties.failNotAllowed == 'true') {
-      if (_.where(answer.elements, {valid: false}).length > 0) {
+      if (not_valid_tokens.length > 0) {
         return {
           activityResult: false,
           finishedActivity: true,
@@ -209,6 +211,10 @@ ActivitySchema.methods = {
     if (answer.elements.length == numberOfCorrectAnswers ||
       answer.elements.length > numberOfCorrectAnswers) {
       if (totalObjectives.indexOf(false) == -1) {
+        // Se han cumplido todos los objetivos, pero en el camino el usuario ha fallado
+        if (properties.required == 'true' && not_valid_tokens.length > 0) {
+          activity_result = false;
+        }
         activity_finished = true;
       } else {
         activity_finished = false;
