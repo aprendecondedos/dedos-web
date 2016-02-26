@@ -321,6 +321,14 @@
           }
         }
       }
+      // Socket emit
+      socket.emit(sockets.activity.finished, {
+        room: self.options.room,
+        activity: activity.id,
+        player: self.options.player
+       // @TODO añadir id del grupo
+      });
+
       elements.disable();
     };
 
@@ -458,9 +466,6 @@
       };
     };
     socket.on('event:count:token', function(data) {
-      console.log('holaaaaaaaa');
-      console.log(data.value);
-      console.log(data.id);
       var $element = $('#' + data.id);
       $element.find('.badge-radius').text(data.value);
       $element.find('.badge-radius').css('display','inline');
@@ -468,7 +473,6 @@
     function disableElements() {
       $container.find('.token-clickable').toggleClass('token-clickable');
       var disabled = $('.token-movable').draggable('option', 'disabled');
-      //$container.find('.token-movable').draggable('option', 'disabled', !disabled);
     }
 
     function pointObjectivesNotDone(objectives) {
@@ -556,7 +560,8 @@
 
     // Sockets
     sockets.activity = {
-      join: 'server project:activity:join'
+      join: 'server project:activity:join',
+      finished: 'server:project:activity:finished'
     };
     // Eventos
 

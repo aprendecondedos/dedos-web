@@ -1,18 +1,21 @@
 <ul class="list-group list-group-dividered">
-<h3>{{gettext('activity')}} {{activity.num}}</h3>
-{% for user in project.players %}
-<li class="list-group-item" id="{{user.user.id}}" href="javascript:;"
-   style="display: {% if user.online || req.player.user.id == user.user.id %}block{% else %}none{% endif %};">
-    <div class="media">
-        <div class="media-left">
-            <span class="avatar avatar-online">
-               <img data-name="{{user.user.name}}" class="profile">
-            </span>
+    <h3>{{gettext('activity')}} {{activity.num}}</h3>
+    {% for user in project.players %}
+    <li class="list-group-item {% if player_active == user.user.id %} turn-on {% else %} turn-off {% endif %}"
+        id="{{user.user.id}}"
+        href="javascript:;"
+        style="display: {% if user.online || req.player.user.id == user.user.id %}block{% else %}none{% endif %};">
+        <div class="media">
+            <div class="media-left">
+                <span class="avatar avatar-online">
+                   <img data-name="{{user.user.name}}" class="profile">
+                </span>
+            </div>
+            <div class="media-body font-size-16" style="vertical-align: middle;">
+                <i class="turn-icon fa fa-hand-o-left pull-right padding-top-5"></i>
+                {{user.user.name}}
+            </div>
         </div>
-        <div class="media-body font-size-16" style="vertical-align: middle;">
-            {{user.user.name}}
-        </div>
-    </div>
-</li>
-{% endfor %}
+    </li>
+    {% endfor %}
 </ul>

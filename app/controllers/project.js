@@ -310,6 +310,7 @@ exports.update = function(req, res) {
   prop.required = prop.required || false;
   prop.delayed = prop.delayed || false;
   prop.failNotAllowed = prop.failNotAllowed || false;
+  prop.turns = prop.turns || false;
   project.properties = prop;
   project.save();
 

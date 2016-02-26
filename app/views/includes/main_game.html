@@ -10,7 +10,9 @@
             properties: {
                 delayed: {{project.properties.delayed}},
                 required: {{project.properties.required}},
-                failNotAllowed: {{project.properties.failNotAllowed}}
+                failNotAllowed: {{project.properties.failNotAllowed}},
+                turns: {{project.properties.turns}},
+                numPlayers: {{project.properties.numPlayers}},
             }
         });
         {% if player %}
@@ -73,46 +75,12 @@
         });
     });
 
+
     //    $(window).bind('beforeunload', function(){
     //        socket.emit('server project:player:disconnected', {room: '{{project.id}}', player: {{player|json|raw}}});
     //        socket.disconnect();
     //    });
     });
-</script>
-<script>
-//    $(document).ajaxSuccess(loadElements);
-//    $(window).on('resize', loadElements);
-
-    function loadElements(){
-        var win = $(this),
-                elements = $('.element'),
-                orig = {
-                width: {{project.resolution.x}},
-                height: {{project.resolution.y}},
-    },
-    res = {
-        width: $('.play-table').innerWidth(),
-        height: $('.play-table').height()
-    },
-            coefficient = resolutionAdjust(orig, res);
-
-    elements.hide();
-    elements.each(function(){
-        $(this).css({
-            'left': ($(this).data('position').x)*coefficient.x,
-            'top': ($(this).data('position').y)*coefficient.y,
-            'width': ($(this).data('size').width)*coefficient.x,
-            'height': ($(this).data('size').height)*coefficient.y
-        });
-        $(this).fadeIn('fast');
-    });
-    }
-    function resolutionAdjust(orig, new_res) {
-        return {
-            x: (new_res.width*1)/orig.width,
-            y: (new_res.height*1)/orig.height
-        }
-    }
 </script>
 <style>
     .element{

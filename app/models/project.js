@@ -34,7 +34,9 @@ var ProjectSchema = mongoose.Schema({
     required: {type: Boolean, default: false},
     failNotAllowed: {type: Boolean, default: false},
     delayed: {type: Boolean, default: false},
-    showActivities: {type: Boolean, default: false}
+    showActivities: {type: Boolean, default: false},
+    turns: {type: Boolean, default: false},
+    numPlayers: {type: Number, default: 0},
   },
   createdDate: {type: Date, default: Date.now},
   createdBy: {type: Schema.Types.ObjectId, ref: 'User'}

@@ -129,13 +129,28 @@ exports.activity = {
     const answer = yield Answer.load(answer_options);
     const answers = yield Answer.list(answer_options);
     var positions_activity = project.getPositionsActivities(answers, activity.id);
-
+    ///
+    if (project.properties.turns && project.properties.numPlayers > 0) {
+      var group = activity.assignPlayerToGroup(req.player.user.id, project.properties.numPlayers);
+      var players_active = _.where(group.players, {active: true});
+      if (_.isEmpty(players_active)) {
+        _.find(group.players, function(player) {
+          if (player.player == req.player.user.id) {
+            player.active = true;
+          }
+        });
+      }
+      activity.save();
+      console.log(group);
+    }
+    ///
     res.render('play/show', {
       title: gettext('play'),
       project: project,
       activity: activity,
       posActivities: positions_activity,
       answer: answer,
+      group: group,
       targets: targets
     });
   }),
@@ -192,7 +207,7 @@ exports.activity = {
             target: token.droppedInto ? token.droppedInto.id : undefined,
             objective: objective
           });
-          activity.addAnswer(answer.id);
+          //activity.addAnswer(answer.id);
         }
       });
 

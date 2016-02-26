@@ -4,11 +4,57 @@
     });
 </script>
 
+{% set player_active = 0 %}
+{% if project.properties.turns %}
+    {% for group_player in group.players %}
+        {% if group_player.active %}
+            {% set player_active = group_player.player %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
 
+<style>
+    .turn-off .turn-icon{
+        display: none;
+    }
+    .turn-on .turn-icon{
+        display: block;
+    }
+    .zone.turn-off {
+        opacity: 0.3;
+    }
+    .play-table .turn-on-disabled{
+        display: none;
+    }
+    .play-table .turn-off-disabled{
+        display: block;
+        position: absolute;
+        z-index: 3;
+        width: 100%;
+        height: 100%;
+    }
+    .play-table .turn-off-disabled .fa{
+        position: relative;
+        font-size: 200px;
+        z-index: 100;
+        color: #fff;
+        left: 35%;
+        top: 10%;
+        background: rgba(249, 104, 104, 1);
+        padding: 40px;
+        border-radius: 100%;
+        box-shadow: 0 6px 10px rgba(0,0,0,.15);
+    }
+</style>
 
 <div class="col-md-2" style="height: 100%;">
     {% include 'players.html' %}
 </div>
-<div class="col-md-10 play-table" style="height: 100%;border: 1px dashed #ccc;padding-top: 15px; padding-bottom: 15px;">
+<div class="col-md-10 play-table " style="height: 100%;border: 1px dashed #ccc;padding-top: 15px; padding-bottom: 15px;">
+    {% if project.properties.turns %}
+        <div class="turn-{% if player_active == req.player.user.id %}on{% else %}off{% endif %}-disabled">
+            <i class="fa fa-hand-paper-o"></i>
+        </div>
+    {% endif %}
     {% include 'game.html' %}
 </div>
