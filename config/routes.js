@@ -122,6 +122,7 @@ module.exports = function(app, passport, io) {
 
   // Play routes
   app.param('playId', play.load);
+    app.get('/play', play.activity.getPlayId);
   app.param('activityId', play.activity.load);
   app.param('answerId', play.answer.load);
 
