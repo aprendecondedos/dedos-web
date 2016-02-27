@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% block content %}
+<form action='' name='myform' id="projectId" method='post' enctype="multipart/form-data">
+   Id proyecto: <input type='text' name='id' id="id">
+    <button action='submit'>Ir al proyecto</button>
+</form>
+{% endblock %}
+<script>
+    // Shorthand for $(document).ready();
+    $(function() {
+        $('#projectId').submit(function(){
+            var projectId = $('#id').val();
+            $(this).attr('action', "/play/" + projectId + "/");
+        });
+    });
+</script>
+
+</body>
+</html>
