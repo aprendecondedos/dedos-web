@@ -14,7 +14,8 @@
       properties: {
         delayed: false,
         failNotAllowed: false,
-        required: false
+        required: false,
+        numPlayers: 0
       },
       room: '',
       container: '.play',

@@ -11,7 +11,6 @@ var Area = mongoose.model('Area');
 var Token = mongoose.model('Token');
 var Player = mongoose.model('Player');
 
-
 exports.load = wrap(function*(req, res, next, id) {
   const options = {
     criteria: {
@@ -71,12 +70,11 @@ exports.index = wrap(function*(req, res) {
  */
 exports.activity = {
 
-    getPlayId: wrap(function*(req, res, next) {
-        console.log("HOLA");
-        var view = 'play/getPlayId';
-        res.render(view);
-        //next();
-    }),
+  getPlayId: wrap(function*(req, res, next) {
+    var view = 'play/getPlayId';
+    res.render(view);
+    //next();
+  }),
   /**
    * Carga de una activdad completa
    */

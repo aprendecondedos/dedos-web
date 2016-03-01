@@ -1,6 +1,11 @@
 <script>
     $(function() {
         <!-- -->
+        {% if project.properties.numPlayers %}
+            {% set numPlayers = project.properties.numPlayers %}
+        {% else %}
+            {% set numPlayers = 1 %}
+        {% endif %}
         var play = Play({
             id: '{{project.project}}',
             project: '{{project.id}}',
@@ -12,7 +17,7 @@
                 required: {{project.properties.required}},
                 failNotAllowed: {{project.properties.failNotAllowed}},
                 turns: {{project.properties.turns}},
-                numPlayers: {{project.properties.numPlayers}},
+                numPlayers: {{numPlayers}}
             }
         });
         {% if player %}

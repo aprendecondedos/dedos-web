@@ -1,4 +1,4 @@
-<div class="zone {% if player_active != req.player.user.id %} turn-off {% endif %}">
+<div class="zone {% if project.properties.turns %}{% if player_active != req.player.user.id %} turn-off {% endif %} {% endif %}">
 <div style="
     text-align: center;
     margin-bottom: 30px;

@@ -5,6 +5,7 @@ var play = require('../app/controllers/play');
 var user = require('../app/controllers/user');
 var player = require('../app/controllers/player');
 var auth = require('../config/middlewares/authorization');
+var url = require('url');
 
 /**
  * Route middlewares
@@ -34,48 +35,48 @@ module.exports = function(app, passport, io) {
       failureRedirect: '/login'
     }), user.signin);
   app.get('/auth/facebook/callback',
-      passport.authenticate('facebook', {
-        failureRedirect: '/login'
-      }), user.authCallback);
+    passport.authenticate('facebook', {
+      failureRedirect: '/login'
+    }), user.authCallback);
   app.get('/auth/github',
-      passport.authenticate('github', {
-        failureRedirect: '/login'
-      }), user.signin);
+    passport.authenticate('github', {
+      failureRedirect: '/login'
+    }), user.signin);
   app.get('/auth/github/callback',
-      passport.authenticate('github', {
-        failureRedirect: '/login'
-      }), user.authCallback);
+    passport.authenticate('github', {
+      failureRedirect: '/login'
+    }), user.authCallback);
   app.get('/auth/twitter',
-      passport.authenticate('twitter', {
-        failureRedirect: '/login'
-      }), user.signin);
+    passport.authenticate('twitter', {
+      failureRedirect: '/login'
+    }), user.signin);
   app.get('/auth/twitter/callback',
-      passport.authenticate('twitter', {
-        failureRedirect: '/login'
-      }), user.authCallback);
+    passport.authenticate('twitter', {
+      failureRedirect: '/login'
+    }), user.authCallback);
   app.get('/auth/google',
-      passport.authenticate('google', {
-        failureRedirect: '/login',
-        scope: [
-            'https://www.googleapis.com/auth/userinfo.profile',
-            'https://www.googleapis.com/auth/userinfo.email'
-        ]
-      }), user.signin);
+    passport.authenticate('google', {
+      failureRedirect: '/login',
+      scope: [
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/userinfo.email'
+      ]
+    }), user.signin);
   app.get('/auth/google/callback',
-      passport.authenticate('google', {
-        failureRedirect: '/login'
-      }), user.authCallback);
+    passport.authenticate('google', {
+      failureRedirect: '/login'
+    }), user.authCallback);
   app.get('/auth/linkedin',
-      passport.authenticate('linkedin', {
-        failureRedirect: '/login',
-        scope: [
-            'r_emailaddress'
-        ]
-      }), user.signin);
+    passport.authenticate('linkedin', {
+      failureRedirect: '/login',
+      scope: [
+        'r_emailaddress'
+      ]
+    }), user.signin);
   app.get('/auth/linkedin/callback',
-      passport.authenticate('linkedin', {
-        failureRedirect: '/login'
-      }), user.authCallback);
+    passport.authenticate('linkedin', {
+      failureRedirect: '/login'
+    }), user.authCallback);
 
   app.param('userId', user.load);
 
@@ -121,12 +122,15 @@ module.exports = function(app, passport, io) {
   });
 
   // Play routes
+
   app.param('playId', play.load);
-    app.get('/play', play.activity.getPlayId);
+  app.get('/play', play.activity.getPlayId);
   app.param('activityId', play.activity.load);
   app.param('answerId', play.answer.load);
-
-  app.get('/play/:playId',[], play.index);
+  app.post('/play/:playId',[], play.index);
+  app.get('/play/:playId',[], function(req, res, next) {
+    play.index(req, res);
+  });
   app.post('/play/:playId/player', play.player);
   app.get('/play/:playId/activity/:activityId', auth.requiresPlayerLogin, play.activity.show);
   app.post('/play/:playId/activity/:activityId/check', auth.requiresPlayerLogin, play.activity.check);
