@@ -88,7 +88,7 @@
       }
       this.options = $.extend(this.options, properties);
     };
-    /**
+    /**ac
      * Obtiene una propiedad de la clase
      *
      * @param {String} property Propiedad de la clase
@@ -306,7 +306,9 @@
 
     activity.setFinished = function(data) {
       if (!data) {
-        activity.check();
+        if (!self.options.properties.required) {
+          activity.check();
+        }
       } else {
         activity.finished = true;
         if (activity.valid) {

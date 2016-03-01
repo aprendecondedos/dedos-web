@@ -84,23 +84,30 @@ ProjectSchema.methods = {
     var activities_array = [];
     this.activities.forEach(function(activity) {
       let isFinished = false;
+      let isValid = false;
       let filtered = _.filter(answers, function(answer) {
         return answer.activityData.activity.toString() === activity.id;
       });
       if (filtered.length > 0) {
         filtered = filtered[0];
         isFinished = filtered.activityData.finished;
+        isValid = filtered.activityData.valid;
       }
       activities_array.push({
         id: activity.id,
         num: self.getActivityNum(activity.id),
-        finished: isFinished
+        finished: isFinished,
+        valid: isValid
       });
     });
 
     var activity_data = {prev: false, current: false, next: false};
     var currentIndex = 0;
-    var activitiesNotAnswered = _.where(activities_array, {finished: false});
+    var activities_filter = {finished: false};
+    if (this.properties.required) {
+      activities_filter = {valid: false};
+    }
+    var activitiesNotAnswered = _.where(activities_array, activities_filter);
     var current = activities_array[currentIndex];
 
     if (!activity_id) {

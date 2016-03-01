@@ -1,3 +1,4 @@
+{{posActivities|json}}
 <div class="zone {% if project.properties.turns %}{% if player_active != req.player.user.id %} turn-off {% endif %} {% endif %}">
 <div style="
     text-align: center;
@@ -38,7 +39,8 @@
     <a  data-activity="{{posActivities.next.id}}" data-num="{{posActivities.next.num}}"
         id="next-activity"
         href="/play/{{project.project}}/activity/{{posActivities.next.id}}"
-        class="select-activity btn btn-primary btn-floating animated  {% if !posActivities.next || !posActivities.current.finished %}disabled{% endif %}" style="
+        class="select-activity btn btn-primary btn-floating animated  {% if !posActivities.next || !posActivities.current.finished || (!posActivities.current.valid && project.properties.required) %}disabled{% endif %}"
+        style="
     border-radius: 100%;
     font-size: 30px;
     margin-left: 50px;
@@ -46,7 +48,9 @@
     height: 65px;
     line-height: 65px;
     padding-left: 5px;
-" id="testing"><i class="fa fa-chevron-right"></i></a>
+" >
+        <i class="fa fa-chevron-right"></i>
+    </a>
 </div>
 {% set activity_result = {"finished": posActivities.current.finished, "valid": answer.activityData.valid} %}
 <div class="game"
