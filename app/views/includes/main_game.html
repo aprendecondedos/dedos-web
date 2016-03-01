@@ -1,11 +1,11 @@
+{% if project.properties.numPlayers %}
+    {% set numPlayers = project.properties.numPlayers %}
+{% else %}
+    {% set numPlayers = 1 %}
+{% endif %}
 <script>
     $(function() {
         <!-- -->
-        {% if project.properties.numPlayers %}
-            {% set numPlayers = project.properties.numPlayers %}
-        {% else %}
-            {% set numPlayers = 1 %}
-        {% endif %}
         var play = Play({
             id: '{{project.project}}',
             project: '{{project.id}}',

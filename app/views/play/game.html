@@ -54,6 +54,9 @@
      {% if answer %}
      data-answer="{{answer.id}}"
      {% endif %}
+     {% if group %}
+     data-group="{{group._id|raw}}"
+     {% endif %}
      style="position: relative;">
     {% for area in activity.elements.area %}
     <div class="element area"

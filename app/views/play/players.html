@@ -1,7 +1,7 @@
-<ul class="list-group list-group-dividered">
+<ul id="player-list" class="list-group list-group-dividered">
     <h3>{{gettext('activity')}} {{activity.num}}</h3>
     {% for user in project.players %}
-    <li class="list-group-item {% if player_active == user.user.id %} turn-on {% else %} turn-off {% endif %}"
+    <li class="list-group-item {% if player_active == user.user.id %} turn-on {% endif %}"
         id="{{user.user.id}}"
         href="javascript:;"
         style="display: {% if user.online || req.player.user.id == user.user.id %}block{% else %}none{% endif %};">

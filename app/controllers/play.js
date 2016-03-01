@@ -141,13 +141,12 @@ exports.activity = {
       var players_active = _.where(group.players, {active: true});
       if (_.isEmpty(players_active)) {
         _.find(group.players, function(player) {
-          if (player.player == req.player.user.id) {
+          if (player.player == req.player.user.id && player.finished === false) {
             player.active = true;
           }
         });
       }
       activity.save();
-      console.log(group);
     }
     ///
     res.render('play/show', {

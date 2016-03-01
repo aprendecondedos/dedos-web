@@ -134,12 +134,20 @@
           // @TODO
           var activity_result = $container.find('.game').data('activity-result');
           activity.valid = activity_result.valid;
-          if (activity_result.finished) {
-            activity.setFinished();
-          }
           var answer_data = $container.find('.game').data('answer');
           if (answer_data) {
             answer.setProperties({_id: answer_data});
+          }
+          var group_data = $container.find('.game').data('group');
+          if (group_data) {
+            self.setOption('player', $.extend(self.options.player, {
+              group: {
+                id: group_data
+              }
+            }));
+          }
+          if (activity_result.finished) {
+            activity.setFinished();
           }
 
           $container.find('.token-movable').draggable({
@@ -327,7 +335,6 @@
         room: self.options.room,
         activity: activity.id,
         player: self.options.player
-       // @TODO añadir id del grupo
       });
 
       elements.disable();
@@ -466,11 +473,7 @@
         });
       };
     };
-    socket.on('event:count:token', function(data) {
-      var $element = $('#' + data.id);
-      $element.find('.badge-radius').text(data.value);
-      $element.find('.badge-radius').css('display','inline');
-    });
+
     function disableElements() {
       $container.find('.token-clickable').toggleClass('token-clickable');
       var disabled = $('.token-movable').draggable('option', 'disabled');
@@ -562,7 +565,43 @@
     // Sockets
     sockets.activity = {
       join: 'server project:activity:join',
-      finished: 'server:project:activity:finished'
+      finished: 'server project:activity:finished'
+    };
+
+    socket.on('event:count:token', function(data) {
+      var $element = $('#' + data.id);
+      $element.find('.badge-radius').text(data.value);
+      $element.find('.badge-radius').css('display','inline');
+    });
+    socket.on('client project:activity:finished', function(data) {
+      if (data.group.id == self.options.player.group.id) {
+        if (data.group.finished) {
+          // stuff
+          self.player.setActive(true);
+        } else {
+          if (data.nextPlayer === self.options.player.id) {
+            self.player.setActive(true, data.nextPlayer);
+          } else {
+            self.player.setActive(false, data.nextPlayer);
+          }
+        }
+      }
+      console.log(data);
+    });
+    this.player = {};
+    this.player.setActive = function(isActive, player_id) {
+      $container.find('#player-list li').removeClass('turn-on');
+      if (isActive) {
+        $container.find('.zone').removeClass('turn-off');
+        $container.find('.hand-disabled').fadeOut();
+      } else {
+        $container.find('#' + self.options.player.id).removeClass('turn-on');
+        $container.find('.zone').addClass('turn-off');
+        $container.find('.hand-disabled').fadeIn();
+      }
+      if (player_id) {
+        $container.find('#' + player_id).addClass('turn-on');
+      }
     };
     // Eventos
 

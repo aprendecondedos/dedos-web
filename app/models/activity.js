@@ -122,6 +122,22 @@ ActivitySchema.methods = {
     });
     return result;
   },
+  getGroupById: function(group_id) {
+    return _.find(this.groups, function(objectGroup) {
+      return String(objectGroup._id) === String(group_id);
+    });
+  },
+  setPropertiesFromPlayerGroup: function(group_id, player_id, properties) {
+    var group = this.getGroupById(group_id);
+    if (group) {
+      var player = _.find(group.players, function(objectPlayer) {
+        return String(objectPlayer.player) === String(player_id);
+      });
+      player = _.extendOwn(player, properties);
+      return player;
+    }
+    return false;
+  },
   /**
    * Comprobación si la actividad se ha resuelto correctamente
    * y si se puede dar por finalizada
@@ -195,13 +211,13 @@ ActivitySchema.statics = {
    *
    * @param {ObjectId} options
    */
-  load: function(options) {
+  load: function(options, cb) {
     const criteria = options.criteria || {_id: options};
     return this.findOne(criteria)
       .populate('objectives')
       .populate('answers')
       .populate('elements')
-      .exec();
+      .exec(cb);
   },
   /**
    * Listar actividades y filtrarlos

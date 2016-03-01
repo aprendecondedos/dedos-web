@@ -14,7 +14,7 @@
 {% endif %}
 
 <style>
-    .turn-off .turn-icon{
+    .turn-icon{
         display: none;
     }
     .turn-on .turn-icon{
@@ -23,17 +23,19 @@
     .zone.turn-off {
         opacity: 0.3;
     }
-    .play-table .turn-on-disabled{
+    .play-table .hand-disabled.turn-on{
         display: none;
     }
-    .play-table .turn-off-disabled{
+    .play-table .hand-disabled.turn-off{
         display: block;
+    }
+    .play-table .hand-disabled{
         position: absolute;
         z-index: 3;
         width: 100%;
         height: 100%;
     }
-    .play-table .turn-off-disabled .fa{
+    .play-table .hand-disabled .fa{
         position: relative;
         font-size: 200px;
         z-index: 100;
@@ -52,7 +54,7 @@
 </div>
 <div class="col-md-10 play-table " style="height: 100%;border: 1px dashed #ccc;padding-top: 15px; padding-bottom: 15px;">
     {% if project.properties.turns %}
-        <div class="turn-{% if player_active == req.player.user.id %}on{% else %}off{% endif %}-disabled">
+        <div class="turn-{% if player_active == req.player.user.id %}on{% else %}off{% endif %} hand-disabled">
             <i class="fa fa-hand-paper-o"></i>
         </div>
     {% endif %}

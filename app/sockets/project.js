@@ -1,9 +1,11 @@
 'use strict';
 
 var wrap = require('co-express');
+var _ = require('underscore');
 var extend = require('util')._extend;
 var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
+var Activity = mongoose.model('Activity');
 var Answer = mongoose.model('Answer');
 var User = mongoose.model('Player');
 
@@ -69,17 +71,57 @@ exports.activity = {
     var value = 1;
     console.log('LLEGA AQUI ' + data.activity);
     var answer_options = {
-      'activityData.activity': data.activity
+      criteria: { 'activityData.activity': data.activity }
     };
-    Answer.list({
-      criteria: answer_options
-    }, function(err, obj) {
+    Answer.list(answer_options, function(err, obj) {
      // console.log(Answer);
       var answer = obj;
       if (answer) {
      //   value = answer.countToken(data.id,'sel');
       }
      // self.server.sockets.in(data.room).emit('event:count:token', {id: data.id, value: value});
+    });
+  },
+  finished: function(data) {
+    var self = this;
+    var activity_options = {
+      criteria: {
+        _id: data.activity
+      }
+    };
+    Activity.load(activity_options, function(err, activity) {
+      activity.setPropertiesFromPlayerGroup(data.player.group.id, data.player.id, {
+        finished: true,
+        active: false
+      });
+      var group = activity.getGroupById(data.player.group.id);
+      if (group) {
+        var players_not_finished = _.where(group.players, {finished: false});
+        var next_player = {};
+        var new_data = {};
+        if (players_not_finished.length > 0) {
+          next_player = players_not_finished[0];
+          activity.setPropertiesFromPlayerGroup(data.player.group.id, next_player.player, {active: true});
+          new_data = {
+            nextPlayer: next_player.player,
+            group: {
+              id: data.player.group.id,
+              finished: false
+            }
+          };
+        } else {
+          group.finished = true;
+          new_data = {
+            nextPlayer: {},
+            group: {
+              id: data.player.group.id,
+              finished: true
+            }
+          };
+        }
+      }
+      activity.save();
+      self.server.sockets.in(data.room).emit('client project:activity:finished', new_data);
     });
   }
 };
