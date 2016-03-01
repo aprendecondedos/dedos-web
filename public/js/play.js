@@ -142,7 +142,8 @@
           if (group_data) {
             self.setOption('player', $.extend(self.options.player, {
               group: {
-                id: group_data
+                id: group_data.id,
+                finished: group_data.finished,
               }
             }));
           }
@@ -332,12 +333,17 @@
           }
         }
       }
-      // Socket emit
-      socket.emit(sockets.activity.finished, {
-        room: self.options.room,
-        activity: activity.id,
-        player: self.options.player
-      });
+      //Si turnos está activado se emite un socket para comprobar el estado del grupo y a quien le toca interactuar
+      if (self.options.properties.turns) {
+        if (self.options.player.group.finished === false) {
+          // Socket emit
+          socket.emit(sockets.activity.finished, {
+            room: self.options.room,
+            activity: activity.id,
+            player: self.options.player
+          });
+        }
+      }
 
       elements.disable();
     };
@@ -576,6 +582,7 @@
       $element.find('.badge-radius').css('display','inline');
     });
     socket.on('client project:activity:finished', function(data) {
+      console.log(data);
       if (data.group.id == self.options.player.group.id) {
         if (data.group.finished) {
           // stuff

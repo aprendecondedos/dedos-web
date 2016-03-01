@@ -54,9 +54,11 @@
 </div>
 <div class="col-md-10 play-table " style="height: 100%;border: 1px dashed #ccc;padding-top: 15px; padding-bottom: 15px;">
     {% if project.properties.turns %}
+        {% if !group.finished %}
         <div class="turn-{% if player_active == req.player.user.id %}on{% else %}off{% endif %} hand-disabled">
             <i class="fa fa-hand-paper-o"></i>
         </div>
+        {% endif %}
     {% endif %}
     {% include 'game.html' %}
 </div>
