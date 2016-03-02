@@ -128,7 +128,7 @@ AnswerSchema.statics = {
    *
    * @param {ObjectId} options
    */
-  load: function(options,cb) {
+  load: function(options, cb) {
     const criteria = options.criteria || {_id: options};
     return this.findOne(criteria)
       .exec(cb);
@@ -164,7 +164,7 @@ AnswerSchema.statics = {
   getFromActivities: function(activities) {
     return this.list({
       criteria: {
-        'activity': {$in: activities}
+        'activityData.activity': {$in: activities}
       },
       populate:  [{path: 'player', select: 'name'}]
     });

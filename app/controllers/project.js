@@ -8,6 +8,7 @@ var gettext = require('../../i18n/i18n').gettext;
 var extend = require('util')._extend;
 var wrap = require('co-express');
 var _ = require('underscore');
+var xl = require('excel4node');
 
 var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
@@ -18,6 +19,7 @@ var Pair = mongoose.model('Pair');
 var TokenMeter = mongoose.model('TokenMeter');
 var Area = mongoose.model('Area');
 var Token = mongoose.model('Token');
+var User = mongoose.model('User');
 
 /**
  * Load
@@ -283,6 +285,42 @@ exports.settings = function(req, res) {
     }
   });
 };
+
+exports.statistics = wrap(function*(req, res) {
+  console.log('HOLAAA');
+
+  const project = req.project;
+  var answers = yield Answer.getFromActivities(project.activities);
+  //console.log(project.activities);
+  console.log(answers);
+  var wb = new xl.WorkBook();
+  var ws = wb.WorkSheet('globales');
+  project.players.forEach(function(player, index2) {
+    console.log(player.user.name);
+    var playerName = ws.Cell(index2 + 2,1);
+    playerName.String(player.user.name);
+    project.activities.forEach(function(activity, index1) {
+      // Creamos el header con el número de la actividad
+      var header = ws.Cell(1, index1 + 2);
+      header.String('Actividad ' + Number(index1 + 1));
+      //Vemos si la actividad se ha resuelto bien o no o no se ha completado aún.
+      var playerAnswers = _.find(answers,function(answer) {
+        return (String(answer.player._id) == String(player.user._id)) &&
+          (String(answer.activityData.activity) == String(activity._id));
+      });
+      console.log(playerAnswers);
+      var result = ws.Cell(index2 + 2, index1 + 2);
+      if (playerAnswers) {
+        result.Bool(playerAnswers.activityData.valid);
+      } else {
+        result.String('No completada');
+      }
+    });
+  });
+
+  wb.write('my2.xlsx', res);
+  res.send();
+});
 
 /**
  *  Edición de las propiedades del proyecto
