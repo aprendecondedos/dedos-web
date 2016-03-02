@@ -295,6 +295,11 @@ exports.statistics = wrap(function*(req, res) {
   console.log(answers);
   var wb = new xl.WorkBook();
   var ws = wb.WorkSheet('globales');
+  //Estilo de las celdas con los resultados
+  var resultStyle = wb.Style();
+  resultStyle.Font.Size(14);
+  resultStyle.Fill.Pattern('solid');
+
   project.players.forEach(function(player, index2) {
     console.log(player.user.name);
     var playerName = ws.Cell(index2 + 2,1);
@@ -311,6 +316,12 @@ exports.statistics = wrap(function*(req, res) {
       console.log(playerAnswers);
       var result = ws.Cell(index2 + 2, index1 + 2);
       if (playerAnswers) {
+        if (playerAnswers.activityData.valid) {
+          resultStyle.Fill.Color('00CC00');
+        } else {
+          resultStyle.Fill.Color('FF0000');
+        }
+        result.Style(resultStyle);
         result.Bool(playerAnswers.activityData.valid);
       } else {
         result.String('No completada');
