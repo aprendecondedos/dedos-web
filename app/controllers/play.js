@@ -35,6 +35,7 @@ exports.load = wrap(function*(req, res, next, id) {
  * Inicio del juego
  */
 exports.index = wrap(function*(req, res) {
+  console.log("PASA POR AQUIIIIIII");
   const project = req.project;
   var view = 'play/index';
   if (lib.isEmptyObject(req.player) || !req.player) {
@@ -54,6 +55,27 @@ exports.index = wrap(function*(req, res) {
     };
     var answers = yield Answer.list(answer_options);
     positions_activity = project.getPositionsActivities(answers);
+
+    ///
+    if (project.properties.turns) {
+      if (positions_activity.prev) {
+        var activity = yield Activity.load(positions_activity.prev.id);
+        if (answers.length > 0) {
+          var group = activity.hasGroup(req.player.user.id);
+          console.log(group.finished);
+          if (!group.finished) {
+            console.log('CURREEEEEEEEEENT');
+            console.log(positions_activity.current);
+            var current = positions_activity.current;
+            var prev = positions_activity.prev;
+            positions_activity.next = current;
+            positions_activity.current = prev;
+            positions_activity.prev = positions_activity.pre_prev;
+          }
+        }
+      }
+    }
+    ///
   }
   res.render(view, {
     title: gettext('play'),
@@ -134,7 +156,7 @@ exports.activity = {
     };
     const answer = yield Answer.load(answer_options);
     const answers = yield Answer.list(answer_options);
-    var positions_activity = project.getPositionsActivities(answers, activity.id);
+
     ///
     if (project.properties.turns && project.properties.numPlayers > 0) {
       var group = activity.assignPlayerToGroup(req.player.user.id, project.properties.numPlayers);
@@ -148,6 +170,8 @@ exports.activity = {
       }
       activity.save();
     }
+    console.log('GRUPOOOOOOOOOOOOOOOOOO');
+    var positions_activity = project.getPositionsActivities(answers, activity.id, group);
     ///
     res.render('play/show', {
       title: gettext('play'),

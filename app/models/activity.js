@@ -115,7 +115,7 @@ ActivitySchema.methods = {
     var result = {};
     this.groups.forEach(function(group) {
       _.find(group.players, function(player) {
-        if (player.player == player_id) {
+        if (player.player == player_id.toString()) {
           result = group;
         }
       });
