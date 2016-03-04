@@ -173,9 +173,14 @@ exports.activity = {
         });
       }
       activity.save();
+      yield Player.populate(group.players, { path: 'user' }, function (err, user) {
+            console.log("accede");
+           console.log(user);
+      });
+       //console.log(activity.groups[0].players);
       //group = activity.hasGroup(req.player.user.id);
     }
-
+    //console.log(group.players);
     var positions_activity = project.getPositionsActivities(answers, activity.id, group);
     ///
 

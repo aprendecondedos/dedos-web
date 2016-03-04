@@ -219,7 +219,6 @@ ProjectSchema.statics = {
    *
    * @param {Object} options
    */
-
   list: function(options) {
     const criteria = options.criteria || {};
     const page = options.page || 0;

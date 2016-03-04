@@ -220,6 +220,7 @@ ActivitySchema.statics = {
       .populate('groups.players.user')
       .exec(cb);
   },
+
   /**
    * Listar actividades y filtrarlos
    *
