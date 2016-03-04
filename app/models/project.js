@@ -5,6 +5,7 @@ var fs = require('fs');
 var util = require('util');
 var wrap = require('co-express');
 var _ = require('underscore');
+var Activity = mongoose.model('Activity');
 
 // Project model
 var ProjectSchema = mongoose.Schema({
@@ -79,7 +80,7 @@ ProjectSchema.methods = {
    * @param {Object} answers listado de respuestas por actividad
    * @returns {{prev: {Object}, current: {Object}, next: {Object}}}
    */
-  getPositionsActivities: function(answers, activity_id) {
+  getPositionsActivities: function(answers, activity_id, group) {
     const self = this;
     var activities_array = [];
     this.activities.forEach(function(activity) {
@@ -123,8 +124,12 @@ ProjectSchema.methods = {
     activity_data = {
       prev: activities_array[currentIndex - 1] ? activities_array[currentIndex - 1] : false,
       current: activities_array[currentIndex],
-      next: activities_array[currentIndex + 1] ? activities_array[currentIndex + 1] : false
+      next: activities_array[currentIndex + 1] ? activities_array[currentIndex + 1] : false,
+      pre_prev: activities_array[currentIndex - 2] ? activities_array[currentIndex - 2] : false,
+      pos_next: activities_array[currentIndex + 2] ? activities_array[currentIndex + 2] : false
     };
+
+    console.log('TERMINADO');
     return activity_data;
   },
   saveFromXML: function(XML_data) {
