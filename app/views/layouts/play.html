@@ -19,6 +19,9 @@
     <div class="page-content" style="height: 100%;">
 
         {{project.name}}
+
+        {% if project.properties.showActivities %}
+        <!-- Listado de actividades -->
         <div>
             {% for activity in project.activities %}
             <a data-activity="{{activity.id}}" data-num="{{loop.index}}" class="select-activity margin-right-20 margin-bottom-15 btn btn-sm btn-primary {% if req.activity.id == activity.id %}btn-info{% endif %}" href="/play/{{project.project}}/activity/{{activity.id}}">
@@ -26,6 +29,7 @@
             </a>
             {% endfor %}
         </div>
+        {% endif %}
 
         <div class="row play" style="height: 100%;" data-context="">
             {% block play %}{% endblock %}
