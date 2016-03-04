@@ -1,20 +1,19 @@
 <ul id="player-list" class="list-group list-group-dividered">
     <h3>{{gettext('activity')}} {{activity.num}}</h3>
-    {% for user in group.players %}
-    {{user.player.name|json}}
+    {% for user in project.players %}
     <li class="list-group-item {% if player_active == user.user.id %} turn-on {% endif %}"
-        id="{{user.player}}"
+        id="{{user.user.id}}"
         href="javascript:;"
         style="display: {% if user.online || req.player.user.id == user.user.id %}block{% else %}none{% endif %};">
         <div class="media">
             <div class="media-left">
-                <span class="avatar avatar-online">
-                   <img data-name="{{user.player.name}}" class="profile">
-                </span>
+<span class="avatar avatar-online">
+<img data-name="{{user.user.name}}" class="profile">
+</span>
             </div>
             <div class="media-body font-size-16" style="vertical-align: middle;">
                 <i class="turn-icon fa fa-hand-o-left pull-right padding-top-5"></i>
-                {{user.player.name}}
+                {{user.user.name}}
             </div>
         </div>
     </li>

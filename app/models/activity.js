@@ -14,7 +14,7 @@ var ActivitySchema = new Schema({
     id: {type: Schema.Types.ObjectId},
     finished: {type: Boolean, default: false},
     players: [{
-      player: {type: Schema.Types.ObjectId, ref: 'Player'},
+      user: {type: Schema.Types.ObjectId, ref: 'User'},
       active: {type: Boolean, default: false},
       finished: {type: Boolean, default: false}
     }]
@@ -102,11 +102,11 @@ ActivitySchema.methods = {
       if (_.isEmpty(group_not_full)) {
         var i = this.groups.push({});
         group = this.groups[i - 1];
-        group.players.push({player: player_id});
+        group.players.push({user: player_id});
       } else {
         group = group_not_full;
         // Se añade el usuario al grupo que no este totalmente completo
-        group.players.push({player: player_id});
+        group.players.push({user: player_id});
       }
     }
     return group;
@@ -115,7 +115,7 @@ ActivitySchema.methods = {
     var result = {};
     this.groups.forEach(function(group) {
       _.find(group.players, function(player) {
-        if (player.player == player_id.toString()) {
+        if (player.user._id.toString() == player_id.toString()) {
           result = group;
         }
       });
@@ -131,7 +131,7 @@ ActivitySchema.methods = {
     var group = this.getGroupById(group_id);
     if (group) {
       var player = _.find(group.players, function(objectPlayer) {
-        return String(objectPlayer.player) === String(player_id);
+        return String(objectPlayer.user._id) === String(player_id);
       });
       player = _.extendOwn(player, properties);
       return player;
@@ -217,6 +217,7 @@ ActivitySchema.statics = {
       .populate('objectives')
       .populate('answers')
       .populate('elements')
+      .populate('groups.players.user')
       .exec(cb);
   },
   /**

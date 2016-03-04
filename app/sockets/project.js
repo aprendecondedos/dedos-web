@@ -101,9 +101,11 @@ exports.activity = {
         var new_data = {};
         if (players_not_finished.length > 0) {
           next_player = players_not_finished[0];
-          activity.setPropertiesFromPlayerGroup(data.player.group.id, next_player.player, {active: true});
+          console.log("SOCKEEEEEEEEEET");
+          console.log(next_player);
+          activity.setPropertiesFromPlayerGroup(data.player.group.id, next_player.user._id, {active: true});
           new_data = {
-            nextPlayer: next_player.player,
+            nextPlayer: next_player.user._id,
             group: {
               id: data.player.group.id,
               finished: false

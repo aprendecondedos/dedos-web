@@ -8,7 +8,11 @@
 {% if project.properties.turns %}
     {% for group_player in group.players %}
         {% if group_player.active %}
-            {% set player_active = group_player.player %}
+            {% if group_player.user.name %}
+                {% set player_active = group_player.user.id %}
+            {% else %}
+                {% set player_active = group_player.user %}
+            {% endif %}
         {% endif %}
     {% endfor %}
 {% endif %}

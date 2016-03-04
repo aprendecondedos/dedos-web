@@ -35,7 +35,7 @@ exports.load = wrap(function*(req, res, next, id) {
  * Inicio del juego
  */
 exports.index = wrap(function*(req, res) {
-  console.log("PASA POR AQUIIIIIII");
+  console.log('PASA POR AQUIIIIIII');
   const project = req.project;
   var view = 'play/index';
   if (lib.isEmptyObject(req.player) || !req.player) {
@@ -163,16 +163,23 @@ exports.activity = {
       var players_active = _.where(group.players, {active: true});
       if (_.isEmpty(players_active)) {
         _.find(group.players, function(player) {
-          if (player.player == req.player.user.id && player.finished === false) {
+          var user_id = player.user._id;
+          if (!user_id) {
+            user_id = player.user;
+          }
+          if (user_id == req.player.user.id && player.finished === false) {
             player.active = true;
           }
         });
       }
       activity.save();
+      //group = activity.hasGroup(req.player.user.id);
     }
-    console.log('GRUPOOOOOOOOOOOOOOOOOO');
+
     var positions_activity = project.getPositionsActivities(answers, activity.id, group);
     ///
+
+
     res.render('play/show', {
       title: gettext('play'),
       project: project,
