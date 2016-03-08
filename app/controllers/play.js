@@ -35,7 +35,6 @@ exports.load = wrap(function*(req, res, next, id) {
  * Inicio del juego
  */
 exports.index = wrap(function*(req, res) {
-  console.log('PASA POR AQUIIIIIII');
   const project = req.project;
   var view = 'play/index';
   if (lib.isEmptyObject(req.player) || !req.player) {
@@ -64,8 +63,6 @@ exports.index = wrap(function*(req, res) {
           var group = activity.hasGroup(req.player.user.id);
           console.log(group.finished);
           if (!group.finished) {
-            console.log('CURREEEEEEEEEENT');
-            console.log(positions_activity.current);
             var current = positions_activity.current;
             var prev = positions_activity.prev;
             positions_activity.next = current;
@@ -157,7 +154,7 @@ exports.activity = {
     const answer = yield Answer.load(answer_options);
     const answers = yield Answer.list(answer_options);
 
-    ///
+    // Asignación de jugador a un grupo
     if (project.properties.turns && project.properties.numPlayers > 0) {
       var group = activity.assignPlayerToGroup(req.player.user.id, project.properties.numPlayers);
       var players_active = _.where(group.players, {active: true});
@@ -173,17 +170,10 @@ exports.activity = {
         });
       }
       activity.save();
-      yield Player.populate(group.players, { path: 'user' }, function (err, user) {
-            console.log("accede");
-           console.log(user);
-      });
-       //console.log(activity.groups[0].players);
-      //group = activity.hasGroup(req.player.user.id);
+      yield Player.populate(group.players, {path: 'user'});
     }
-    //console.log(group.players);
+    // Posiciones de actividades (prev, current, next) respecto a answers
     var positions_activity = project.getPositionsActivities(answers, activity.id, group);
-    ///
-
 
     res.render('play/show', {
       title: gettext('play'),

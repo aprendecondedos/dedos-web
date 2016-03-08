@@ -33,6 +33,39 @@
     var $select_player = $(this.options.modals.select_player);
     var self = this;
     /**
+     * Sockets
+     *
+     * @type {Object} sockets
+     */
+    var _sockets = {};
+    _sockets.activity = {
+      join: 'project:activity:join',
+      finished: 'project:activity:finished'
+    };
+    _sockets.player = {
+      connected: 'project:player:connected'
+    };
+    var addPrefixValue = function(obj, prefix) {
+      if (typeof obj !== 'object' || !obj) {
+        return false;
+      }
+      var objk = Object.keys(obj);
+      var prefix = prefix || '';
+
+      for (var i = 0; i < objk.length; i++) {
+        if (typeof obj[objk[i]]  === 'object') {
+          addPrefixValue(obj[objk[i]], prefix);
+        } else {
+          obj[objk[i]] = prefix + ' ' + obj[objk[i]];
+        }
+      }
+      return obj;
+    };
+    var sockets = {};
+    sockets.client = addPrefixValue($.extend(true, {}, _sockets), 'client');
+    sockets.server = addPrefixValue($.extend(true, {}, _sockets), 'server');
+
+    /**
      * Urls
      *
      * @type {string} url_play
@@ -56,12 +89,6 @@
         url: url_play + '/answer/' + data._id
       });
     };
-    /**
-     * Listado de sockets disponibles
-     *
-     * @type {Object} sockets
-     */
-    var sockets = {};
     /**
      * Propiedades de los elementos
      *
@@ -178,16 +205,16 @@
                 data: {
                   id: ui.draggable.context.id,
                   name: $container.find(
-                      '#' + ui.draggable.context.id).data('element'),
+                    '#' + ui.draggable.context.id).data('element'),
                   value: $container.find(
-                      '#' + ui.draggable.context.id).data('value')
+                    '#' + ui.draggable.context.id).data('value')
                 },
                 area_id: $container.find(
                   '#' + ui.draggable.context.id).parent().data('element'),
                 droppedInto: {
                   id: event.target.id,
                   name: $container.find('#' + event.target.id)
-                      .data('element'),
+                    .data('element'),
                   currentValue: $container.find('#' + event.target.id)
                     .attr('data-currentvalue')
                 }
@@ -204,7 +231,7 @@
             }
           });
           // Se emite un socket incluyendo información relacionada con la actividad y jugador
-          socket.emit(sockets.activity.join, {
+          socket.emit(sockets.server.activity.join, {
             room: self.options.room,
             activity: activity.id,
             status: activity.num,
@@ -245,7 +272,7 @@
           droppedInto: {
             id: $(this).data('droppedin'),
             name: $container.find('#' + $(this).data('droppedin'))
-                .data('element'),
+              .data('element'),
             currentValue: $container.find('#' + $(this).data('droppedin'))
               .attr('data-currentvalue')
           }
@@ -286,14 +313,14 @@
             }
           }
           /* Ejecuta esta parte porque la opción de respuesta demorada está activa,
-          por lo que automáticamente la actividad se dará por terminada una vez el usuario de sus respuestas
+           por lo que automáticamente la actividad se dará por terminada una vez el usuario de sus respuestas
            */
           /*Por tanto, sólo tenemos que comprobar si ha resuelto la actividad correctamente o no y contrastarlo con
            la opción dónde se establece si se requiere éxito o no en la respuesta
-            */
+           */
           /* La ejecución será diferente dependiendo de si se hace por turnos o no.
-          Por ejemplo: Si hay turnos, el usuario no podrá avanzar a la siguiente actividad hasta
-          que todos los jugadores hayan completado dicha actividad.
+           Por ejemplo: Si hay turnos, el usuario no podrá avanzar a la siguiente actividad hasta
+           que todos los jugadores hayan completado dicha actividad.
            */
           activity.valid = data.activity.valid;
           answer.setProperties(data.answer);
@@ -334,15 +361,14 @@
         }
       }
       //Si turnos está activado se emite un socket para comprobar el estado del grupo y a quien le toca interactuar
-      if (self.options.properties.turns) {
-        if (self.options.player.group.finished === false) {
-          // Socket emit
-          socket.emit(sockets.activity.finished, {
-            room: self.options.room,
-            activity: activity.id,
-            player: self.options.player
-          });
-        }
+      if (self.options.properties.turns &&
+        self.options.player.group.finished === false) {
+        // Socket emit
+        socket.emit(sockets.server.activity.finished, {
+          room: self.options.room,
+          activity: activity.id,
+          player: self.options.player
+        });
       }
 
       elements.disable();
@@ -405,7 +431,6 @@
     elements.connect = function() {
       $container.find('.token-movable[data-connect]').each(function() {
         var data = $(this).data('connect');
-        console.log(data);
         connect($('#' + data.origin), $('#' + data.target));
       });
     };
@@ -426,7 +451,7 @@
         }else {
           $container.find('#' + token.data.id).toggleClass('clicked');
         }
-      // Se comprueba si ya se ha comprobado el token
+        // Se comprueba si ya se ha comprobado el token
       } else if (token.data.checked) {
         return false;
       } else {
@@ -467,8 +492,8 @@
                 if (data.tokens[key].valid) {
                   $container.find('#' + data.tokens[key].id).hide();
                 } /*else {
-                  $container.find('#' + data.tokens[key].id).css('opacity',1);
-                }*/
+                 $container.find('#' + data.tokens[key].id).css('opacity',1);
+                 }*/
               }
             };
             activity.valid = data.activity.valid;
@@ -569,20 +594,20 @@
       });
 
     }
-
-    // Sockets
-    sockets.activity = {
-      join: 'server project:activity:join',
-      finished: 'server project:activity:finished'
-    };
+    socket.on(sockets.client.player.connected, function(data) {
+      console.log(data);
+      console.log(socket.id);
+      //$select_player.modal('hide');
+      $('#'+data.player.user.id).fadeIn();
+    });
 
     socket.on('event:count:token', function(data) {
       var $element = $('#' + data.id);
       $element.find('.badge-radius').text(data.value);
       $element.find('.badge-radius').css('display','inline');
     });
+
     socket.on('client project:activity:finished', function(data) {
-      console.log(data);
       if (data.group.id == self.options.player.group.id) {
         if (data.group.finished) {
           // stuff
@@ -595,8 +620,8 @@
           }
         }
       }
-      console.log(data);
     });
+
     this.player = {};
     this.player.setActive = function(isActive, player_id) {
       $container.find('#player-list li').removeClass('turn-on');
@@ -612,6 +637,7 @@
         $container.find('#' + player_id).addClass('turn-on');
       }
     };
+
     // Eventos
 
     // Función para comprobar respuestas en caso de demorada

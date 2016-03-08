@@ -47,7 +47,7 @@ $(function(){
 </style>
 <div class="row">
     <!-- Activities list -->
-    {% set activities_count = activities.length %}
+    {% set activities_count = project.activities.length %}
     <div class="col-md-6">
         <div class="panel">
             <div class="panel-heading">
@@ -65,6 +65,7 @@ $(function(){
                             <!-- Answers -->
                             <div class="answers row margin-bottom-10 margin-top-10">
                                 {% set answers_data = answers[activity.id] %}
+                                
                                 <div class="col-md-6" style="border-right: 1px solid #e4eaec;">
                                     Correcto
                                     <div class="check margin-top-5">

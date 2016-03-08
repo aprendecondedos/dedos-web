@@ -43,7 +43,6 @@ exports.player = {
     if (data.player) {
       var self = socket || this;
       var io = self.server;
-
       Project.update(
         {_id: data.room, 'players.user': data.player.user.id},
         {$set: {'players.$.online': false}}, function() {
@@ -52,11 +51,6 @@ exports.player = {
             .emit('client project:player:disconnected', data);
           self.leave(data.room);
         });
-      //yield Project.update(
-      //  {_id: data.room, 'players.user': data.player.user.id},
-      //  {$set: {'players.$.online': false}}
-      //);
-
     }
   }
 };

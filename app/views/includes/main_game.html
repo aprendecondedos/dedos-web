@@ -72,12 +72,7 @@
     {% endif %}
 
     socket.on('connect', function() {
-        socket.on('client project:player:connected', function(data){
-            console.log(data);
-            console.log(socket.id);
-            $select_player.modal('hide');
-            $('#'+data.id).fadeIn();
-        });
+
     });
 
 

@@ -251,13 +251,13 @@ exports.show = wrap(function*(req, res) {
   const answers = yield Answer.getFromActivities(project.activities);
   var answers_data = [];
   answers.forEach(function(answer) {
-    if (_.isUndefined(answers_data[answer.activity])) {
-      answers_data[answer.activity] = {valid: [], wrong: []};
+    if (_.isUndefined(answers_data[answer.activityData.activity])) {
+      answers_data[answer.activityData.activity] = {valid: [], wrong: []};
     }
-    if (answer.valid && answers_data[answer.activity]) {
-      answers_data[answer.activity].valid.push(answer);
+    if (answer.activityData.valid) {
+      answers_data[answer.activityData.activity].valid.push(answer);
     } else {
-      answers_data[answer.activity].wrong.push(answer);
+      answers_data[answer.activityData.activity].wrong.push(answer);
     }
   });
   res.render('project/show', {
