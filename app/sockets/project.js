@@ -89,14 +89,15 @@ exports.activity = {
         active: false
       });
       var group = activity.getGroupById(data.player.group.id);
+      console.log("GRUPO");
+      console.log(group);
       if (group) {
+        //group.timeOut = Date.now;
         var players_not_finished = _.where(group.players, {finished: false});
         var next_player = {};
         var new_data = {};
         if (players_not_finished.length > 0) {
           next_player = players_not_finished[0];
-          console.log("SOCKEEEEEEEEEET");
-          console.log(next_player);
           activity.setPropertiesFromPlayerGroup(data.player.group.id, next_player.user._id, {active: true});
           new_data = {
             nextPlayer: next_player.user._id,
@@ -106,16 +107,37 @@ exports.activity = {
             }
           };
         } else {
-          group.finished = true;
-          new_data = {
-            nextPlayer: {},
-            group: {
-              id: data.player.group.id,
-              finished: true
+          if (group.players.length == data.numPlayers) {
+            group.finished = true;
+            new_data = {
+              nextPlayer: {},
+              group: {
+                id: data.player.group.id,
+                finished: true
+              }
+            };
+          } else {
+            var date = new Date();
+            var players_finished = _.where(group.players, {finished: true});
+            if (players_finished.length == 0) {
+              group.timeOut = new Date();
             }
-          };
+            if ((date - group.timeout) > 7200000 ) {
+              group.finished = true;
+            }
+            new_data = {
+              nextPlayer: {},
+              group: {
+                id: data.player.group.id,
+                finished: group.finished,
+              }
+            };
+          }
         }
       }
+      /*
+        new_data.group.timeOut = Date.now;
+      */
       activity.save();
       self.server.sockets.in(data.room).emit('client project:activity:finished', new_data);
     });

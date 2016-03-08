@@ -17,7 +17,8 @@ var ActivitySchema = new Schema({
       user: {type: Schema.Types.ObjectId, ref: 'User'},
       active: {type: Boolean, default: false},
       finished: {type: Boolean, default: false}
-    }]
+    }],
+    timeOut: {type: Date, default: Date.now}
   }],
   updatedDate: {type: Date, default: Date.now}
 });
@@ -85,6 +86,43 @@ ActivitySchema.methods = {
       }
     };
     return this.model('Answer').list(_.extend(defaults, options));
+  },
+  returnCorrectAnswers: function() {
+    var self = this;
+    var elementContent = [];
+    //console.log('accede aqui');
+    this.objectives.forEach(function(objective, index2) {
+      var objectiveId = objective.getData();
+      if (objectiveId.origen) {
+        var element = _.find(self.elements, function(element) {
+          return String(element.element_id) == String(objectiveId.origen);
+        });
+        console.log(objectiveId.origen);
+        console.log(element);
+        if (element.__t == 'Token') {
+          var origenContent = element.getContent();
+          var targetContent = [];
+          objectiveId.targets.forEach(function(target) {
+            var target = _.find(self.elements, function(element) {
+              return String(element.element_id) == String(target);
+            });
+            if (target) {
+              targetContent.push(target.getContent());
+            }
+          });
+          var stringAux = origenContent + ' -> ' + targetContent.toString();
+          elementContent.push(stringAux);
+        }
+      } else {
+        var element = _.find(self.elements, function(element) {
+          return String(element.element_id) == String(objectiveId);
+        });
+        if (element) {
+          elementContent.push(element.getContent());
+        }
+      }
+    });
+    return elementContent;
   },
   /**
    *

@@ -205,16 +205,16 @@
                 data: {
                   id: ui.draggable.context.id,
                   name: $container.find(
-                    '#' + ui.draggable.context.id).data('element'),
+                      '#' + ui.draggable.context.id).data('element'),
                   value: $container.find(
-                    '#' + ui.draggable.context.id).data('value')
+                      '#' + ui.draggable.context.id).data('value')
                 },
                 area_id: $container.find(
                   '#' + ui.draggable.context.id).parent().data('element'),
                 droppedInto: {
                   id: event.target.id,
                   name: $container.find('#' + event.target.id)
-                    .data('element'),
+                      .data('element'),
                   currentValue: $container.find('#' + event.target.id)
                     .attr('data-currentvalue')
                 }
@@ -361,14 +361,17 @@
         }
       }
       //Si turnos está activado se emite un socket para comprobar el estado del grupo y a quien le toca interactuar
-      if (self.options.properties.turns &&
-        self.options.player.group.finished === false) {
-        // Socket emit
-        socket.emit(sockets.server.activity.finished, {
-          room: self.options.room,
-          activity: activity.id,
-          player: self.options.player
-        });
+
+      if (self.options.properties.turns) {
+        if (self.options.player.group.finished === false) {
+          // Socket emit
+          socket.emit(sockets.server.activity.finished, {
+            room: self.options.room,
+            activity: activity.id,
+            numPlayers: self.options.properties.numPlayers,
+            player: self.options.player
+          });
+        }
       }
 
       elements.disable();
@@ -608,7 +611,7 @@
     });
 
     socket.on('client project:activity:finished', function(data) {
-      if (data.group.id == self.options.player.group.id) {
+      if (data.group.id == self.options.player.group.id && activity.finished) {
         if (data.group.finished) {
           // stuff
           self.player.setActive(true);

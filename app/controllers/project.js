@@ -14,6 +14,8 @@ var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
 var Activity = mongoose.model('Activity');
 var Answer = mongoose.model('Answer');
+var Objective = mongoose.model('Objective');
+var Element = mongoose.model('Element');
 var Selection = mongoose.model('Selection');
 var Pair = mongoose.model('Pair');
 var TokenMeter = mongoose.model('TokenMeter');
@@ -290,30 +292,130 @@ exports.statistics = wrap(function*(req, res) {
   console.log('HOLAAA');
 
   const project = req.project;
+  var columnSheet2 = 1;
+  var rowSheet2 = 1;
   var answers = yield Answer.getFromActivities(project.activities);
+  yield Objective.populate(project.activities,'objectives', function(err, user) {
+  });
+  yield Element.populate(project.activities,'elements', function(err, user) {
+  });
   //console.log(project.activities);
-  console.log(answers);
+  // console.log(answers);
   var wb = new xl.WorkBook();
   var ws = wb.WorkSheet('globales');
+  var ws2 = wb.WorkSheet('desglosados');
   //Estilo de las celdas con los resultados
+  var headerStyle = wb.Style();
+  headerStyle.Font.Bold();
+  headerStyle.Fill.Pattern('solid');
+  headerStyle.Fill.Color('CCCCCC');
   var resultStyle = wb.Style();
-  resultStyle.Font.Size(14);
+  resultStyle.Font.Size(12);
   resultStyle.Fill.Pattern('solid');
+  resultStyle.Font.WrapText(true);
+  var correctAnswerStyle = wb.Style();
+  correctAnswerStyle.Font.WrapText(true);
+  var answerHeaderStyle = wb.Style();
+  answerHeaderStyle.Font.Bold();
+  answerHeaderStyle.Font.WrapText(true);
+  answerHeaderStyle.Border({
+    bottom: {
+      style: 'thick'
+    }
+  });
 
   project.players.forEach(function(player, index2) {
     console.log(player.user.name);
+    columnSheet2 = 1;
     var playerName = ws.Cell(index2 + 2,1);
     playerName.String(player.user.name);
+    playerName.Style(headerStyle);
+    // Row Names hoja 2
+    var playerName2 = ws2.Cell(rowSheet2 + 2,1);
+    playerName2.String(player.user.name);
+    playerName2.Style(headerStyle);
+
+
     project.activities.forEach(function(activity, index1) {
       // Creamos el header con el número de la actividad
       var header = ws.Cell(1, index1 + 2);
       header.String('Actividad ' + Number(index1 + 1));
+      header.Style(headerStyle);
+      // header actividades Hoja 2
+      var header2 = ws2.Cell(rowSheet2, columnSheet2 + 1);
+      header2.String('Actividad ' + Number(index1 + 1));
+      header2.Style(headerStyle);
+
       //Vemos si la actividad se ha resuelto bien o no o no se ha completado aún.
       var playerAnswers = _.find(answers,function(answer) {
         return (String(answer.player._id) == String(player.user._id)) &&
           (String(answer.activityData.activity) == String(activity._id));
       });
-      console.log(playerAnswers);
+      //
+      // HOJA 2
+
+      // header respuestas dadas y respuestas correctas
+
+      /* var header4 = ws2.Cell(2, columnSheet2 + 2)
+       header3.String('Respuestas correctas');*/
+      //console.log(playerAnswers.elements);
+      var correctAnswers = activity.returnCorrectAnswers();
+      if (playerAnswers) {
+        playerAnswers.elements.forEach(function (element, indexanswer) {
+          console.log(element);
+
+          var data = {
+            content: element.token.getContent(),
+            targetContent: element.target ? element.target.getContent() : undefined,
+            valid: element.valid
+          };
+          if (data.valid) {
+            resultStyle.Fill.Color('00CC00');
+          } else {
+            resultStyle.Fill.Color('FF0000');
+          }
+          var header3 = ws2.Cell(2, columnSheet2 + 1);
+          header3.String('Respuesta ' + String(indexanswer + 1));
+          header3.Style(answerHeaderStyle);
+
+
+          console.log(data.content);
+          var result2 = ws2.Cell(rowSheet2 + 2, columnSheet2 + 1);
+          result2.Style(resultStyle);
+          if (data.targetContent) {
+            console.log("ENCUENTRA TARGET");
+            result2.String(String(data.content) + ' -> ' + data.targetContent);
+          } else {
+            result2.String(String(data.content));
+          }
+
+          columnSheet2++;
+        });
+
+      } else {
+        console.log('NO HAY ANSWERS');
+        var header3 = ws2.Cell(rowSheet2 + 1, columnSheet2 + 1);
+        header3.String('Respuesta ' + 1);
+        header3.Style(answerHeaderStyle);
+        var noAnswer = ws2.Cell(rowSheet2 + 2, columnSheet2 + 1);
+        noAnswer.String('Sin respuesta');
+        columnSheet2++;
+      }
+      if (correctAnswers) {
+        correctAnswers.forEach(function (answer, indexcorrect) {
+          console.log("RESPUESTA CORRECTA");
+          console.log(rowSheet2 + " " + columnSheet2);
+          var header4 = ws2.Cell(rowSheet2+1, columnSheet2 + 1);
+          header4.Style(answerHeaderStyle);
+          header4.String('Respuesta correcta ' + String(indexcorrect + 1));
+
+          var answerCell = ws2.Cell(rowSheet2+2, columnSheet2 + 1);
+          answerCell.Style(correctAnswerStyle);
+          answerCell.String(answer);
+          columnSheet2++;
+        });
+      }
+
       var result = ws.Cell(index2 + 2, index1 + 2);
       if (playerAnswers) {
         if (playerAnswers.activityData.valid) {
@@ -327,6 +429,8 @@ exports.statistics = wrap(function*(req, res) {
         result.String('No completada');
       }
     });
+
+    rowSheet2 = rowSheet2+5;
   });
 
   wb.write('my2.xlsx', res);

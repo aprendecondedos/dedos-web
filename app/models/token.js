@@ -55,6 +55,13 @@ TokenSchema.methods = {
     //console.log(this.model('Objective'));
     this.element_id;
     return true;
+  },
+  getContent: function() {
+    if (this.type == 'txt') {
+      return this.text;
+    } else {
+      return this.urls.toString();
+    }
   }
 };
 var Token = Element.discriminator('Token', TokenSchema);
