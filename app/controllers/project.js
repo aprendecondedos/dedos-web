@@ -86,6 +86,19 @@ exports.new = wrap(function*(req, res) {
         path: '/uploads/' + project_id + '/' + xml.split('/')[0],
         createdBy: req.user.id
       });
+      var prop = project_prop.properties || {};
+      // Propiedades del proyecto seleccionadas
+      prop.required = prop.required || false;
+      prop.delayed = prop.delayed || false;
+      prop.failNotAllowed = prop.failNotAllowed || false;
+      prop.turns = prop.turns || false;
+      project.properties = prop;
+      if (prop.maxTimeout) {
+        var time = prop.maxTimeout.split(':');
+        // Minutos horas
+        project.properties.maxTimeout = (parseInt(time[0]) * 60 + parseInt(time[1])) / 60;
+      }
+
       var players =  project_prop.players;
       // Añadiendo los jugadores
       if (players) {
@@ -289,7 +302,6 @@ exports.settings = function(req, res) {
 };
 
 exports.statistics = wrap(function*(req, res) {
-  console.log('HOLAAA');
 
   const project = req.project;
   var columnSheet2 = 1;
@@ -465,6 +477,11 @@ exports.update = function(req, res) {
   prop.failNotAllowed = prop.failNotAllowed || false;
   prop.turns = prop.turns || false;
   project.properties = prop;
+  if (prop.maxTimeout) {
+    var time = prop.maxTimeout.split(':');
+    // Minutoas horas
+    project.properties.maxTimeout = (parseInt(time[0]) * 60 + parseInt(time[1])) / 60;
+  }
   project.save();
 
   res.redirect('/project/' + project.id + '/settings');

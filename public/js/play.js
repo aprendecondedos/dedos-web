@@ -42,6 +42,9 @@
       join: 'project:activity:join',
       finished: 'project:activity:finished'
     };
+    _sockets.group = {
+      timeout: 'group:timeout'
+    };
     _sockets.player = {
       connected: 'project:player:connected'
     };
@@ -278,7 +281,7 @@
           }
         });
       });
-      console.log(tokens_array);
+
       if (tokens_array.length == 0) {
         return false;
       }
@@ -301,11 +304,10 @@
                 }
               });
             }else if (data.tokens[key].type == 'pair') {
-              if (data.tokens[key].valid) {
+              if (data.tokens[key].valid && activity.finished === false) {
                 $container.find('#' + data.tokens[key].id).hide();//draggable('option', 'disabled', true);
               }
             }
-            console.log(data.tokens[key].value);
 
             if (data.tokens[key].value) {
               $container.find('[data-element=' + data.tokens[key].targetName + ']').attr(
@@ -325,8 +327,6 @@
           activity.valid = data.activity.valid;
           answer.setProperties(data.answer);
 
-          console.log('Objetivos');
-          console.log(data.activity.objectivesNotDone);
           pointObjectivesNotDone(data.activity.objectivesNotDone);
         }
       });
@@ -379,10 +379,9 @@
     };
 
     sockets.timeOut = function() {
-      console.log('SE ACABO EL TIEMPO');
 
       if (self.options.player.group.finished == false) {
-        socket.emit('server group:timeout', {
+        socket.emit(sockets.server.group.timeout, {
           room: self.options.room,
           activity: activity.id,
           numPlayers: self.options.properties.numPlayers,
@@ -532,7 +531,6 @@
     }
 
     function pointObjectivesNotDone(objectives) {
-      console.log(objectives);
       const paintStyle = [{fillStyle: 'blue', strokeStyle: 'blue', lineWidth: 1},
         {fillStyle: 'green', strokeStyle: 'green', lineWidth: 1},
         {fillStyle: 'red', strokeStyle: 'red', lineWidth: 1}];
@@ -614,8 +612,6 @@
 
     }
     socket.on(sockets.client.player.connected, function(data) {
-      console.log(data);
-      console.log(socket.id);
       //$select_player.modal('hide');
       $('#' + data.player.user.id).fadeIn();
     });
@@ -626,7 +622,8 @@
       $element.find('.badge-radius').css('display','inline');
     });
 
-    socket.on('client group:timeOut', function(data) {
+    socket.on(sockets.client.group.timeout, function(data) {
+      console.log('WEEEE');
       self.options.player.group.finished = true;
     });
 

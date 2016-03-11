@@ -62,9 +62,14 @@ exports.index = wrap(function*(req, res) {
         if (answers.length > 0) {
           var group = activity.hasGroup(req.player.user.id);
           var date = new Date();
-          if ((answers.activityData.finished) && (date - group.timeOut > 10000)){
-            group.finished = true;
-            activity.save();
+          var answer = _.find(answers, function(answer) {
+            return String(answer.activityData.activity) == String(positions_activity.prev.id);
+          });
+          if (!_.isEmpty(answer)) {
+            if ((answer.activityData.finished) && (date - group.timeOut > 10000)) {
+              group.finished = true;
+              activity.save();
+            }
           }
           if (!group.finished) {
             var current = positions_activity.current;
@@ -156,7 +161,6 @@ exports.activity = {
       }
     };
     const answer = yield Answer.load(answer_options);
-    const answers = yield Answer.list(answer_options);
 
     // Asignación de jugador a un grupo
     if (project.properties.turns && project.properties.numPlayers > 0) {
@@ -183,7 +187,35 @@ exports.activity = {
       yield Player.populate(group.players, {path: 'user'});
     }
     // Posiciones de actividades (prev, current, next) respecto a answers
-    var positions_activity = project.getPositionsActivities(answers, activity.id, group);
+    var answers_list = answer ? [answer] : [];
+    var positions_activity = project.getPositionsActivities(answers_list, activity.id, group);
+
+    var answer_options = {
+      criteria: {
+        'activityData.activity': activity.id,
+      },
+      populate: ['elements.token', 'elements.target']
+    };
+    const answers = yield Answer.list(answer_options);
+    var interactions = {};
+    answers.forEach(function(answer) {
+      answer.elements.forEach(function(element) {
+        interactions[element.token.id] = {
+          num: interactions[element.token.id] ? interactions[element.token.id].num + 1 : 1,
+          type: 'origin',
+          action: element.action
+        };
+        if (element.target) {
+          interactions[element.target.id] = {type: 'target', action: 'pair'};
+          if (!interactions[element.target.id].color) {
+            interactions[element.target.id].color = lib.randomColor();
+          }
+          interactions[element.token.id].color = interactions[element.target.id].color;
+        } else {
+          interactions[element.token.id].color = lib.randomColor();
+        }
+      });
+    });
 
     res.render('play/show', {
       title: gettext('play'),
@@ -192,7 +224,8 @@ exports.activity = {
       posActivities: positions_activity,
       answer: answer,
       group: group,
-      targets: targets
+      targets: targets,
+      interactions: interactions
     });
   }),
   /**

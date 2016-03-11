@@ -38,6 +38,7 @@ var ProjectSchema = mongoose.Schema({
     showActivities: {type: Boolean, default: false},
     turns: {type: Boolean, default: false},
     numPlayers: {type: Number, default: 0},
+    maxTimeout: {type: Number, default: 0}
   },
   createdDate: {type: Date, default: Date.now},
   createdBy: {type: Schema.Types.ObjectId, ref: 'User'}
@@ -86,7 +87,7 @@ ProjectSchema.methods = {
     this.activities.forEach(function(activity) {
       let isFinished = false;
       let isValid = false;
-      let filtered = _.filter(answers, function(answer) {
+      let filtered = _.filter(answers, function (answer) {
         return answer.activityData.activity.toString() === activity.id;
       });
       if (filtered.length > 0) {
@@ -128,7 +129,6 @@ ProjectSchema.methods = {
       pre_prev: activities_array[currentIndex - 2] ? activities_array[currentIndex - 2] : false,
       pos_next: activities_array[currentIndex + 2] ? activities_array[currentIndex + 2] : false
     };
-
     console.log('TERMINADO');
     return activity_data;
   },
