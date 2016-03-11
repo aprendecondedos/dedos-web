@@ -17,6 +17,7 @@ module.exports = function(io, app) {
     socket.on('server project:player:disconnected', project.player.disconnected);
     socket.on('server project:activity:join', project.activity.join);
     socket.on('server project:activity:finished', project.activity.finished);
+    socket.on('server group:timeout', project.activity.groupTimeOut);
     //console.log(io.sockets.adapter.rooms);
 
     var cookie = socket.request.headers.cookie;

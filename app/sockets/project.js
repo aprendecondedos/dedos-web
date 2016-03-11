@@ -65,15 +65,29 @@ exports.activity = {
     var value = 1;
     console.log('LLEGA AQUI ' + data.activity);
     var answer_options = {
-      criteria: { 'activityData.activity': data.activity }
+      criteria: {'activityData.activity': data.activity}
     };
     Answer.list(answer_options, function(err, obj) {
-     // console.log(Answer);
+      // console.log(Answer);
       var answer = obj;
       if (answer) {
-     //   value = answer.countToken(data.id,'sel');
+        //   value = answer.countToken(data.id,'sel');
       }
-     // self.server.sockets.in(data.room).emit('event:count:token', {id: data.id, value: value});
+      // self.server.sockets.in(data.room).emit('event:count:token', {id: data.id, value: value});
+    });
+  },
+  groupTimeOut: function(data) {
+    var self = this;
+    var activity_options = {
+      criteria: {
+        _id: data.activity
+      }
+    };
+    Activity.load(activity_options, function(err, activity) {
+      var group = activity.getGroupById(data.player.group.id);
+      group.finished = true;
+      activity.save();
+      self.server.sockets.in(data.room).emit('client group:timeOut');
     });
   },
   finished: function(data) {
@@ -89,7 +103,7 @@ exports.activity = {
         active: false
       });
       var group = activity.getGroupById(data.player.group.id);
-      console.log("GRUPO");
+      console.log('GRUPO');
       console.log(group);
       if (group) {
         //group.timeOut = Date.now;
@@ -110,7 +124,7 @@ exports.activity = {
           if (group.players.length == data.numPlayers) {
             group.finished = true;
             new_data = {
-              nextPlayer: {},
+              nextPlayer: undefined,
               group: {
                 id: data.player.group.id,
                 finished: true
@@ -122,11 +136,13 @@ exports.activity = {
             if (players_finished.length == 0) {
               group.timeOut = new Date();
             }
-            if ((date - group.timeout) > 7200000 ) {
+
+            if ((date - group.timeOut) >= 10000) {
+              //if ((date - group.timeout) > 7200000 ) {
               group.finished = true;
             }
             new_data = {
-              nextPlayer: {},
+              nextPlayer: undefined,
               group: {
                 id: data.player.group.id,
                 finished: group.finished,

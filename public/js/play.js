@@ -365,16 +365,32 @@
       if (self.options.properties.turns) {
         if (self.options.player.group.finished === false) {
           // Socket emit
+          //setTimeout(sockets.sendTurn, 7200000);
           socket.emit(sockets.server.activity.finished, {
             room: self.options.room,
             activity: activity.id,
             numPlayers: self.options.properties.numPlayers,
             player: self.options.player
           });
+          setTimeout(sockets.timeOut, 12000);
         }
       }
-
       elements.disable();
+    };
+
+    sockets.timeOut = function() {
+      console.log('SE ACABO EL TIEMPO');
+
+      if (self.options.player.group.finished == false) {
+        socket.emit('server group:timeout', {
+          room: self.options.room,
+          activity: activity.id,
+          numPlayers: self.options.properties.numPlayers,
+          player: self.options.player
+        });
+      }
+      self.options.player.group.finished = true;
+      self.player.setActive(true);
     };
 
     activity.restart = function() {
@@ -601,7 +617,7 @@
       console.log(data);
       console.log(socket.id);
       //$select_player.modal('hide');
-      $('#'+data.player.user.id).fadeIn();
+      $('#' + data.player.user.id).fadeIn();
     });
 
     socket.on('event:count:token', function(data) {
@@ -610,10 +626,15 @@
       $element.find('.badge-radius').css('display','inline');
     });
 
+    socket.on('client group:timeOut', function(data) {
+      self.options.player.group.finished = true;
+    });
+
     socket.on('client project:activity:finished', function(data) {
       if (data.group.id == self.options.player.group.id && activity.finished) {
         if (data.group.finished) {
           // stuff
+          self.options.player.group.finished = true;
           self.player.setActive(true);
         } else {
           if (data.nextPlayer === self.options.player.id) {

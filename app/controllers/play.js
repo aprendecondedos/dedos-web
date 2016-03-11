@@ -61,7 +61,11 @@ exports.index = wrap(function*(req, res) {
         var activity = yield Activity.load(positions_activity.prev.id);
         if (answers.length > 0) {
           var group = activity.hasGroup(req.player.user.id);
-          console.log(group.finished);
+          var date = new Date();
+          if ((answers.activityData.finished) && (date - group.timeOut > 10000)){
+            group.finished = true;
+            activity.save();
+          }
           if (!group.finished) {
             var current = positions_activity.current;
             var prev = positions_activity.prev;
@@ -157,6 +161,12 @@ exports.activity = {
     // Asignación de jugador a un grupo
     if (project.properties.turns && project.properties.numPlayers > 0) {
       var group = activity.assignPlayerToGroup(req.player.user.id, project.properties.numPlayers);
+      var date = new Date();
+      if (date - group.timeOut > 10000) {
+        if (answer && answer.activityData.finished) {
+          group.finished = true;
+        }
+      }
       var players_active = _.where(group.players, {active: true});
       if (_.isEmpty(players_active)) {
         _.find(group.players, function(player) {
