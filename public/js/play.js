@@ -221,7 +221,7 @@
                   currentValue: $container.find('#' + event.target.id)
                     .attr('data-currentvalue')
                 }
-              });
+              }, true);
               jsPlumb.repaint(ui.draggable.context.id);
               $(this).addClass('ui-state-highlight');
               $(this).removeClass('token-droppable-over');
@@ -294,25 +294,43 @@
           properties: self.options.properties
         },
         success: function(data) {
+          var index = 0;
           for (var key in data.tokens) {
             if (data.tokens[key].type == 'sel') {
-              $container.find('#' + data.tokens[key].id).addClass(function() {
-                if (data.tokens[key].valid) {
-                  return 'correct checked';
-                } else {
-                  return 'wrong checked';
-                }
-              });
-            }else if (data.tokens[key].type == 'pair') {
-              if (data.tokens[key].valid && activity.finished === false) {
-                $container.find('#' + data.tokens[key].id).hide();//draggable('option', 'disabled', true);
+              var valid = new String();
+              if (data.tokens[key].valid) {
+                valid = 'correct checked';
+              } else {
+                valid = 'wrong checked';
               }
-            }
+              $container.find('#' + data.tokens[key].id).addClass(valid);
 
-            if (data.tokens[key].value) {
+            }else if (data.tokens[key].type == 'pair') {
+              if (data.tokens[key].valid) {
+                $container.find('#' + data.tokens[key].id).draggable('option', 'revert', false);
+                $container.find('#' + data.tokens[key].id).hide();
+                //$container.find('#' + data.tokens[key].id).css('opacity',0);
+              } else {
+                //$container.find('#' + data.tokens[key].id).css('opacity',1);
+              }
+            } else if (data.tokens[key].type = 'tokenMeter') {
               $container.find('[data-element=' + data.tokens[key].targetName + ']').attr(
                 'data-currentvalue', data.tokens[key].value);
+              if (data.tokens[key].valid) {
+                $container.find('#' + data.tokens[key].id).hide();
+              } /*else {
+               $container.find('#' + data.tokens[key].id).css('opacity',1);
+               }*/
             }
+
+            var sendInfo = {
+                tokens: tokens_array,
+                room: self.options.room,
+                group: self.options.player.group ? self.options.player.group.id : undefined,
+                player: self.options.player.id
+              };
+            socket.emit('server token:action', sendInfo);
+
           }
           /* Ejecuta esta parte porque la opción de respuesta demorada está activa,
            por lo que automáticamente la actividad se dará por terminada una vez el usuario de sus respuestas
@@ -326,8 +344,9 @@
            */
           activity.valid = data.activity.valid;
           answer.setProperties(data.answer);
-
-          pointObjectivesNotDone(data.activity.objectivesNotDone);
+          activity.setFinished(data);
+          disableElements();
+          //pointObjectivesNotDone(data.activity.objectivesNotDone);
         }
       });
     };
@@ -456,13 +475,14 @@
      * Comprobación por AJAX del token
      *
      * @param {Object} token
+     * @param {Boolean} directInteraction
      * @property {Number} token.id Identificador dada por la BD
      * @property {Number} token.element Identificador nativo del token
      * @property {Number} token.targetId Identificador del objeto sobre el que ha sido arrastrado
      * @property {Boolean} token.checked Comprobador si el token ya ha sido seleccionado
      */
-    tokens.check = function(token) {
-      if (self.options.properties.delayed) {
+    tokens.check = function(token, directInteraction) {
+      if (self.options.properties.delayed && directInteraction) {
         if (token.droppedInto) {
           $container.find('#' + token.data.id).addClass('dropped');
           $container.find('#' + token.data.id).attr('data-droppedin',token.droppedInto.id);
@@ -474,7 +494,7 @@
         return false;
       } else {
         // Se emite un socket con la información del token
-        socket.emit('event:click:token', {id: token.data.id, activity: activity.id, room: self.options.room});
+        //socket.emit('event:click:token', {id: token.data.id, activity: activity.id, room: self.options.room});
         $.ajax({
           type: 'POST',
           async: false,
@@ -488,15 +508,15 @@
             //var token_data = data.tokens;
             for (var key in data.tokens) {
               if (data.tokens[key].type == 'sel') {
-                $container.find('#' + data.tokens[key].id).addClass(function() {
-                  if (data.tokens[key].valid) {
-                    return 'correct checked';
-                  } else {
-                    return 'wrong checked';
-                  }
-                });
-              }else if (data.tokens[key].type == 'pair') {
+                var valid = new String();
+                if (data.tokens[key].valid) {
+                  valid = 'correct checked';
+                } else {
+                  valid = 'wrong checked';
+                }
+                $container.find('#' + data.tokens[key].id).addClass(valid);
 
+              }else if (data.tokens[key].type == 'pair') {
                 if (data.tokens[key].valid) {
                   $container.find('#' + data.tokens[key].id).draggable('option', 'revert', false);
                   $container.find('#' + data.tokens[key].id).hide();
@@ -513,7 +533,18 @@
                  $container.find('#' + data.tokens[key].id).css('opacity',1);
                  }*/
               }
+              if ($container.find('#' + data.tokens[key].id).parent().hasClass('common') &&
+                directInteraction) {
+                var sendInfo = {
+                  tokens: [token],
+                  room: self.options.room,
+                  group: self.options.player.group ? self.options.player.group.id : undefined,
+                  player: self.options.player.id
+                };
+                socket.emit('server token:action', sendInfo);
+              }
             };
+
             activity.valid = data.activity.valid;
             answer.setProperties(data.answer);
             if (data.activity.finished) {
@@ -622,6 +653,29 @@
       $element.find('.badge-radius').css('display','inline');
     });
 
+    socket.on('client token:action', function(data) {
+      console.log('Recibe socket');
+      if (data.player != self.options.player.id) {
+        data.tokens.forEach(function(token) {
+          // isCommon es true si el elemento está contenido en una zona colectiva
+          var isCommon = $container.find('#' + token.data.id).parent().hasClass('common');
+          if (self.options.properties.turns) {
+            if (data.group == self.options.player.group.id) {
+              if (isCommon) {
+                console.log('ENTRA AQUI');
+                tokens.check(token, false);
+              }
+            }
+          } else {
+            if (isCommon) {
+              console.log('ENTRA AQUI 2');
+              tokens.check(token, false);
+            }
+          }
+        });
+      }
+    });
+
     socket.on(sockets.client.group.timeout, function(data) {
       console.log('WEEEE');
       self.options.player.group.finished = true;
@@ -685,7 +739,7 @@
           checked: $(this).hasClass('checked')
         },
         area_id:  $(this).parent().data('element')
-      });
+      }, true);
     });
 
     // Reinicio de una actividad

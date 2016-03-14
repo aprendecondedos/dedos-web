@@ -202,7 +202,7 @@ ActivitySchema.methods = {
     haya completado objetivos de forma correcta
      */
     var not_valid_tokens = _.where(answer.elements, {valid: false});
-    if (properties.failNotAllowed == 'true') {
+    if (properties.failNotAllowed == 'true' || properties.delayed == 'true') {
       if (not_valid_tokens.length > 0) {
         return {
           activityResult: false,

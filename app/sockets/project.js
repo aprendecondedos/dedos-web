@@ -60,6 +60,9 @@ exports.activity = {
     data.player = {user: data.player};
     this.server.sockets.in(data.room).emit('client project:activity:join', data);
   },
+  action: function(data) {
+    this.server.sockets.in(data.room).emit('client token:action', data);
+  },
   check: function(data) {
     var self = this;
     var value = 1;
