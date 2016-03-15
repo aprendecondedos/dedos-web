@@ -44,6 +44,11 @@ PairSchema.methods = {
   tokenValue: function(data) {
 
   },
+  getSpecialProperties: function(token) {
+    return {
+      target: token.droppedInto
+    };
+  },
   getData: function() {
     return {
       origen: this.origen,

@@ -109,11 +109,10 @@ exports.new = wrap(function*(req, res) {
         project.setPlayers(users);
       }
       console.log(project);
-      parser.parseString(xml_data);
-      parser.on('error', function(err) {
-        console.log(err);
-      });
-      parser.on('end', function(XML) {
+      parser.parseString(xml_data, function(err, XML) {
+        if (err) {
+          res.redirect('/project/new');
+        }
         // Guardamos la resolución del proyecto
         project.resolution = XML.Project.resolution.pop().$;
 
@@ -156,8 +155,6 @@ exports.new = wrap(function*(req, res) {
                   objective.setOriginZones(origzones);
                 }
 
-                console.log(objective_data);
-                console.log(objective_data.OriginTokens);
                 if (objective_data.OriginTokens) {
                   var origtokens = [];
                   objective_data.OriginTokens.forEach(function(target_data) {
@@ -311,8 +308,7 @@ exports.statistics = wrap(function*(req, res) {
   });
   yield Element.populate(project.activities,'elements', function(err, user) {
   });
-  //console.log(project.activities);
-  // console.log(answers);
+
   var wb = new xl.WorkBook();
   var ws = wb.WorkSheet('globales');
   var ws2 = wb.WorkSheet('desglosados');
@@ -337,7 +333,6 @@ exports.statistics = wrap(function*(req, res) {
   });
 
   project.players.forEach(function(player, index2) {
-    console.log(player.user.name);
     columnSheet2 = 1;
     var playerName = ws.Cell(index2 + 2,1);
     playerName.String(player.user.name);
@@ -370,11 +365,10 @@ exports.statistics = wrap(function*(req, res) {
 
       /* var header4 = ws2.Cell(2, columnSheet2 + 2)
        header3.String('Respuestas correctas');*/
-      //console.log(playerAnswers.elements);
+
       var correctAnswers = activity.returnCorrectAnswers();
       if (playerAnswers) {
         playerAnswers.elements.forEach(function (element, indexanswer) {
-          console.log(element);
 
           var data = {
             content: element.token.getContent(),

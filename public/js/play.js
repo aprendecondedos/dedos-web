@@ -45,6 +45,9 @@
     _sockets.group = {
       timeout: 'group:timeout'
     };
+    _sockets.token = {
+      action: 'token:action'
+    };
     _sockets.player = {
       connected: 'project:player:connected'
     };
@@ -507,6 +510,8 @@
           success: function(data) {
             //var token_data = data.tokens;
             for (var key in data.tokens) {
+              var token = data.tokens[key];
+
               if (data.tokens[key].type == 'sel') {
                 var valid = new String();
                 if (data.tokens[key].valid) {
@@ -533,17 +538,8 @@
                  $container.find('#' + data.tokens[key].id).css('opacity',1);
                  }*/
               }
-              if ($container.find('#' + data.tokens[key].id).parent().hasClass('common') &&
-                directInteraction) {
-                var sendInfo = {
-                  tokens: [token],
-                  room: self.options.room,
-                  group: self.options.player.group ? self.options.player.group.id : undefined,
-                  player: self.options.player.id
-                };
-                socket.emit('server token:action', sendInfo);
-              }
-            };
+              $.event.trigger('token:action', {token: token, directInteraction: directInteraction});
+            }
 
             activity.valid = data.activity.valid;
             answer.setProperties(data.answer);
@@ -647,28 +643,28 @@
       $('#' + data.player.user.id).fadeIn();
     });
 
-    socket.on('event:count:token', function(data) {
-      var $element = $('#' + data.id);
-      $element.find('.badge-radius').text(data.value);
-      $element.find('.badge-radius').css('display','inline');
-    });
-
-    socket.on('client token:action', function(data) {
-      console.log('Recibe socket');
-      if (data.player != self.options.player.id) {
+    socket.on(sockets.client.token.action, function(data) {
+      // Número de interacciones por token
+      if (self.options.player.id != data.player) {
         data.tokens.forEach(function(token) {
-          // isCommon es true si el elemento está contenido en una zona colectiva
-          var isCommon = $container.find('#' + token.data.id).parent().hasClass('common');
+          var isCommon = $container.find('#' + token.id).parent().hasClass('common');
+          var container = $container.find('#' + token.id).find('.interaction-num');
+          var num = parseInt(container.text()) > 0 ? parseInt(container.text()) + 1 : 1;
+          container.fadeIn().text(num);
+
+          if (token.target) {
+            var container_target = $container.find('#' + token.target.id).find('.interaction-num');
+            container_target.fadeIn().html('&nbsp;&nbsp;');
+          }
+
           if (self.options.properties.turns) {
             if (data.group == self.options.player.group.id) {
               if (isCommon) {
-                console.log('ENTRA AQUI');
                 tokens.check(token, false);
               }
             }
           } else {
             if (isCommon) {
-              console.log('ENTRA AQUI 2');
               tokens.check(token, false);
             }
           }
@@ -677,7 +673,6 @@
     });
 
     socket.on(sockets.client.group.timeout, function(data) {
-      console.log('WEEEE');
       self.options.player.group.finished = true;
     });
 
@@ -714,6 +709,20 @@
     };
 
     // Eventos
+
+    $document.on('token:action', function(event, data) {
+      var socket_data = {
+        tokens: [data.token],
+        room: self.options.room,
+        group: self.options.player.group ? self.options.player.group.id : undefined,
+        player: self.options.player.id,
+      };
+      if ($container.find('#' + data.token.id).parent().hasClass('common') &&
+            data.directInteraction) {
+        socket_data.common = true;
+      }
+      socket.emit(sockets.server.token.action, socket_data);
+    });
 
     // Función para comprobar respuestas en caso de demorada
     $document.on('click', '#check-activity', activity.check);

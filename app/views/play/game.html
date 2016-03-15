@@ -115,7 +115,9 @@
                     </div>
                 </div>
             </div>
-            <span class="badge badge-radius badge-md" style="position: absolute;bottom: 5px;left: 5px;
+            <div class="interaction-num badge badge-radius badge-md" style="position: absolute;bottom: 5px;left: 5px;
+            background-color: #43a9ff;
+            color: white;
             {% if Object.keys(interactions).length > 0 && interactions[token.id] %}
                 display:block;
                 {% if interactions[token.id].action == 'pair' %}
@@ -132,11 +134,11 @@
                         {% if  interactions[token.id].type == 'origin' %}
                             <span style="color: white;">{{interactions[token.id].num}}</span>
                         {% else %}
-                            <span style="visibility: hidden;">0</span>
+                            <span style="visibility: hidden;color: white;">0</span>
                         {% endif %}
                     {% endif %}
                 {% endif %}
-            </span>
+            </div>
             <span class="badge badge-primary badge-radius" style="display:none;position: absolute;right: 10px;bottom: 10px;box-shadow: 0 2px 0 0 #3E7CB5;">0</span>
             {% if token.type == 'txt' %}
                 {% include 'tokens/txt.html' %}

@@ -206,9 +206,8 @@ exports.activity = {
           action: element.action
         };
         if (element.target) {
-          interactions[element.target.id] = {type: 'target', action: 'pair'};
-          if (!interactions[element.target.id].color) {
-            interactions[element.target.id].color = lib.randomColor();
+          if (!interactions[element.target.id]) {
+            interactions[element.target.id] = {type: 'target', action: 'pair', color: lib.randomColor()};
           }
           interactions[element.token.id].color = interactions[element.target.id].color;
         } else {
