@@ -2,9 +2,21 @@
 
 .page-walled-garden {
   height:100%;
-  background: linear-gradient(to bottom,#62a8ea 0,#3583ca 100%);
+  //background: linear-gradient(to bottom,#62a8ea 0,#3583ca 100%);
+  background-image: url('/images/bg-walled-garden.jpg');
+  background-size: cover;
+  background-position: 50%;
 
+  .cover-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(53, 131, 202, 0.6);
+  }
   .page-brand-info {
+    position: relative;
     margin:220px 100px 0 90px;
 
     .brand-img {
@@ -32,10 +44,11 @@
     color: @color-blue-grey-500;
     background:#ffffff;
     .brand {
-      margin-bottom:60px;
+      margin-bottom: 10px;
     }
     .brand-img {
       vertical-align:middle;
+      width: 200px;
     }
     .brand-text {
       display:inline-block;
