@@ -36,7 +36,7 @@
         {% endif %}
         <input type="number" class="form-control margin-top-10"
                max="{{project.players|length}}"
-               onfocus="$(this).attr('max', $('.players-list tr[data-user]').length)"
+               onfocus="$('form').formValidation('updateOption', 'properties[numPlayers]', 'lessThan', 'value', $('.players-list tr[data-user]').length)"
                name="properties[numPlayers]" value="{{numPlayers}}"
                placeholder="Usuarios por grupo">
     </div>

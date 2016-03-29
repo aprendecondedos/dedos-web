@@ -212,16 +212,16 @@
                 data: {
                   id: ui.draggable.context.id,
                   name: $container.find(
-                      '#' + ui.draggable.context.id).data('element'),
+                    '#' + ui.draggable.context.id).data('element'),
                   value: $container.find(
-                      '#' + ui.draggable.context.id).data('value')
+                    '#' + ui.draggable.context.id).data('value')
                 },
                 area_id: $container.find(
                   '#' + ui.draggable.context.id).parent().data('element'),
                 droppedInto: {
                   id: event.target.id,
                   name: $container.find('#' + event.target.id)
-                      .data('element'),
+                    .data('element'),
                   currentValue: $container.find('#' + event.target.id)
                     .attr('data-currentvalue')
                 }
@@ -328,11 +328,11 @@
             }
 
             var sendInfo = {
-                tokens: tokens_array,
-                room: self.options.room,
-                group: self.options.player.group ? self.options.player.group.id : undefined,
-                player: self.options.player.id
-              };
+              tokens: tokens_array,
+              room: self.options.room,
+              group: self.options.player.group ? self.options.player.group.id : undefined,
+              player: self.options.player.id
+            };
             socket.emit('server token:action', sendInfo);
 
           }
@@ -720,7 +720,7 @@
         player: self.options.player.id,
       };
       if ($container.find('#' + data.token.id).parent().hasClass('common') &&
-            data.directInteraction) {
+        data.directInteraction) {
         socket_data.common = true;
       }
       socket.emit(sockets.server.token.action, socket_data);
