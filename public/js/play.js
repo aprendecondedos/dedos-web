@@ -139,6 +139,7 @@
      * @property {String} activity.url Dirección URL
      */
     activity.load = function(activity_data) {
+
       // Se necesita tener el jugador seleccionado
       if (self.options.player.id.length == 0) {
         return false;
@@ -558,6 +559,9 @@
     }
 
     function pointObjectivesNotDone(objectives) {
+
+      jsPlumb.restoreDefaults();
+      console.log(objectives);
       const paintStyle = [{fillStyle: 'blue', strokeStyle: 'blue', lineWidth: 1},
         {fillStyle: 'green', strokeStyle: 'green', lineWidth: 1},
         {fillStyle: 'red', strokeStyle: 'red', lineWidth: 1}];
@@ -579,6 +583,7 @@
                   lineStyleTargets[target] = lineStyle[index];
                   index++;
                 }
+
                 connect(
                   $container.find('[data-element=' + objective.origen + ']').attr('id'),
                   $container.find('[data-element=' + target + ']').attr('id'),
@@ -593,7 +598,7 @@
                 lineStyleTargets[target] = lineStyle[index];
                 index++;
               }
-              connect(
+             connect(
                 $container.find('[data-element=' + objective.origen + ']').attr('id'),
                 $container.find('[data-element=' + target + ']').attr('id'),
                 paintStyleTargets[target],
@@ -607,36 +612,33 @@
     }
 
     function connect(id1, id2, paintStyle, lineStyle) {
-      jsPlumb.makeTarget($('.element'), {
+      /*** ESTO ESTA MODIFICADO CUIDADO **/
+      var instance = jsPlumb.getInstance();
+      instance.makeTarget($('#' + activity.id).find('.element'), {
         anchor: 'Continuous',
       });
-
-      var e1 = jsPlumb.addEndpoint(id1, {
+      var e1 = instance.addEndpoint(id1, {
         //connectionType:"basic",
         anchor: 'Top',
         paintStyle: paintStyle,
         endpointStyle: paintStyle,
         isSource: true
       });
-
-      var e2 = jsPlumb.addEndpoint(id2, {
+      var e2 = instance.addEndpoint(id2, {
         isTarget: true,
         anchor: 'Bottom',
         endpoint: 'Blank'
       });
-
-      jsPlumb.ready(function() {
-        jsPlumb.connect({
-          source: e1,//id1,
-          target: e2,//id2,
-          detachable: false,
-          overlays: [
-            ['Arrow' , {width: 25, length: 25, location: 0.99}]
-          ],
-          paintStyle: lineStyle//{strokeStyle: 'green', lineWidth: 7},
-        });
+      instance.connect({
+        source: e1,//id1,
+        target: e2,//id2,
+        detachable: false,
+        overlays: [
+          ['Arrow' , {width: 25, length: 25, location: 0.99}]
+        ],
+        paintStyle: lineStyle//{strokeStyle: 'green', lineWidth: 7},
       });
-
+      /*** HASTA AQUI ESTA MODIFICADO CUIDADO **/
     }
     socket.on(sockets.client.player.connected, function(data) {
       //$select_player.modal('hide');
