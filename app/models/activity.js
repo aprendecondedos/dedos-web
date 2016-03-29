@@ -97,9 +97,7 @@ ActivitySchema.methods = {
         var element = _.find(self.elements, function(element) {
           return String(element.element_id) == String(objectiveId.origen);
         });
-        console.log(objectiveId.origen);
-        console.log(element);
-        if (element.__t == 'Token') {
+        if (element && element.__t == 'Token') {
           var origenContent = element.getContent();
           var targetContent = [];
           objectiveId.targets.forEach(function(target) {
