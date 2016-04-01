@@ -5,6 +5,10 @@
 <link href="/assets/css/apps/projects.min.css?v2.1.0" type="text/css" rel="stylesheet">
 {% endblock %}
 
+{% block actions %}
+<a class="btn btn-md btn-primary" href="/project/new">Añadir proyecto</a>
+{% endblock %}
+
 {% block content %}
 <div class="row app-projects">
     {% for project in projects %}

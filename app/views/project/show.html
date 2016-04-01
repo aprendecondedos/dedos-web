@@ -124,7 +124,6 @@ $(function(){
                 </div>
                 <span class="help-block">A block of help text that breaks onto a new line and may extend
                   beyond one line.</span>
-                <a target="_blank" href="/play/{{project.project}}">{{project.project}}</a>
             </div>
         </div>
         <div class="panel">
@@ -143,6 +142,7 @@ $(function(){
                         <th>{{gettext('student')}}</th>
                         <th class="width-100">{{gettext('progress')}}</th>
                         <th class="width-100">{{gettext('status')}}</th>
+                        <th class="hide width-50"></th>
                     </tr>
                     </thead>
                     {% for player in project.players %}
@@ -161,6 +161,32 @@ $(function(){
                         </td>
                         <td class="player-status">
                             {% include 'includes/status.html' %}
+                        </td>
+                        <td class="hide">
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" id="dropdownResetAnswer{{player.user.id}}"
+                                        aria-expanded="true" data-toggle="dropdown">
+                                    <i class="fa fa-cog"></i>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" style="width: 220px;" role="menu">
+                                    <li role="presentation">
+                                        <a href="javascript:void(0)" style="text-decoration: none;" role="menuitem" tabindex="-1">{{gettext('answers:reset')}}</a>
+                                    </li>
+                                    <li class="dropdown-submenu">
+                                        <a href="javascript:void(0)" style="text-decoration: none;" role="button" tabindex="-1">{{gettext('answer:reset:activity')}}</a>
+                                        <ul class="dropdown-menu dropdown-menu-left" role="menu" style="left: -100%;width: 220px;">
+                                            {% for activity in project.activities %}
+                                            <li role="presentation">
+                                                <a href="javascript:void(0)" style="text-decoration: none;" role="menuitem" tabindex="-1">
+                                                    {{gettext('activity')}} {{loop.index}}
+                                                </a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}

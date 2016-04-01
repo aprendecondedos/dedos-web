@@ -18,6 +18,8 @@ exports.load = wrap(function*(req, res, next, id) {
     }
   };
   req.project = yield Project.load(options);
+  if (!req.project) { return next(new Error('Not found')); }
+
   if (req.session.player) {
     var player_session = {};
     player_session = req.session.player.filter(function(player) {
@@ -26,10 +28,17 @@ exports.load = wrap(function*(req, res, next, id) {
     player_session = player_session.pop();
     req.player = player_session;
   }
-  if (!req.project) { return next(new Error('Not found')); }
 
   next();
 });
+
+/**
+ * Selección por ID del juego
+ */
+exports.select = function(req, res) {
+  var view = 'play/select';
+  res.render(view);
+};
 
 /**
  * Inicio del juego
@@ -97,12 +106,6 @@ exports.index = wrap(function*(req, res) {
  * @type {{load: *, show: *, check: *}}
  */
 exports.activity = {
-
-  getPlayId: wrap(function*(req, res, next) {
-    var view = 'play/getPlayId';
-    res.render(view);
-    //next();
-  }),
   /**
    * Carga de una activdad completa
    */

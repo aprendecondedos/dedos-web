@@ -37,6 +37,7 @@
 
         var $user = '';
         var $select_player = $('#modal-select-player');
+        var $project_finished = $('#modal-finished-project');
         var $play = $('.play');
 
         $(document).on('click', '.select-player', function () {
@@ -63,6 +64,9 @@
             keyboard: false,
             backdrop: 'static'
         });
+        {% endif %}
+        {% if !posActivities.current && player.user %}
+            $project_finished.modal({show: true, keyboard: false, backdrop: 'static'});
         {% endif %}
     socket.on('disconnect', function() {
 //        socket.emit('server project:player:disconnected', {room: '{{project.id}}', player: {{player|json|raw}}});
@@ -151,6 +155,23 @@
                     <p class="font-size-20">No hay jugadores para seleccionar</p>
                 </div>
                 {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade modal-slide-from-bottom modal-primary" id="modal-finished-project"
+     aria-hidden="true" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Juego terminado</h4>
+            </div>
+            <div class="modal-body text-center" style="padding: 50px 20px;">
+                <i class="icon fa fa-thumbs-o-up" aria-hidden="true" style="font-size: 100px;color: #43a9ff;"></i>
+                <h2>¡Enhorabuena! has terminado el juego</h2>
             </div>
         </div>
     </div>

@@ -20,7 +20,8 @@
       room: '',
       container: '.play',
       modals: {
-        select_player: '#modal-select-player'
+        select_player: '#modal-select-player',
+        project_finished: '#modal-finished-project'
       }
     };
     this.options = defaults;
@@ -381,6 +382,10 @@
             }
             $container.find('#next-activity').removeClass('disabled');
           }
+        }
+        // Se finaliza el juego mostrando un modal al usuario
+        if (!$container.find('#next-activity').attr('href')) {
+          $(self.options.modals.project_finished).modal({show: true, keyboard: false, backdrop: 'static'});
         }
       }
       //Si turnos está activado se emite un socket para comprobar el estado del grupo y a quien le toca interactuar

@@ -125,9 +125,9 @@ module.exports = function(app, passport, io) {
   // Play routes
 
   app.param('playId', play.load);
-  app.get('/play', play.activity.getPlayId);
   app.param('activityId', play.activity.load);
   app.param('answerId', play.answer.load);
+  app.get('/play', play.select);
   app.post('/play/:playId',[], play.index);
   app.get('/play/:playId',[], function(req, res, next) {
     play.index(req, res);

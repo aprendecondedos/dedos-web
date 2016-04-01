@@ -297,7 +297,8 @@
     </thead>
     <div class="form-inline padding-bottom-15">
         <div class="row">
-            <div class="col-md-2">
+            <!-- @TODO -->
+            <div class="hide col-md-2">
                 <button type="button" class="popover-list btn btn-default btn-outline dropdown-toggle">
                     <i class="icon wb-emoticon" aria-hidden="true"></i>
                     <span class="caret"></span>
@@ -310,7 +311,8 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li role="presentation">
+                        <!-- @TODO -->
+                        <li role="presentation" class="hide">
                             <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-import-file"  role="menuitem"><i class="icon fa fa-file-excel-o" aria-hidden="true"></i> Importar archivo excel</a>
                         </li>
                         <li role="presentation">
@@ -333,11 +335,14 @@
     {% for player in players %}
     <tr data-user="{{player.user.id}}">
         <td>
-            <a class="popover-list avatar avatar-online margin-left icons an-{{loop.index}}" style="width: 30px;height: 30px;" href="javascript:;"></a>
+            <a class="popover-list avatar avatar-online margin-left icons an-{{loop.index}}" style="width: 30px;height: 30px;" href="javascript:;">
+                <img class="profile" data-name="{{player.user.name}}">
+            </a>
         </td>
         <td>{{player.user.name}}</td>
         <td>
-            <a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-pencil"></i></a>
+            <!-- @TODO -->
+            <a class="btn btn-sm btn-icon btn-flat btn-default hide"><i class="fa fa-pencil"></i></a>
             <a class="btn btn-sm btn-icon btn-flat btn-default" onclick="javascript:$(this).closest('tr').remove();"><i class="fa fa-times"></i></a>
             <input type="hidden" name="players[{{player.user.id}}][avatar]" value="">
             <input type="hidden" name="players[{{player.user.id}}][id]" value="{{player.user.id}}">

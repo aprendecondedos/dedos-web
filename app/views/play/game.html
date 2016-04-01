@@ -20,15 +20,23 @@
     </div>
     <a  data-activity="{{posActivities.prev.id}}" data-num="{{posActivities.prev.num}}"
         id="prev-activity"
-        href="/play/{{project.project}}/activity/{{posActivities.prev.id}}"
-        class="select-activity btn btn-primary btn-floating  {% if !posActivities.prev %}disabled{% endif %}" style="
+        {% if not posActivities.prev.id %}
+            href="/play/{{project.project}}/activity/{{posActivities.prev.id}}"
+        {% endif %}
+        class="select-activity btn btn-primary btn-floating  {% if !posActivities.prev %}disabled{% endif %}"
+        style="
     border-radius: 100%;
     font-size: 30px;
     width: 65px;
     height: 65px;
     line-height: 65px;
     padding-right: 5px;
-"><i class="fa fa-chevron-left"></i></a>
+    {% if not posActivities.prev.id %}
+        opacity: 0;
+    {% endif %}
+">
+        <i class="fa fa-chevron-left"></i>
+    </a>
 
     <a class="btn btn-primary btn-outline btn-icon btn-round btn-lg {% if posActivities.current.valid || !posActivities.current.finished || (!posActivities.current.valid && !project.properties.required) %}disabled {% endif %}"
        id="restart-activity"
@@ -40,7 +48,9 @@
 
     <a  data-activity="{{posActivities.next.id}}" data-num="{{posActivities.next.num}}"
         id="next-activity"
-        href="/play/{{project.project}}/activity/{{posActivities.next.id}}"
+        {% if posActivities.next.id %}
+            href="/play/{{project.project}}/activity/{{posActivities.next.id}}"
+        {% endif %}
         class="select-activity btn btn-primary btn-floating animated  {% if !posActivities.next || !posActivities.current.finished || (!posActivities.current.valid && project.properties.required) %}disabled{% endif %}"
         style="
     border-radius: 100%;
@@ -50,6 +60,9 @@
     height: 65px;
     line-height: 65px;
     padding-left: 5px;
+    {% if not posActivities.next.id %}
+        opacity: 0;
+    {% endif %}
 " >
         <i class="fa fa-chevron-right"></i>
     </a>

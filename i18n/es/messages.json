@@ -46,6 +46,9 @@
   "activity": "Actividad",
   "activity:out_of": "Actividad %s de %s",
 
+  "answers:reset": "Reiniciar respuestas",
+  "answer:reset:activity": "Reiniciar por actividad",
+
   "classroom": "Clase",
   "classrooms": "Clases",
   "classrooms:my": "Mis clases",

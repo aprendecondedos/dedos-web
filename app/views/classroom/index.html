@@ -12,7 +12,7 @@
     <div class="panel">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <a href="/classroom/{{classroom.id}}">{{classroom.name}}</a>
+                <span>{{classroom.name}}</span>
                 <span class="panel-desc">{{gettext('education_level:'+classroom.educationLevel)}}</span>
             </h3>
             <div class="panel-actions">
@@ -36,8 +36,8 @@
             </div>
         </div>
         <div class="panel-body">
-            <a href="/classroom/{{classroom.id}}">
-                <img data-name="{{classroom.name|last}}" class="classroom img-rounded pull-left margin-right-20" style="width: 80px;">
+            <a>
+                <img data-name="{{classroom.name}}" class="classroom img-rounded pull-left margin-right-20" style="width: 80px;">
             </a>
             <div class="overflow-hidden">
                 <div class="pull-right">
