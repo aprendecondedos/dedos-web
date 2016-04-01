@@ -5959,6 +5959,7 @@ label {
 }
 .text-center {
   text-align: center !important;
+  word-wrap: break-word !important;
 }
 .text-justify {
   text-align: justify !important;
