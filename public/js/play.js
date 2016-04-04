@@ -447,6 +447,7 @@
      */
     elements.adjustSize = function() {
       var $elements = $container.find('.element');
+      $('.element').find('.text-center').quickfit({max: 48, min: 9});
       var res = {
         width: $container.find('.play-table').innerWidth(),
         height: $container.find('.play-table').height()
@@ -603,12 +604,12 @@
                 lineStyleTargets[target] = lineStyle[index];
                 index++;
               }
-             connect(
-                $container.find('[data-element=' + objective.origen + ']').attr('id'),
-                $container.find('[data-element=' + target + ']').attr('id'),
-                paintStyleTargets[target],
-                lineStyleTargets[target]
-              );
+              connect(
+                 $container.find('[data-element=' + objective.origen + ']').attr('id'),
+                 $container.find('[data-element=' + target + ']').attr('id'),
+                 paintStyleTargets[target],
+                 lineStyleTargets[target]
+               );
             }
           });
         }
