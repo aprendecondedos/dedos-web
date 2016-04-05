@@ -86,6 +86,11 @@
          id="{{area.id}}"
          data-element="{{area.element_id}}"
         >
+        {% if targets.indexOf(area.element_id) != -1 %}
+            {% set area_is_target = true %}
+
+        {% endif %}
+
         {% for token in area.tokens %}
 
         {% set pair = answer.getPair(token.id) %}
@@ -99,7 +104,7 @@
         <div class="element token
                 {% if token.clickable %} token-clickable {% endif %}
                 {% if token.movable %} token-movable {% endif %}
-                {% if targets.indexOf(token.element_id) != -1 %} token-droppable {% endif %}
+                {% if targets.indexOf(token.element_id) != -1 || area_is_target %} token-droppable {% endif %}
                 {% if answered %}
                     {% if token.clickable %} clicked {% endif %}
                     {% if token.movable %} dropped {% endif %}

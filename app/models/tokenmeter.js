@@ -17,13 +17,25 @@ var TokenMeterSchema = new Schema({
  * @type {{}}
  */
 TokenMeterSchema.methods = {
-  isDone: function() {
+  isDone: function(answer) {
+    console.log(answer);
+    var self = this;
+    var value = 0;
+    answer.elements.forEach(function(element){
+      console.log(element.objective + '     ' + self._id)
+      if (element.action == 'tokenMeter' && element.valid && String(element.objective) == String(self._id)) {
+        console.log(element);
+        value = Number(value) + Number(element.value);
+      }
+    });
     var done = false;
-    if (this.currentValue == this.numValue) {
+    console.log(value);
+    console.log(this.numValue);
+    if (value == this.numValue) {
       done = true;
-    } else if (this.currentValue > this.numValue) {
+    } else if (value > this.numValue) {
       done = false;
-    } else if (this.currentValue < this.numValue) {
+    } else if (value < this.numValue) {
       done = false;
     }
     return done;
@@ -50,10 +62,11 @@ TokenMeterSchema.methods = {
     }
     value += Number(token.data.value);
     this.currentValue = value;
+    //this.save();
     return {
       valid: this.checkValue(value),
       value: value,
-      targetName: this.id
+      targetName: token.droppedInto.name
     };
   },
   getData: function() {

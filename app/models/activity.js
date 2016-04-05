@@ -189,12 +189,16 @@ ActivitySchema.methods = {
     var objectivesNotDone = [];
 
     this.objectives.forEach(function(objective, index) {
+      console.log(objective.id);
+      console.log(objective.currentValue);
       totalObjectives[index] = objective.isDone(answer);
       // Si el objetivo no ha sido completado lo añadimos a un array.
       if (totalObjectives[index] == false) {
         objectivesNotDone.push(objective);
       }
     });
+    console.log("objetivos totales");
+    console.log(totalObjectives);
 
     /* Si hay algun elemento que hemos contestado incorrectamente finalizamos la actividad aunque el usuario
     haya completado objetivos de forma correcta
