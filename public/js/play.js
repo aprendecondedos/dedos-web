@@ -52,6 +52,12 @@
     _sockets.player = {
       connected: 'project:player:connected'
     };
+    /**
+     * Funcios estática para añadir un prefijo por cada valor del objeto
+     * @param {Object} obj
+     * @param {String} prefix
+     * @returns {*}
+     */
     var addPrefixValue = function(obj, prefix) {
       if (typeof obj !== 'object' || !obj) {
         return false;
@@ -72,6 +78,14 @@
     sockets.client = addPrefixValue($.extend(true, {}, _sockets), 'client');
     sockets.server = addPrefixValue($.extend(true, {}, _sockets), 'server');
 
+    /**
+     * Generador de colores RGB
+     *
+     * @returns {string}
+     */
+    var randomColor = function() {
+      return (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256));
+    };
     /**
      * Urls
      *
@@ -447,7 +461,20 @@
      */
     elements.adjustSize = function() {
       var $elements = $container.find('.element');
-      $('.element').find('.text-center').quickfit({max: 48, min: 9});
+      var $tokens = $('.element').find('.text-center');
+      $tokens.each(function() {
+        var compressor = 1;
+        if ($(this).context.offsetWidth > 0) {
+          console.log($(this).context.offsetWidth);
+          if ($(this).context.offsetWidth < 150 && $(this).context.offsetHeight < 150) {
+            compressor = 1.5;
+            console.log('compresor');
+          } else {
+            compressor = 0.8;
+          }
+          $(this).fitText(compressor, {minFontSize: '7px', maxFontSize: '24px'});
+        }
+      });
       var res = {
         width: $container.find('.play-table').innerWidth(),
         height: $container.find('.play-table').height()
@@ -654,6 +681,7 @@
     socket.on(sockets.client.token.action, function(data) {
       // Número de interacciones por token
       if (self.options.player.id != data.player) {
+        var targets = [];
         data.tokens.forEach(function(token) {
           var isCommon = $container.find('#' + token.id).parent().hasClass('common');
           var container = $container.find('#' + token.id).find('.interaction-num');
@@ -663,6 +691,15 @@
           if (token.target) {
             var container_target = $container.find('#' + token.target.id).find('.interaction-num');
             container_target.fadeIn().html('&nbsp;&nbsp;');
+            if (!targets[token.target.id]) {
+              targets[token.target.id] = true;
+              container_target.css('background-color', 'rgb(' + randomColor() + ')');
+            } else {
+              container.css('background-color', container_target.css('background-color'));
+            }
+          } else {
+            // Se selecciona el color de su target
+            //container.css('background-color', .css('background-color'))
           }
 
           if (self.options.properties.turns) {
@@ -684,10 +721,9 @@
       self.options.player.group.finished = true;
     });
 
-    socket.on('client project:activity:finished', function(data) {
-      if (data.group.id == self.options.player.group.id && activity.finished) {
+    socket.on(sockets.client.activity.finished, function(data) {
+      if (data.group.id == self.options.player.group.id) {
         if (data.group.finished) {
-          // stuff
           self.options.player.group.finished = true;
           self.player.setActive(true);
         } else {

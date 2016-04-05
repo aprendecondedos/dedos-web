@@ -134,14 +134,12 @@
                 </div>
             </div>
             <div class="interaction-num badge badge-radius badge-md" style="position: absolute;bottom: 5px;left: 5px;
-            background-color: #43a9ff;
             color: white;
             {% if Object.keys(interactions).length > 0 && interactions[token.id] %}
                 display:block;
                 {% if interactions[token.id].action == 'pair' %}
                     background-color: rgb({{interactions[token.id].color}});
                 {% else %}
-                    background-color: #43a9ff;
                 {% endif %}
             {% else %}
                 display: none;
