@@ -13,7 +13,7 @@
                     <div class="form-group margin-top-20">
                         <div style="padding: 0 40px;">
                             <label>Número del juego</label>
-                            <input autocomplete="off" required style="font-size: 30px;height: 70px;" type="text" placeholder="ejem: 5873" class="input-lg text-center form-control" name="id" id="id">
+                            <input autofocus autocomplete="off" required style="font-size: 30px;height: 70px;" type="text" placeholder="ejem: 5873" class="input-lg text-center form-control" name="id" id="id">
                         </div>
                     </div>
                     <button id="send" type="submit" class="btn btn-primary btn-block btn-lg margin-top-50 text-uppercase">Jugar <i class="wb-play"></i></button>
@@ -26,6 +26,7 @@
 <script>
     // Shorthand for $(document).ready();
     $(function() {
+        $('[autofocus]:first').focus();
         $('#projectId').submit(function(){
             var projectId = $('#id').val();
             window.location.href = '/play/' + projectId;
