@@ -52,7 +52,6 @@
                 },
                 success: function(data){
                     location.reload();
-                    console.log(data);
                     socket.emit('server project:player:connected', {room: '{{project.id}}', player: data});
                 }
             });

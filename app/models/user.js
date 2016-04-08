@@ -46,7 +46,6 @@ userSchema.methods.setAsStudent = function() {
   this.type = 'student';
   //this.createdBy: 'ID_teacher'
   //var p = new Student(baseSchema);
-  console.log(this);
   return this;
 };
 /**

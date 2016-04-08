@@ -129,7 +129,6 @@ ProjectSchema.methods = {
       pre_prev: activities_array[currentIndex - 2] ? activities_array[currentIndex - 2] : false,
       pos_next: activities_array[currentIndex + 2] ? activities_array[currentIndex + 2] : false
     };
-    console.log('TERMINADO');
     return activity_data;
   },
   saveFromXML: function(XML_data) {

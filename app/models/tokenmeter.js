@@ -18,19 +18,14 @@ var TokenMeterSchema = new Schema({
  */
 TokenMeterSchema.methods = {
   isDone: function(answer) {
-    console.log(answer);
     var self = this;
     var value = 0;
     answer.elements.forEach(function(element){
-      console.log(element.objective + '     ' + self._id)
       if (element.action == 'tokenMeter' && element.valid && String(element.objective) == String(self._id)) {
-        console.log(element);
         value = Number(value) + Number(element.value);
       }
     });
     var done = false;
-    console.log(value);
-    console.log(this.numValue);
     if (value == this.numValue) {
       done = true;
     } else if (value > this.numValue) {
@@ -55,19 +50,35 @@ TokenMeterSchema.methods = {
       return false;
     }
   },
-  getSpecialProperties: function(token) {
-    var value = this.currentValue;
-    if (token.droppedInto && token.droppedInto.currentValue > 0) {
-      value = Number(token.droppedInto.currentValue);
+  getSpecialProperties: function(token, answer) {
+    if (!answer.activityData.finished) {
+      var value = this.currentValue;
+      if (token.droppedInto && token.droppedInto.currentValue > 0) {
+        value = Number(token.droppedInto.currentValue);
+      }
+      value += Number(token.data.value);
+      this.currentValue = value;
+      //this.save();
+      return {
+        valid: this.checkValue(value),
+        value: value,
+        targetName: token.droppedInto.name
+      };
+    } else {
+      var valueAux = 0;
+      var valid = false;
+      answer.elements.forEach(function(element){
+        if (element.token == token.data.id) {
+          valueAux = element.value;
+          valid = element.valid;
+        }
+      });
+      return {
+        valid: valid,
+        value: valueAux,
+        targetName: token.droppedInto.name
+      };
     }
-    value += Number(token.data.value);
-    this.currentValue = value;
-    //this.save();
-    return {
-      valid: this.checkValue(value),
-      value: value,
-      targetName: token.droppedInto.name
-    };
   },
   getData: function() {
     return {

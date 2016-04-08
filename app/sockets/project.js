@@ -66,7 +66,6 @@ exports.activity = {
   check: function(data) {
     var self = this;
     var value = 1;
-    console.log('LLEGA AQUI ' + data.activity);
     var answer_options = {
       criteria: {'activityData.activity': data.activity}
     };
@@ -106,8 +105,6 @@ exports.activity = {
         active: false
       });
       var group = activity.getGroupById(data.player.group.id);
-      console.log('GRUPO');
-      console.log(group);
       if (group) {
         //group.timeOut = Date.now;
         var players_not_finished = _.where(group.players, {finished: false});

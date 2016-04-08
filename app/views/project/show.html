@@ -22,17 +22,14 @@ $(function(){
     });
 
     socket.on('client project:player:connected', function (data) {
-        console.log(data);
         var $element = $('#'+data.player.user.id);
         $element.find('.avatar').attr('class', 'avatar avatar-'+ data.status);
     });
     socket.on('client project:player:disconnected', function (data) {
-        console.log(data);
         var $element = $('#'+data.player.user.id);
         $element.find('.avatar').attr('class', 'avatar avatar-off');
     });
     socket.on('client project:activity:join', function (data) {
-        console.log(data);
         var $element = $('#'+data.player.user.id);
         $element.find('.player-status')
             .html('<span class="label label-warning"><i class="wb-eye"></i> Actividad '+data.status+'</span>');

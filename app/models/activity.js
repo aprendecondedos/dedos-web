@@ -189,22 +189,20 @@ ActivitySchema.methods = {
     var objectivesNotDone = [];
 
     this.objectives.forEach(function(objective, index) {
-      console.log(objective.id);
-      console.log(objective.currentValue);
       totalObjectives[index] = objective.isDone(answer);
       // Si el objetivo no ha sido completado lo añadimos a un array.
       if (totalObjectives[index] == false) {
         objectivesNotDone.push(objective);
       }
     });
-    console.log("objetivos totales");
-    console.log(totalObjectives);
 
     /* Si hay algun elemento que hemos contestado incorrectamente finalizamos la actividad aunque el usuario
     haya completado objetivos de forma correcta
      */
     var not_valid_tokens = _.where(answer.elements, {valid: false});
-    if (properties.failNotAllowed == 'true' || properties.delayed == 'true') {
+    console.log(not_valid_tokens);
+    if ((properties.failNotAllowed == 'true' || properties.delayed == 'true') ||
+    (properties.delayed == 'false' && not_valid_tokens.length > 0 && not_valid_tokens[0].action == 'tokenMeter')){
       if (not_valid_tokens.length > 0) {
         return {
           activityResult: false,
@@ -213,7 +211,17 @@ ActivitySchema.methods = {
         };
       }
     }
-
+    if (properties.delayed == 'false' && not_valid_tokens.length > 0 && not_valid_tokens[0].action == 'tokenMeter') {
+      console.log('Entra 1');
+      if (not_valid_tokens.length > 0) {
+        console.log('Entra 2');
+        return {
+          activityResult: false,
+          finishedActivity: true,
+          objectivesNotDone: objectivesNotDone
+        };
+      }
+    }
     // Comprobación si la actividad está completada
     // si todos los objetivos han sido respondidos
 
@@ -229,7 +237,12 @@ ActivitySchema.methods = {
         }
         activity_finished = true;
       } else {
-        activity_finished = false;
+        if (properties.delayed == 'true') {
+          activity_result = false;
+          activity_finished = true;
+        } else {
+          activity_finished = false;
+        }
       }
     }
     return {

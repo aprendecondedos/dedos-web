@@ -389,7 +389,6 @@ exports.statistics = wrap(function*(req, res) {
           var result2 = ws2.Cell(rowSheet2 + 2, columnSheet2 + 1);
           result2.Style(resultStyle);
           if (data.targetContent) {
-            console.log("ENCUENTRA TARGET");
             result2.String(String(data.content) + ' -> ' + data.targetContent);
           } else {
             result2.String(String(data.content));
@@ -399,7 +398,6 @@ exports.statistics = wrap(function*(req, res) {
         });
 
       } else {
-        console.log('NO HAY ANSWERS');
         var header3 = ws2.Cell(rowSheet2 + 1, columnSheet2 + 1);
         header3.String('Respuesta ' + 1);
         header3.Style(answerHeaderStyle);
@@ -409,8 +407,6 @@ exports.statistics = wrap(function*(req, res) {
       }
       if (correctAnswers) {
         correctAnswers.forEach(function (answer, indexcorrect) {
-          console.log("RESPUESTA CORRECTA");
-          console.log(rowSheet2 + " " + columnSheet2);
           var header4 = ws2.Cell(rowSheet2+1, columnSheet2 + 1);
           header4.Style(answerHeaderStyle);
           header4.String('Respuesta correcta ' + String(indexcorrect + 1));

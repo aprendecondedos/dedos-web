@@ -255,7 +255,6 @@ exports.activity = {
     }
     activity.objectives.forEach(function(objective) {
       tokens.forEach(function(token) {
-        console.log("LLEGA AQUI");
         if (!token_results[token.data.id]) {
           token_results[token.data.id] = {};
         }
@@ -263,7 +262,6 @@ exports.activity = {
           (!token_results[token.data.id].valid && !(token_results[token.data.id].type == 'tokenMeter'))) {
           if ((objective.type == 'tokenMeter' && objective.id == token.droppedInto.name) ||
             (objective.type == 'sel') || (objective.type == 'pair')) {
-            console.log("PASA POR AQUI");
             result = objective.checkToken(token);
             token_results[token.data.id] = {
               id: token.data.id,
@@ -274,7 +272,7 @@ exports.activity = {
             if (_.isFunction(objective.getSpecialProperties)) {
               token_results[token.data.id] = _.extend(
                 token_results[token.data.id],
-                objective.getSpecialProperties(token)
+                objective.getSpecialProperties(token, answer)
               );
             }
 

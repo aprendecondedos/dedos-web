@@ -202,7 +202,7 @@
 
           $container.find('.token-movable').draggable({
             //revert: true, //if self.options.failpermitted { revert == true } else { revert == false }
-            revert: true,
+            revert: !self.options.properties.delayed,
             containment: $('.play-table'),
             cursor: 'move',
             zIndex: 2500,
@@ -300,6 +300,7 @@
           }
         });
       });
+      console.log(tokens_array);
 
       if (tokens_array.length == 0) {
         return false;
@@ -336,7 +337,10 @@
               $container.find('[data-element=' + data.tokens[key].targetName + ']').attr(
                 'data-currentvalue', data.tokens[key].value);
               if (data.tokens[key].valid) {
-                $container.find('#' + data.tokens[key].id).hide();
+                console.log(activity);
+                if (!$container.find('.game').data('activity-result').finished) {
+                   $container.find('#' + data.tokens[key].id).hide();
+                }
               } /*else {
                $container.find('#' + data.tokens[key].id).css('opacity',1);
                }*/
@@ -371,7 +375,13 @@
     };
 
     activity.setFinished = function(data) {
+      console.log(activity.valid);
       if (!data) {
+        if (activity.valid) {
+          $container.find('.activity-valid').fadeIn();
+        } else {
+          $container.find('.activity-wrong').fadeIn();
+        }
         if (!self.options.properties.required) {
           activity.check();
         }
@@ -452,6 +462,8 @@
      * Inicialización de elementos
      */
     elements.load = function() {
+      //jsPlumb.detachEveryConnection();
+      jsPlumb.deleteEveryEndpoint();
       elements.adjustSize();
       elements.connect();
       // stuff
@@ -497,7 +509,7 @@
     $(window).on('resize', self.elements.load);
     elements.disable = function() {
       $container.find('.token-clickable').toggleClass('token-clickable');
-      $container.find('.token-movable').draggable('option', 'disabled');
+      $container.find('.token-movable').draggable('option', 'disabled',true);
     };
     /**
      * Comprobación si existiera conexión entre un elemento y un target
@@ -520,6 +532,8 @@
      */
     tokens.check = function(token, directInteraction) {
       if (self.options.properties.delayed && directInteraction) {
+        console.log('PASA POR AQUI');
+        console.log(token);
         if (token.droppedInto) {
           $container.find('#' + token.data.id).addClass('dropped');
           $container.find('#' + token.data.id).attr('data-droppedin',token.droppedInto.id);
@@ -542,6 +556,7 @@
             properties: self.options.properties
           },
           success: function(data) {
+            console.log(data);
             //var token_data = data.tokens;
             for (var key in data.tokens) {
               var token = data.tokens[key];
@@ -579,7 +594,7 @@
             answer.setProperties(data.answer);
             if (data.activity.finished) {
               activity.setFinished(data);
-              disableElements();
+              // disableElements();
             }
           }
         });
@@ -632,11 +647,11 @@
                 index++;
               }
               connect(
-                 $container.find('[data-element=' + objective.origen + ']').attr('id'),
-                 $container.find('[data-element=' + target + ']').attr('id'),
-                 paintStyleTargets[target],
-                 lineStyleTargets[target]
-               );
+                $container.find('[data-element=' + objective.origen + ']').attr('id'),
+                $container.find('[data-element=' + target + ']').attr('id'),
+                paintStyleTargets[target],
+                lineStyleTargets[target]
+              );
             }
           });
         }
