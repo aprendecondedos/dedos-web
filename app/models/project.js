@@ -188,7 +188,7 @@ ProjectSchema.methods = {
       if (this.activities[i].id === activity_id) {
         return i + 1;
       }
-    };
+    }
     return false;
   }
 };
@@ -209,7 +209,6 @@ ProjectSchema.statics = {
     const criteria = options.criteria || {_id: options};
     return this.findOne(criteria)
       .populate('players.user')
-      //.populate('comments.user')
       .populate('activities')
       .exec();
   },

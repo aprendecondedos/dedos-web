@@ -28,7 +28,6 @@ exports.load = wrap(function*(req, res, next, id) {
     player_session = player_session.pop();
     req.player = player_session;
   }
-
   next();
 });
 
@@ -46,6 +45,7 @@ exports.select = function(req, res) {
 exports.index = wrap(function*(req, res) {
   const project = req.project;
   var view = 'play/index';
+
   if (lib.isEmptyObject(req.player) || !req.player) {
     // @TODO
     //view = 'play/select_player';
@@ -137,12 +137,6 @@ exports.activity = {
 
     const project = req.project;
     var activity = req.activity;
-    // Socket emit
-    //req.socket.emit('player:connected', { name: 'testing' });
-    //status: {type: Number, default: 0}, // types: {0: Sin empezar, x: Numero de la actividad, -1: Terminado}
-    //project.status = 3;
-    //yield project.save();
-    //yield Project.update({_id: req.project.id, 'players.user': req.body.player_id}, {$set: {'players.$.online': true}});
     //@TODO comprobar si el usuario ha completado o no el proyecto
     activity.num = project.getActivityNum(activity.id);
     project.setPlayerStatus(

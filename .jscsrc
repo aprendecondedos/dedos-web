@@ -2,6 +2,7 @@
   "preset": "google",
   "maxErrors": 3000,
   "esnext": true,
+  "maximumLineLength": 100,
   "requireCamelCaseOrUpperCaseIdentifiers": null,
   "validateIndentation": 2
 }

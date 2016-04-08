@@ -4,14 +4,14 @@
     <li class="list-group-item {% if player_active == user.user.id %} turn-on {% endif %}"
         id="{{user.user.id}}"
         href="javascript:;"
-        style="display: {% if user.online || req.player.user.id == user.user.id %}block{% else %}none{% endif %};">
+        style="padding: 5px 15px;display: {% if user.online || req.player.user.id == user.user.id %}block{% else %}none{% endif %};">
         <div class="media">
             <div class="media-left">
-                <span class="avatar avatar-online">
-                <img data-name="{{user.user.name}}" class="profile">
+                <span class="avatar avatar-online" style="width: 25px;">
+                <img data-font-size="50" data-name="{{user.user.name}}" class="profile">
                 </span>
             </div>
-            <div class="media-body font-size-16" style="vertical-align: middle;">
+            <div class="media-body" style="vertical-align: middle;">
                 <i class="turn-icon fa fa-hand-o-left pull-right padding-top-5"></i>
                 {{user.user.name}}
             </div>

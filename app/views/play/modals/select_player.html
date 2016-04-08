@@ -1,0 +1,46 @@
+<div class="modal fade modal-slide-from-bottom modal-primary"
+     id="modal-select-player"
+     aria-hidden="true" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Selecciona tu jugador</h4>
+            </div>
+            <div class="modal-body">
+                {% if project.players.length > 0 %}
+                <div class="row list-group">
+                    {% for player in project.players %}
+                    <a class="col-md-6 list-group-item {% if !player.online %}select-player{% else %}disabled{% endif %}"
+                       data-user="{{player.user.id}}"
+                       href="javascript:;">
+
+                        <div class="media">
+                            <div class="media-left">
+                                <span class="avatar avatar-online">
+                                   <img data-name="{{player.user.name}}" class="profile">
+                                </span>
+                            </div>
+                            <div class="media-body font-size-16" style="vertical-align: middle;">
+                                <div class="pull-right">
+                                    <button class="playing btn btn-xs btn-outline btn-warning text-uppercase">
+                                        {{gettext('playing')}}
+                                    </button>
+                                </div>
+                                {{player.user.name}}
+                            </div>
+                        </div>
+
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center">
+                    <h3 class="font-size-50">:(</h3>
+                    <p class="font-size-20">No hay jugadores para seleccionar</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

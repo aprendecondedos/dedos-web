@@ -300,7 +300,6 @@
           }
         });
       });
-      console.log(tokens_array);
 
       if (tokens_array.length == 0) {
         return false;
@@ -337,9 +336,8 @@
               $container.find('[data-element=' + data.tokens[key].targetName + ']').attr(
                 'data-currentvalue', data.tokens[key].value);
               if (data.tokens[key].valid) {
-                console.log(activity);
                 if (!$container.find('.game').data('activity-result').finished) {
-                   $container.find('#' + data.tokens[key].id).hide();
+                  $container.find('#' + data.tokens[key].id).hide();
                 }
               } /*else {
                $container.find('#' + data.tokens[key].id).css('opacity',1);
@@ -375,7 +373,6 @@
     };
 
     activity.setFinished = function(data) {
-      console.log(activity.valid);
       if (!data) {
         if (activity.valid) {
           $container.find('.activity-valid').fadeIn();
@@ -477,10 +474,8 @@
       $tokens.each(function() {
         var compressor = 1;
         if ($(this).context.offsetWidth > 0) {
-          console.log($(this).context.offsetWidth);
           if ($(this).context.offsetWidth < 150 && $(this).context.offsetHeight < 150) {
             compressor = 1.5;
-            console.log('compresor');
           } else {
             compressor = 0.8;
           }
@@ -686,11 +681,15 @@
         ],
         paintStyle: lineStyle//{strokeStyle: 'green', lineWidth: 7},
       });
-      /*** HASTA AQUI ESTA MODIFICADO CUIDADO **/
     }
+
+    /**
+     *
+     */
+    // Jugador conectado
     socket.on(sockets.client.player.connected, function(data) {
-      //$select_player.modal('hide');
       $('#' + data.player.user.id).fadeIn();
+      $('[data-user="' + data.player.user.id + '"]').addClass('connected').removeClass('select-player');
     });
 
     socket.on(sockets.client.token.action, function(data) {
@@ -814,6 +813,5 @@
     $document.on('click', '#restart-activity', activity.restart);
 
     return this;
-    console.log(this.options);
   };
 }());

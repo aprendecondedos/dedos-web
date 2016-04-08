@@ -32,7 +32,6 @@ exports.player = {
       Project.update(
         {_id: data.room, 'players.user': data.player.user.id},
         {$set: {'players.$.online': true}}, function() {
-        console.log('Guardado');
         data.status = 'online';
         //io.sockets.emit('client project:player:connected', data);
         io.sockets.in(data.room).emit('client project:player:connected', data);
