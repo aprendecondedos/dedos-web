@@ -22,7 +22,8 @@
       modals: {
         select_player: '#modal-select-player',
         project_finished: '#modal-finished-project'
-      }
+      },
+      instance: undefined
     };
     this.options = defaults;
     // Create options by extending defaults with the passed in arugments
@@ -460,7 +461,7 @@
      */
     elements.load = function() {
       //jsPlumb.detachEveryConnection();
-      jsPlumb.deleteEveryEndpoint();
+
       elements.adjustSize();
       elements.connect();
       // stuff
@@ -500,6 +501,12 @@
         });
         $(this).fadeIn('fast');
       });
+      /*if (self.options.instance) {
+        self.options.instance.detachEveryConnection();
+        self.options.instance.deleteEveryEndpoint();
+        self.options.instance.reset();
+        //self.options.instance.hide($(window));
+      }*/
     };
     $(window).on('resize', self.elements.load);
     elements.disable = function() {
@@ -510,10 +517,14 @@
      * Comprobación si existiera conexión entre un elemento y un target
      */
     elements.connect = function() {
-      $container.find('.token-movable[data-connect]').each(function() {
-        var data = $(this).data('connect');
-        connect($('#' + data.origin), $('#' + data.target));
-      });
+      if(self.options.instance) {
+        self.options.instance.repaintEverything();
+      } else {
+        $container.find('.token-movable[data-connect]').each(function () {
+          var data = $(this).data('connect');
+          connect($('#' + data.origin), $('#' + data.target));
+        });
+      }
     };
     /**
      * Comprobación por AJAX del token
@@ -656,23 +667,25 @@
 
     function connect(id1, id2, paintStyle, lineStyle) {
       /*** ESTO ESTA MODIFICADO CUIDADO **/
-      var instance = jsPlumb.getInstance();
-      instance.makeTarget($('#' + activity.id).find('.element'), {
+      if (self.options.instance == undefined) {
+        self.options.instance = jsPlumb.getInstance();
+      }
+      self.options.instance.makeTarget($('#' + activity.id).find('.element'), {
         anchor: 'Continuous',
       });
-      var e1 = instance.addEndpoint(id1, {
+      var e1 = self.options.instance.addEndpoint(id1, {
         //connectionType:"basic",
         anchor: 'Top',
         paintStyle: paintStyle,
         endpointStyle: paintStyle,
         isSource: true
       });
-      var e2 = instance.addEndpoint(id2, {
+      var e2 = self.options.instance.addEndpoint(id2, {
         isTarget: true,
         anchor: 'Bottom',
         endpoint: 'Blank'
       });
-      instance.connect({
+      self.options.instance.connect({
         source: e1,//id1,
         target: e2,//id2,
         detachable: false,
