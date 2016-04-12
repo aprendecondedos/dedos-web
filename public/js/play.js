@@ -173,6 +173,7 @@
           $container.attr('id', activity.id);
           // Renderizado de elementos/tokens
           self.elements.load();
+          elements.adjustText();
           var helper = 'original';
           var revert = true;
           opacity = 1;
@@ -253,6 +254,7 @@
               $(this).addClass('token-droppable-over');
             }
           });
+          //$(window).bind('resize', self.elements.load);
           // Se emite un socket incluyendo información relacionada con la actividad y jugador
           socket.emit(sockets.server.activity.join, {
             room: self.options.room,
@@ -464,25 +466,30 @@
 
       elements.adjustSize();
       elements.connect();
+
       // stuff
     };
+    elements.adjustText = function() {
+      var $elements = $container.find('.element');
+      // var $tokens = $('.element').find('.text-center');
+      $elements.each(function() {
+        var compressor = 1;
+        console.log($(window).width());
+        console.log($(this).context.offsetWidth);
+        if ($(window).height() < 500 || ($(window).width() < 600)) {
+          console.log('entraaa');
+          $(this).fitText(1.5, {minFontSize: '7px', maxFontSize: '7px'});
+        } else {
+          console.log('entraaa 2');
+          $(this).fitText(1, {minFontSize: '12px', maxFontSize: '18px'});
+        }
+      });
+    }
     /**
      * Ajuste de la resolución en tamaño y posición de un elemento
      */
     elements.adjustSize = function() {
       var $elements = $container.find('.element');
-      var $tokens = $('.element').find('.text-center');
-      $tokens.each(function() {
-        var compressor = 1;
-        if ($(this).context.offsetWidth > 0) {
-          if ($(this).context.offsetWidth < 150 && $(this).context.offsetHeight < 150) {
-            compressor = 1.5;
-          } else {
-            compressor = 0.8;
-          }
-          $(this).fitText(compressor, {minFontSize: '7px', maxFontSize: '24px'});
-        }
-      });
       var res = {
         width: $container.find('.play-table').innerWidth(),
         height: $container.find('.play-table').height()
@@ -508,7 +515,15 @@
         //self.options.instance.hide($(window));
       }*/
     };
-    $(window).on('resize', self.elements.load);
+    var windowWidth = $(window).width();
+    $(window).on('resize', function() {
+      console.log(windowWidth + "    " + $(window).width());
+      if ($(window).width() != windowWidth) {
+        self.elements.load();
+        elements.adjustText();
+      }
+    });
+
     elements.disable = function() {
       $container.find('.token-clickable').toggleClass('token-clickable');
       $container.find('.token-movable').draggable('option', 'disabled',true);
@@ -517,10 +532,10 @@
      * Comprobación si existiera conexión entre un elemento y un target
      */
     elements.connect = function() {
-      if(self.options.instance) {
+      if (self.options.instance) {
         self.options.instance.repaintEverything();
       } else {
-        $container.find('.token-movable[data-connect]').each(function () {
+        $container.find('.token-movable[data-connect]').each(function() {
           var data = $(this).data('connect');
           connect($('#' + data.origin), $('#' + data.target));
         });
