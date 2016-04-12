@@ -4,19 +4,6 @@
 {% include 'includes/header.html' %}
 <script>
 $(function(){
-    socket.on('player:connected', function (data) {
-        alert('h');
-//        socket.emit('my other event', {my: 'data'});
-    });
-
-//    var admin = io( '127.0.0.1:3000/admin-{{project.id}}' );
-//    admin.on('connect', function () {
-//        admin.on('client:project:player:connected', function (data) {
-//            alert('ROOM');
-//            $('#'+data.id).attr('class', 'avatar avatar-'+ data.status);
-//        });
-//    });
-
     socket.on('connect', function () {
         socket.emit('project:join', '{{project.id}}');
     });
@@ -48,6 +35,9 @@ $(function(){
     <div class="col-md-6">
         <div class="panel">
             <div class="panel-heading">
+                <a target="_blank" href="{{projectUrl}}/export" class="margin-top-10 margin-right-10 pull-right btn btn-outline btn-default">
+                    <i class="fa fa-file-excel-o"></i> Descargar Excel
+                </a>
                 <h3 class="panel-title">{{gettext('activities')}}</h3>
             </div>
             <div class="panel-body">

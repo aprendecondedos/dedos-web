@@ -193,7 +193,7 @@
             self.setOption('player', $.extend(self.options.player, {
               group: {
                 id: group_data.id,
-                finished: group_data.finished,
+                finished: group_data.finished
               }
             }));
           }

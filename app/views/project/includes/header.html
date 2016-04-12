@@ -12,7 +12,7 @@
             <i class="icon wb-layout" aria-hidden="true"></i> {{gettext('dashboard')}}
         </a>
     </li>
-    <li class="col-sm-2 col-xs-4">
+    <li class="col-sm-2 col-xs-4 hide">
         <a href="{{projectUrl}}/statistics">
             <i class="icon wb-pie-chart" aria-hidden="true"></i> {{gettext('analytics')}}
         </a>
@@ -22,8 +22,9 @@
             <i class="icon wb-settings" aria-hidden="true"></i> {{gettext('settings')}}
         </a>
     </li>
-    <li class="col-sm-6 col-xs-6 text-right margin-top-30">
+    <li class="col-xs-8 text-right margin-top-30">
         <div>
+            Código de juego
             <span class="label label-lg label-default margin-right-20" style="position: relative;">{{project.project}}</span>
         </div>
         <!--<a class="btn btn-primary btn-outline margin-right-20 inline-block" style="padding: 6px 15px;" href="/play/{{project.project}}">Jugar {{project.project}}</a>-->

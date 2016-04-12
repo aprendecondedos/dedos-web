@@ -298,7 +298,7 @@ exports.settings = function(req, res) {
   });
 };
 
-exports.statistics = wrap(function*(req, res) {
+exports.export = wrap(function*(req, res) {
 
   const project = req.project;
   var columnSheet2 = 1;
@@ -432,10 +432,10 @@ exports.statistics = wrap(function*(req, res) {
       }
     });
 
-    rowSheet2 = rowSheet2+5;
+    rowSheet2 = rowSheet2 + 5;
   });
 
-  wb.write('my2.xlsx', res);
+  wb.write(project.name + '.xlsx', res);
   res.send();
 });
 
