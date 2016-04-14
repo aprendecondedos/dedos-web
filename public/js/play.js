@@ -15,7 +15,9 @@
         delayed: false,
         failNotAllowed: false,
         required: false,
-        numPlayers: 0
+        numPlayers: 0,
+        autoNext: false,
+        maxTimeoutAutoNext: 0
       },
       room: '',
       container: '.play',
@@ -410,6 +412,10 @@
         // Se finaliza el juego mostrando un modal al usuario
         if (!$container.find('#next-activity').attr('href')) {
           $(self.options.modals.project_finished).modal({show: true, keyboard: false, backdrop: 'static'});
+        } else {
+          if (self.options.properties.autoNext && self.options.properties.turns == false) {
+            setTimeout(activity.autoNext, Number(self.options.properties.maxTimeoutAutoNext * 1000));
+          }
         }
       }
       //Si turnos está activado se emite un socket para comprobar el estado del grupo y a quien le toca interactuar
@@ -443,7 +449,13 @@
       self.options.player.group.finished = true;
       self.player.setActive(true);
     };
-
+    activity.autoNext = function() {
+      if (self.options.properties.required && activity.valid == false) {
+        activity.restart();
+      } else {
+        $container.find('#next-activity').trigger('click');
+      }
+    };
     activity.restart = function() {
       $.ajax({
         type: 'DELETE',
@@ -518,10 +530,10 @@
     var windowWidth = $(window).width();
     $(window).on('resize', function() {
       console.log(windowWidth + "    " + $(window).width());
-      if ($(window).width() != windowWidth) {
+     // if ($(window).width() != windowWidth) {
         self.elements.load();
         elements.adjustText();
-      }
+      //}
     });
 
     elements.disable = function() {
