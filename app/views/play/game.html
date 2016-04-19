@@ -3,10 +3,14 @@
     {% if player_active != req.player.user.id %} turn-off {% endif %}
 {% endif %}">
 
-<div style="
-    text-align: center;
-    margin-bottom: 30px;
-">
+<div class="margin-bottom-30 text-center">
+    <!-- Timeout Auto avance de actividad -->
+    <div class="pull-right text-right autonext-timeout" style="display: none;">
+        <span class="show">Siguiente actividad en</span>
+        <div class="font-size-30 time"></div>
+    </div>
+
+    <!-- Actividad correcta/incorrecta -->
     <div class="pull-left" style="position: absolute;">
       <span class="fa wb-check-circle activity-valid" style="
         font-size: 70px;
@@ -19,6 +23,7 @@
         color: rgba(249, 104, 104, 1);
     "></span>
     </div>
+    <!-- Anterior actividad -->
     <a  data-activity="{{posActivities.prev.id}}" data-num="{{posActivities.prev.num}}"
         id="prev-activity"
         {% if not posActivities.prev.id %}
@@ -39,6 +44,7 @@
         <i class="fa fa-chevron-left"></i>
     </a>
 
+    <!-- Reiniciar actividad-->
     <a class="btn btn-primary btn-outline btn-icon btn-round btn-lg {% if posActivities.current.valid || !posActivities.current.finished || (!posActivities.current.valid && !project.properties.required) %}disabled {% endif %}"
        id="restart-activity"
        style="
@@ -47,6 +53,7 @@
 "><i class="wb-refresh"></i>
     </a>
 
+    <!-- Siguiente actividad-->
     <a  data-activity="{{posActivities.next.id}}" data-num="{{posActivities.next.num}}"
         id="next-activity"
         {% if posActivities.next.id %}

@@ -84,7 +84,7 @@ ClassroomSchema.statics = {
   load: function(id) {
     return this.findOne({_id: id})
       //.populate('teachers', 'name')
-      .populate({path: 'players.user', select: 'name', options: {sort: {_id: -1}}}) // Order by name DESC
+      .populate({path: 'players.user', select: 'name avatar', options: {sort: {_id: -1}}}) // Order by name DESC
       .exec();
   },
   list: function(options, cb) {
@@ -94,7 +94,7 @@ ClassroomSchema.statics = {
 
       return this.find(criteria)
         .populate('teachers', 'name')
-        .populate('players.user', 'name')
+        .populate('players.user', 'name avatar')
         .sort({createdDate: -1})
         .limit(limit)
         .skip(limit * page)

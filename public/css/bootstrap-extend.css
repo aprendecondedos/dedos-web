@@ -3310,6 +3310,7 @@ fieldset[disabled] .btn-pure.focus {
 }
 .navbar-avatar .avatar {
   width: 30px;
+  height: 30px;
 }
 .navbar-form .icon {
   font-size: 16px;
@@ -5959,7 +5960,6 @@ label {
 }
 .text-center {
   text-align: center !important;
-  word-wrap: break-word !important;
 }
 .text-justify {
   text-align: justify !important;

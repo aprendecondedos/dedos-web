@@ -54,8 +54,8 @@
                         <div class="checkbox-custom checkbox-primary margin-0">
                             <input type="checkbox" value="{{student.user.id}}" id="user[{{classroom_index.length}}-{{student.user.id}}]" class="check-all" data-container-check="#check-container">
                             <label for="user[{{classroom_index.length}}-{{student.user.id}}]" class="show">
-                                <span class="margin-right-10 margin-left-5">
-                                   <img data-name="{{student.user.name}}" class="profile img-circle" style="width: 25px;">
+                                <span class="margin-right-10 margin-left-5 avatar" style="width: 25px;height: 25px;">
+                                    {% include "../../user/avatar.html" with { user: student.user, baseURL: baseURL } only %}
                                 </span>
                                 <span class="student-name">{{student.user.name}}</span>
                             </label>

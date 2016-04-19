@@ -86,9 +86,32 @@
      *
      * @returns {string}
      */
-    var randomColor = function() {
+    var _randomColor = function() {
       return (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256));
     };
+    /**
+     * Contador hacia atrás
+     */
+    function _timer(duration, display) {
+      var timer = duration, minutes, seconds;
+      var time_interval = setInterval(function() {
+        minutes = parseInt(timer / 60, 10)
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        var timer_format = seconds;
+        if (minutes > 0) {
+          timer_format = minutes + ':' + seconds;
+        }
+        display.text(timer_format);
+        if (--timer < 0) {
+          clearInterval(time_interval);
+          timer = duration;
+        }
+      }, 1000);
+    }
+
     /**
      * Urls
      *
@@ -409,17 +432,10 @@
             $container.find('#next-activity').removeClass('disabled');
           }
         }
-        // Se finaliza el juego mostrando un modal al usuario
-        if (!$container.find('#next-activity').attr('href')) {
-          $(self.options.modals.project_finished).modal({show: true, keyboard: false, backdrop: 'static'});
-        } else {
-          if (self.options.properties.autoNext && self.options.properties.turns == false) {
-            setTimeout(activity.autoNext, Number(self.options.properties.maxTimeoutAutoNext * 1000));
-          }
-        }
+        // Trigger actividad terminada
+        $.event.trigger('activity:finished', data);
       }
       //Si turnos está activado se emite un socket para comprobar el estado del grupo y a quien le toca interactuar
-
       if (self.options.properties.turns) {
         if (self.options.player.group.finished === false) {
           // Socket emit
@@ -483,16 +499,11 @@
     };
     elements.adjustText = function() {
       var $elements = $container.find('.element');
-      // var $tokens = $('.element').find('.text-center');
       $elements.each(function() {
         var compressor = 1;
-        console.log($(window).width());
-        console.log($(this).context.offsetWidth);
         if ($(window).height() < 500 || ($(window).width() < 600)) {
-          console.log('entraaa');
           $(this).fitText(1.5, {minFontSize: '7px', maxFontSize: '7px'});
         } else {
-          console.log('entraaa 2');
           $(this).fitText(1, {minFontSize: '12px', maxFontSize: '18px'});
         }
       });
@@ -747,7 +758,7 @@
             container_target.fadeIn().html('&nbsp;&nbsp;');
             if (!targets[token.target.id]) {
               targets[token.target.id] = true;
-              container_target.css('background-color', 'rgb(' + randomColor() + ')');
+              container_target.css('background-color', 'rgb(' + _randomColor() + ')');
             } else {
               container.css('background-color', container_target.css('background-color'));
             }
@@ -806,8 +817,16 @@
       }
     };
 
-    // Eventos
+    /**
+     * Eventos a partir de las acciones del usuario
+     *
+     * @param {Object} event
+     * @param {Object} data
+     */
 
+    /**
+     * Cuando el usuario ha seleccionado un token
+     */
     $document.on('token:action', function(event, data) {
       var socket_data = {
         tokens: [data.token],
@@ -822,6 +841,26 @@
       socket.emit(sockets.server.token.action, socket_data);
     });
 
+    /**
+     * Actividad terminada
+     */
+    $document.on('activity:finished', function(event, data) {
+      // Se finaliza el juego mostrando un modal al usuario
+      if (!$container.find('#next-activity').attr('href')) {
+        $(self.options.modals.project_finished).modal({show: true, keyboard: false, backdrop: 'static'});
+      } else {
+        if (
+          self.options.properties.autoNext &&
+          self.options.properties.maxTimeoutAutoNext > 0 &&
+          self.options.properties.turns == false
+        ) {
+          var $autoNextTimeout = $container.find('.autonext-timeout');
+          _timer(self.options.properties.maxTimeoutAutoNext, $autoNextTimeout.find('.time'));
+          $autoNextTimeout.fadeIn('slow');
+          setTimeout(activity.autoNext, Number(self.options.properties.maxTimeoutAutoNext * 1000)); // milisegundos
+        }
+      }
+    });
     // Función para comprobar respuestas en caso de demorada
     $document.on('click', '#check-activity', activity.check);
 

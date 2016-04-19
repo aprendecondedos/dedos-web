@@ -288,6 +288,45 @@
     </div>
 </div>
 <!-- End Modal import manually -->
+
+<script>
+    $(function() {
+        // Subida de avatar del usuario
+        $(document).on('change', '.avatar_upload', function(e){
+            var $that = $(this);
+            var $image = $that.closest('[data-user="'+ $that.attr('id') +'"]')
+                    .find('.profile');
+            var formdata = new FormData();
+            var file = this.files[0];
+            if(!file.type.match(/image.*/)) {
+                return false;
+            }
+            formdata.append('file_upload', file);
+            formdata.append('id', this.id);
+            if(window.URL) {
+                $image.attr('src', URL.createObjectURL(e.target.files[0]));
+            }
+            $.ajax({
+                type: 'POST',
+                url: '{{baseURL}}/user/upload/image',
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                data: formdata
+            })
+                .done(function(data) {
+                    if(data.img.path) {
+                        $image.attr('src', '{{baseURL}}/uploads/' + data.img.path + data.img.filename);
+                    }
+                })
+                .fail(function(data){
+                   alert(data.responseText);
+                });
+        });
+    });
+</script>
+
 <table class="table toggle-circle players-list" id="table-filtering">
     <thead>
     <tr>
@@ -335,13 +374,25 @@
     {% for player in players %}
     <tr data-user="{{player.user.id}}">
         <td>
-            <a class="popover-list avatar avatar-online margin-left icons an-{{loop.index}}" style="width: 30px;height: 30px;" href="javascript:;">
-                <img class="profile" data-name="{{player.user.name}}">
+            <a class="popover-lists avatar avatar-online margin-left icons an-{{loop.index}}"
+               data-toggle="tooltip" data-placement="top"
+               data-trigger="hover" data-original-title="{{gettext('user:avatar:upload')}}"
+               style="width: 30px;height: 30px;"
+               href="javascript:;">
+                <div class="input-group input-group-file">
+                    <span class="input-group-btn">
+                      <span class="btn btn-file" style="padding: 0;">
+                        <!-- User avatar-->
+                        {% include "../../user/avatar.html" with { user: player.user, baseURL: baseURL } only %}
+                        <input type="file" class="avatar_upload" name="file_upload" id="{{player.user.id}}" accept="image/*">
+                      </span>
+                    </span>
+                </div>
             </a>
         </td>
         <td>{{player.user.name}}</td>
         <td>
-            <!-- @TODO -->
+            <!-- @TODO: editar el perfil mediante AJAX -->
             <a class="btn btn-sm btn-icon btn-flat btn-default hide"><i class="fa fa-pencil"></i></a>
             <a class="btn btn-sm btn-icon btn-flat btn-default" onclick="javascript:$(this).closest('tr').remove();"><i class="fa fa-times"></i></a>
             <input type="hidden" name="players[{{player.user.id}}][avatar]" value="">

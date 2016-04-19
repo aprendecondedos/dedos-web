@@ -18,7 +18,7 @@
                         <div class="media">
                             <div class="media-left">
                                 <span class="avatar avatar-online">
-                                   <img data-name="{{player.user.name}}" class="profile">
+                                    {% include "../../user/avatar.html" with { user: player.user, baseURL: baseURL } only %}
                                 </span>
                             </div>
                             <div class="media-body font-size-16" style="vertical-align: middle;">
