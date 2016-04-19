@@ -67,7 +67,7 @@ $(function(){
                                     Incorrecto
                                     <div class="wrong margin-top-5">
                                         {% for answer in answers_data.wrong %}
-                                        <span class="avatar" style="width: 25px">
+                                        <span class="avatar" style="width: 25px;height: 25px;">
                                            <img data-name="{{answer.player.name}}" data-toggle="tooltip" data-original-title="{{answer.player.name}}" class="profile img-circle">
                                         </span>
                                         {% endfor %}
@@ -136,8 +136,8 @@ $(function(){
                     <tr id="{{player.user.id}}">
                         <td>
                             <div class="margin-right-10 inline-block">
-                            <span class="avatar avatar-{% if player.online %}online{% else %}off{% endif %}" style="width: 25px">
-                               <img data-name="{{player.user.name}}" class="profile img-circle">
+                            <span class="avatar avatar-{% if player.online %}online{% else %}off{% endif %}" style="width: 25px;height: 25px;">
+                                {% include "../user/avatar.html" with { user: player.user, baseURL: baseURL } only %}
                                 <i></i>
                             </span>
                             </div>

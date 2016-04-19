@@ -6,22 +6,16 @@
 <script>
     $(function() {
         <!-- -->
+        console.log({{project.properties|json|raw}});
         var play = Play({
             id: '{{project.project}}',
             project: '{{project.id}}',
             width: '{{project.resolution.x}}',
             height: '{{project.resolution.y}}',
             room: '{{project.id}}',
-            properties: {
-                delayed: {{project.properties.delayed}},
-                required: {{project.properties.required}},
-                failNotAllowed: {{project.properties.failNotAllowed}},
-                turns: {{project.properties.turns}},
-                numPlayers: {{numPlayers}},
-                autoNext: {{project.properties.autoNext}},
-                maxTimeoutAutoNext: {{project.properties.maxTimeoutAutoNext}}
-            }
+            properties: {{project.properties|json|raw}}
         });
+
         {% if player %}
         play.setOption('player', {
             id: '{{player.user.id}}',

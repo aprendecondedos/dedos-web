@@ -1,0 +1,6 @@
+{% if user.avatar %}
+    {% set avatarImg = 'src="'+ baseURL +'/uploads/'+ user.avatar +'"' %}
+{% else %}
+    {% set avatarImg = 'data-name="'+ user.name +'"' %}
+{% endif %}
+<img {{avatarImg|raw}} class="profile">

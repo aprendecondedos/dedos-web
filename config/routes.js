@@ -82,6 +82,7 @@ module.exports = function(app, passport, io) {
 
   app.get('/user/settings', auth.requiresLogin, user.edit);
   app.post('/user/settings', auth.requiresLogin, user.edit);
+  app.post('/user/upload/image', auth.requiresLogin, user.uploadImage);
 
   // Classroom routes
   app.param('classroomId', classroom.load);
@@ -127,6 +128,7 @@ module.exports = function(app, passport, io) {
   app.param('playId', play.load);
   app.param('activityId', play.activity.load);
   app.param('answerId', play.answer.load);
+
   app.get('/play', play.select);
   app.post('/play/:playId',[], play.index);
   app.get('/play/:playId',[], function(req, res, next) {

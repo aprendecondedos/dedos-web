@@ -952,6 +952,17 @@ body.layout-full {
 .layout-full > .loader {
   margin-left: 0 !important;
 }
+.play .autonext-timeout {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+.play .autonext-timeout .time {
+  font-weight: bold;
+  color: #43a9ff;
+}
 @media (min-width: 1200px) {
   .layout-boxed {
     background: #e4eaec;
@@ -4771,6 +4782,7 @@ a:focus {
   position: relative;
   display: inline-block;
   width: 40px;
+  height: 40px;
   white-space: nowrap;
   border-radius: 1000px;
   vertical-align: bottom;
