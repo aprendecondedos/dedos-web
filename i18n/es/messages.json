@@ -1,6 +1,6 @@
 {
   "user:signin": "Iniciar sesión",
-  "user:signin:description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+  "user:signin:description": "Inicia sesión con tu usuario y contraseña o crea una cuenta nueva.",
   "user:rememberme": "Recuérdame",
   "user:forgotpassword": "¿Olvidó la contraseña?",
   "user:noaccount": "¿No tienes cuenta?",
@@ -69,6 +69,7 @@
 
   "education_level": "Nivel educativo",
   "education_level:infant": "Infantil",
+  "education_level:nee": "Necesidades especiales",
   "education_level:primary": "Primaria",
 
   "dashboard": "Inicio",
@@ -83,7 +84,7 @@
   "error:button": "Ir al inicio",
 
   "search": "Buscar",
-  "submit": "Enviar",
+  "submit": "Guardar",
   "save": "Guardar",
   "delete": "Eliminar",
   "edit": "Editar",
@@ -111,6 +112,9 @@
   "subject:spanish_language": "Lengua Castellana y Literatura",
   "subject:social_sciences": "Ciencias Sociales",
   "subject:english_language": "Inglés",
+  "subject:con_corp": " Conocimiento corporal y construcción de la propia identidad.",
+  "subject:con_med": "Conocimiento y participación en el medio físico y social",
+  "subject:com_len": "Comunicación y lenguaje",
 
   "": ""
 }

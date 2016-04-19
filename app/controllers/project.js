@@ -248,7 +248,7 @@ exports.new = wrap(function*(req, res) {
       project: new Project(),
       education: {
         levels: edu.education_levels(),
-        subjects: edu.subjects()
+        subjects:edu.subjects(),
       }
     });
   }

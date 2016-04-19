@@ -24,7 +24,7 @@
 <div class="form-group">
     <label class="col-sm-3 control-label">{{gettext('education_level')}}</label>
     <div class="col-sm-9">
-        <select data-plugin="selectpicker" name="educationLevel">
+        <select id="ddl1"  data-plugin="selectpicker" name="educationLevel">
             {% for education_level in education.levels %}
             <option value="{{education_level.id}}" {% if project.educationLevel == education_level.id %} selected {% endif %}>
                 {{gettext('education_level:' + education_level.name)}}
@@ -36,7 +36,7 @@
 <div class="form-group">
     <label class="col-sm-3 control-label">{{gettext('subjects')}}</label>
     <div class="col-sm-9">
-        <select required name="subjects" multiple data-plugin="selectpicker" data-selected-text-format="count">
+        <select id="ddl2" required name="subjects" multiple data-plugin="selectpicker" data-selected-text-format="count">
             {% for subject in education.subjects %}
             <option value="{{subject.name}}" data-icon="{{subject.icon}}" {% if project.subjects.indexOf(subject.name)  != -1 %} selected {% endif %}>
                 {{gettext('subject:' + subject.name)}}
@@ -60,3 +60,4 @@
         {% endif %}
     </button>
 </div>
+
