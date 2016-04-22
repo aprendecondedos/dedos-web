@@ -2,7 +2,7 @@ var lib = require('../../lib/functions');
 var mongoose = require('mongoose');
 var fs = require('fs');
 var gm = require('gm');
-var Player = mongoose.model('Player');
+var User = mongoose.model('User');
 var Teacher = mongoose.model('Teacher');
 
 exports.load = function(req, res, next, id) {
@@ -55,13 +55,14 @@ exports.edit = function(req, res) {
 
 exports.uploadImage = function(req, res) {
   const file = req.file;
+  const user_id = req.body.id;
+
   var extension = file.mimetype.split('/');
-  var new_filename = req.body.id + '.' + extension[1];
+  var new_filename = (user_id ? user_id : mongoose.Types.ObjectId()) + '.' + extension[1];
   var new_path = 'users/pics/';
   var source = fs.createReadStream(file.destination + file.filename);
   var new_file = new_path + new_filename;
   var dest = fs.createWriteStream(file.destination + new_file);
-  fs.unlink(file.destination + file.filename);
 
   gm(file.destination + new_file)
     .resize(240, 240)
@@ -72,10 +73,14 @@ exports.uploadImage = function(req, res) {
 
   source.pipe(dest);
   source.on('end', function() {
-    Player.load(req.body.id, function(err, user) {
-      user.avatar = new_file;
-      user.save();
-    });
+    // Si se encuentra el usuario se actualiza los datos
+    if (user_id) {
+      User.load(user_id, function(err, user) {
+        user.avatar = new_file;
+        user.save();
+      });
+    }
+    fs.unlink(file.destination + file.filename);
     res.jsonp({
       img: {
         path: new_path,

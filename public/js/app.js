@@ -60,17 +60,17 @@ $(function(){
   });
   // Dynamic form fields
   // ---------
-  $(document).on('click', 'form .add-more', function(){
-    var element = $( $(this).data('clone') ).clone();
+  $(document).on('click', 'form .add-more', function() {
+    var element = $($(this).data('clone')).clone();
     element.find('input[type="text"]:first, textarea:first').val('');
-    $( $(this).data('clone-container') ).append(element);
-    element.find('input[type="text"]:first, textarea:first').focus()
+    $($(this).data('clone-container')).append(element);
+    element.find('input[type="text"]:first, textarea:first').focus();
   });
 
   // Webui Popover
   // ---------
-  var listContent = $('.popover-list-content').html(),
-    listSettings = {
+  var listContent = $('.popover-list-content').html();
+  var listSettings = {
       content: listContent,
       title: '',
       padding: false
