@@ -1,5 +1,7 @@
 var lib = require('../../lib/functions');
 var mongoose = require('mongoose');
+var extend = require('util')._extend;
+var wrap = require('co-express');
 var fs = require('fs');
 var gm = require('gm');
 var User = mongoose.model('User');
@@ -48,8 +50,17 @@ exports.new = function(req, res) {
 exports.edit = function(req, res) {
   Teacher.load({criteria: {_id: req.user._id}, select: 'email name'}, function(err, user) {
     res.render('user/edit', {
-      user: user
+      user: user,
+      title: user.name
     });
+  });
+};
+
+exports.editAccount = function(req, res) {
+  Teacher.load({criteria: {_id: req.user._id}, select: 'email name'}, function(err, user) {
+    user = extend(user, req.body);
+    user.save();
+    res.redirect('/user/settings');
   });
 };
 

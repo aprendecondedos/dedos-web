@@ -10,7 +10,7 @@ var TeacherSchema = new Schema({
   salt: String,
   authToken: String,
   provider: String,
-  acebook: {},
+  facebook: {},
   twitter: {},
   github: {},
   google: {},

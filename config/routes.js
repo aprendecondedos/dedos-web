@@ -81,7 +81,7 @@ module.exports = function(app, passport, io) {
   app.param('userId', user.load);
 
   app.get('/user/settings', auth.requiresLogin, user.edit);
-  app.post('/user/settings', auth.requiresLogin, user.edit);
+  app.put('/user/settings/account', auth.requiresLogin, user.editAccount);
   app.post('/user/upload/image', auth.requiresLogin, user.uploadImage);
 
   // Classroom routes
