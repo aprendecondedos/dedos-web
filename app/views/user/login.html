@@ -1,11 +1,29 @@
 {% extends '../layouts/auth.html' %}
 
 {% block auth %}
-<h3 class="font-size-24">{{gettext('user:signin')}}</h3>
-<p>{{gettext('user:signin:description')}}</p>
 
 <form method="post" action="/login" role="form">
+    <h3 class="font-size-24">{{gettext('user:signin')}}</h3>
+    <p>{{gettext('user:signin:description')}}</p>
+
     <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+
+    <div class="form-group row">
+        <div class="col-md-6">
+            <a type="button" class="margin-left-0 btn btn-labeled social-twitter text-left show" href="{{baseURL}}/auth/twitter">
+                <span class="btn-label"><i class="icon fa fa-twitter" aria-hidden="true"></i></span>
+                Twitter
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a type="button" class="margin-left-0 btn btn-labeled social-facebook text-left show" href="{{baseURL}}/auth/facebook">
+                <span class="btn-label"><i class="icon fa fa-facebook" aria-hidden="true"></i></span>
+                Facebook
+            </a>
+        </div>
+    </div>
+    <div class="separator-text"><span>{{gettext('user:signup:or')}}</span></div>
+
     <div class="form-group error">
         {% include '../includes/messages.html' %}
     </div>
@@ -25,8 +43,9 @@
         <a class="pull-right" href="forgot-password.html">{{gettext('user:forgotpassword')}}</a>
     </div>
     <button type="submit" class="btn btn-primary btn-block">{{gettext('user:signin')}}</button>
+
+    <p class="margin-top-20">{{gettext('user:noaccount')}} <a href="/signup">{{gettext('user:signup')}}</a></p>
 </form>
 
-<p>{{gettext('user:noaccount')}} <a href="/signup">{{gettext('user:signup')}}</a></p>
 
 {% endblock %}
