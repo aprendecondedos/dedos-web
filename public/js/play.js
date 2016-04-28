@@ -95,7 +95,7 @@
     function _timer(duration, display) {
       var timer = duration, minutes, seconds;
       var time_interval = setInterval(function() {
-        minutes = parseInt(timer / 60, 10)
+        minutes = parseInt(timer / 60, 10);
         seconds = parseInt(timer % 60, 10);
 
         minutes = minutes < 10 ? '0' + minutes : minutes;
@@ -225,6 +225,8 @@
           }
           if (activity_result.finished) {
             activity.setFinished();
+          } else {
+            btnclicked = false;
           }
 
           $container.find('.token-movable').draggable({
@@ -433,7 +435,12 @@
           }
         }
         // Trigger actividad terminada
-        $.event.trigger('activity:finished', data);
+        if (btnclicked == false) {
+          $.event.trigger('activity:finished', data);
+        } else {
+          btnclicked = false;
+        }
+
       }
       //Si turnos está activado se emite un socket para comprobar el estado del grupo y a quien le toca interactuar
       if (self.options.properties.turns) {
@@ -507,7 +514,7 @@
           $(this).fitText(1, {minFontSize: '12px', maxFontSize: '18px'});
         }
       });
-    }
+    };
     /**
      * Ajuste de la resolución en tamaño y posición de un elemento
      */
@@ -540,10 +547,10 @@
     };
     var windowWidth = $(window).width();
     $(window).on('resize', function() {
-      console.log(windowWidth + "    " + $(window).width());
-     // if ($(window).width() != windowWidth) {
-        self.elements.load();
-        elements.adjustText();
+      console.log(windowWidth + '    ' + $(window).width());
+      // if ($(window).width() != windowWidth) {
+      self.elements.load();
+      elements.adjustText();
       //}
     });
 
@@ -636,6 +643,7 @@
 
             activity.valid = data.activity.valid;
             answer.setProperties(data.answer);
+            console.log(data);
             if (data.activity.finished) {
               activity.setFinished(data);
               // disableElements();
@@ -844,6 +852,7 @@
     /**
      * Actividad terminada
      */
+    var testing;
     $document.on('activity:finished', function(event, data) {
       // Se finaliza el juego mostrando un modal al usuario
       if (!$container.find('#next-activity').attr('href')) {
@@ -857,14 +866,16 @@
           var $autoNextTimeout = $container.find('.autonext-timeout');
           _timer(self.options.properties.maxTimeoutAutoNext, $autoNextTimeout.find('.time'));
           $autoNextTimeout.fadeIn('slow');
-          setTimeout(activity.autoNext, Number(self.options.properties.maxTimeoutAutoNext * 1000)); // milisegundos
+          testing = setTimeout(activity.autoNext, Number(self.options.properties.maxTimeoutAutoNext * 1000)); // milisegundos
         }
       }
     });
     // Función para comprobar respuestas en caso de demorada
     $document.on('click', '#check-activity', activity.check);
-
+    var btnclicked = false;
     $document.on('click', '.select-activity', function(e) {
+      btnclicked = true;
+      clearTimeout(testing);
       e.preventDefault();
       activity.load({
         id: $(this).data('activity'),
