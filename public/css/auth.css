@@ -30,12 +30,10 @@
   color: #fff;
 }
 .page-walled-garden .page-auth-main {
-  position: absolute;
-  right: 0;
-  top: 0;
   height: auto;
   min-height: 100%;
-  padding: 120px 60px 50px;
+  padding: 20px;
+  padding-top: 40px;
   color: #76838f;
   background: #ffffff;
 }
@@ -53,7 +51,8 @@
 }
 .page-walled-garden form {
   width: 350px;
-  margin: 45px 0 20px;
+  margin: 30px auto 45px;
+  margin-bottom: 0;
 }
 .page-walled-garden form > button {
   margin-top: 38px;

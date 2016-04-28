@@ -18,37 +18,40 @@ exports.index = function(req, res) {
 
 };
 
-exports.new = wrap(function*(req, res){
-    if(req.method == 'POST') {
-      var players = req.body.players_name;
-      var player_names = [];
+exports.new = wrap(function*(req, res) {
+  if (req.method == 'POST') {
+    var players_name = req.body.players_name;
+    var avatars = req.body.files;
+    var players = [];
 
-      players.forEach(function(player_name){
-        player_names.push({name: player_name});
-      });
-      var users = yield Player.create(player_names);
-      if(req.xhr) {
-        res.json(users);
-      }
-    } else {
-      res.render('user/signup', {
-        user: new Player()
-      });
+    players_name.forEach(function(player_name, index) {
+      players.push({name: player_name, avatar: (avatars[index].length ? avatars[index] : '')});
+      console.log(req.body);
+    });
+    console.log(players);
+    const users = yield Player.create(players);
+    if (req.xhr) {
+      res.json(users);
     }
+  } else {
+    res.render('user/signup', {
+      user: new Player()
+    });
+  }
 });
 
-exports.import = function(req, res){
-  if(req.file){
+exports.import = function(req, res) {
+  if (req.file) {
     var upload = lib.upload('file_upload');
     var players = [];
     // Subida de archivos para creación del proyecto
-    upload(req, res, function (err) {
+    upload(req, res, function(err) {
       var workbook = XLSX.readFile(req.file.path);
       var result = {};
 
       workbook.SheetNames.forEach(function(sheetName) {
-        var roa = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header:1});
-        if(roa.length > 0){
+        var roa = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header: 1});
+        if (roa.length > 0) {
           result[sheetName] = roa;
         }
       });
@@ -59,14 +62,12 @@ exports.import = function(req, res){
   }
 };
 
-exports.edit = function (req, res) {
-
-  Player.load({ criteria: { _id: req.user._id }, select: 'email name' }, function (err, user) {
+exports.edit = function(req, res) {
+  Player.load({criteria: {_id: req.user._id}, select: 'email name'}, function(err, user) {
     res.render('user/edit', {
       user: user
     });
   });
-
 };
 
 exports.signin = function() {};

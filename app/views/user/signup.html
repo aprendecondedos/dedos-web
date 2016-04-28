@@ -1,23 +1,24 @@
 {% extends '../layouts/auth.html' %}
 
 {% block auth %}
-<h3 class="font-size-24">{{gettext('user:signup')}}</h3>
-<p>{{gettext('user:signin:description')}}</p>
 
 <form method="post" action="/signup" role="form">
+    <h3 class="font-size-24">{{gettext('user:signup')}}</h3>
+    <p>{{gettext('user:signin:description')}}</p>
+
     <input type="hidden" name="_csrf" value="{{ csrf_token }}">
     <div class="form-group row">
         <div class="col-md-6">
-            <button type="button" class="btn btn-labeled social-twitter text-left" style="width: 100%">
+            <a class="margin-left-0 btn btn-labeled social-twitter text-left show" href="{{baseURL}}/auth/twitter">
                 <span class="btn-label"><i class="icon fa fa-twitter" aria-hidden="true"></i></span>
                 Twitter
-            </button>
+            </a>
         </div>
         <div class="col-md-6">
-            <button type="button" class="btn btn-labeled social-facebook text-left" style="width: 100%">
+            <a class="margin-left-0 btn btn-labeled social-facebook text-left show" href="{{baseURL}}/auth/facebook">
                 <span class="btn-label"><i class="icon fa fa-facebook" aria-hidden="true"></i></span>
                 Facebook
-            </button>
+            </a>
         </div>
     </div>
     <div class="separator-text"><span>{{gettext('user:signup:or')}}</span></div>
@@ -38,8 +39,9 @@
         <input type="password" data-plugin="strength" class="form-control" id="inputPassword" autofocus required name="password" placeholder="{{gettext('user:password')}}">
     </div>
     <button type="submit" class="btn btn-primary btn-block">{{gettext('user:signup')}}</button>
+
+    <p class="margin-top-20">{{gettext('user:haveaccount')}} <a href="/login">{{gettext('user:signin')}}</a></p>
 </form>
 
-<p>{{gettext('user:haveaccount')}} <a href="/login">{{gettext('user:signin')}}</a></p>
 {% endblock %}
 

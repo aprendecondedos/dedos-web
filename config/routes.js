@@ -14,7 +14,6 @@ var classroomAuth = [auth.requiresLogin, auth.classroom.hasAuthorization];
 var projectAuth = [auth.requiresLogin, auth.project.hasAuthorization];
 
 module.exports = function(app, passport, io) {
-  //var project = require('../app/controllers/project')(io);
 
   app.get('/', auth.requiresLogin, project.new);
 
@@ -38,14 +37,6 @@ module.exports = function(app, passport, io) {
     passport.authenticate('facebook', {
       failureRedirect: '/login'
     }), user.authCallback);
-  app.get('/auth/github',
-    passport.authenticate('github', {
-      failureRedirect: '/login'
-    }), user.signin);
-  app.get('/auth/github/callback',
-    passport.authenticate('github', {
-      failureRedirect: '/login'
-    }), user.authCallback);
   app.get('/auth/twitter',
     passport.authenticate('twitter', {
       failureRedirect: '/login'
@@ -54,34 +45,11 @@ module.exports = function(app, passport, io) {
     passport.authenticate('twitter', {
       failureRedirect: '/login'
     }), user.authCallback);
-  app.get('/auth/google',
-    passport.authenticate('google', {
-      failureRedirect: '/login',
-      scope: [
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email'
-      ]
-    }), user.signin);
-  app.get('/auth/google/callback',
-    passport.authenticate('google', {
-      failureRedirect: '/login'
-    }), user.authCallback);
-  app.get('/auth/linkedin',
-    passport.authenticate('linkedin', {
-      failureRedirect: '/login',
-      scope: [
-        'r_emailaddress'
-      ]
-    }), user.signin);
-  app.get('/auth/linkedin/callback',
-    passport.authenticate('linkedin', {
-      failureRedirect: '/login'
-    }), user.authCallback);
 
   app.param('userId', user.load);
 
   app.get('/user/settings', auth.requiresLogin, user.edit);
-  app.post('/user/settings', auth.requiresLogin, user.edit);
+  app.put('/user/settings/account', auth.requiresLogin, user.editAccount);
   app.post('/user/upload/image', auth.requiresLogin, user.uploadImage);
 
   // Classroom routes

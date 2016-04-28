@@ -6,24 +6,26 @@
 {% block body %}
 <body class="page-walled-garden layout-full page-dark">
 <div class="page animsition">
-    <div class="page-content">
+    <div style="position:relative; height: 100%;">
         <div class="cover-bg"></div>
-        <div class="page-brand-info">
-            <div class="brand">
-                <h2 class="brand-text font-size-40"></h2>
-            </div>
-            <p class="font-size-20">
+        <div class="page-content col-md-7 hidden-sm">
+            <div class="page-brand-info">
+                <div class="brand">
+                    <h2 class="brand-text font-size-40"></h2>
+                </div>
+                <p class="font-size-20">
 
-            </p>
+                </p>
+            </div>
         </div>
-        <div class="page-auth-main">
+        <div class="page-auth-main col-md-5">
             <div class="brand text-center">
                 <img class="brand-img" src="/images/dedos-logo.png" alt="Logo">
             </div>
 
             {% block auth %}{% endblock %}
-
         </div>
+        <div class="clearfix"></div>
     </div>
 </div>
 {% include '../includes/foot.html' %}

@@ -50,18 +50,19 @@
                 url: "/player/new",
                 type: "POST",
                 dataType: "json",
-                data: $m_body.find('.input-name').serialize(),
+                data: $m_body.find('.input-name, .file_path').serialize(),
                 success: function(users){
-                    $.each(users, function(i, user){
-                        $('.players-list tbody').prepend('<tr data-user="'+user._id+'"> ' +
+                    $.each(users, function(i, user) {
+                        var avatar = user.avatar ? '{{baseURL}}/uploads/' + user.avatar : '';
+                        $('.players-list tbody').prepend('<tr data-user="'+ user._id +'"> ' +
                         '<td> ' +
                         '<a class="popover-list avatar avatar-online margin-left icons" style="width: 30px;height: 30px;" href="javascript:;">' +
-                        '<img src="'+user.avatar+'">' +
+                        '<img src="'+ avatar +'">' +
                         '</a> ' +
                         '</td> ' +
-                        '<td>'+user.name+'</td> ' +
+                        '<td>'+ user.name +'</td> ' +
                         '<td> ' +
-                        '<input type="hidden" name="players['+user._id+'][id]" value="'+user._id+'">' +
+                        '<input type="hidden" name="players['+ user._id +'][id]" value="'+ user._id +'">' +
                         '<a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-pencil"></i></a> ' +
                         '<a class="btn btn-sm btn-icon btn-flat btn-default"><i class="fa fa-times"></i></a> ' +
                         '</td> ' +
@@ -264,10 +265,21 @@
         <div class="modal-body">
             <ul class="list-group list-group-dividered list-group-full" id="toClone">
                 <li class="list-group-item row">
-                    <div class="col-xs-1">
-                        <div class="img-circle" style="width: 30px;height: 30px;background-color: #e4eaec;"></div>
+                    <div class="col-xs-2 text-center">
+                        <div class="input-group input-group-file"
+                             data-toggle="tooltip" data-placement="top"
+                             data-trigger="hover" data-original-title="{{gettext('user:avatar:upload')}}">
+                            <span class="input-group-btn">
+                              <span class="btn btn-file file_upload" style="padding: 0;">
+                                <!-- User avatar-->
+                                <img class="profile img-circle" src="/images/btn_plus.png" style="width: 30px;height: 30px;background-color: #e4eaec;">
+                                <input type="file" class="avatar_upload" name="file_upload" accept="image/*">
+                                <input type="hidden" name="files[]" class="file_path">
+                              </span>
+                            </span>
+                        </div>
                     </div>
-                    <div class="col-xs-10">
+                    <div class="col-xs-9">
                         <input type="text" class="form-control input-name" required="required" autofocus placeholder="{{gettext('user:name')}}" name="players_name[]">
                     </div>
                     <div class="col-xs-1">
@@ -294,7 +306,8 @@
         // Subida de avatar del usuario
         $(document).on('change', '.avatar_upload', function(e){
             var $that = $(this);
-            var $image = $that.closest('[data-user="'+ $that.attr('id') +'"]')
+            var $container = $that.closest('.file_upload');
+            var $image = $container
                     .find('.profile');
             var formdata = new FormData();
             var file = this.files[0];
@@ -302,10 +315,11 @@
                 return false;
             }
             formdata.append('file_upload', file);
-            formdata.append('id', this.id);
-            if(window.URL) {
-                $image.attr('src', URL.createObjectURL(e.target.files[0]));
+            if (this.id) {
+                formdata.append('id', this.id);
             }
+            $image.attr('src', URL.createObjectURL(e.target.files[0]));
+
             $.ajax({
                 type: 'POST',
                 url: '{{baseURL}}/user/upload/image',
@@ -317,7 +331,11 @@
             })
                 .done(function(data) {
                     if(data.img.path) {
-                        $image.attr('src', '{{baseURL}}/uploads/' + data.img.path + data.img.filename);
+                        var file_path = data.img.path + data.img.filename;
+                        $image.attr('src', '{{baseURL}}/uploads/' + file_path);
+                        if ($container.find('.file_path').length) {
+                            $container.find('.file_path').val(file_path);
+                        }
                     }
                 })
                 .fail(function(data){
@@ -381,7 +399,7 @@
                href="javascript:;">
                 <div class="input-group input-group-file">
                     <span class="input-group-btn">
-                      <span class="btn btn-file" style="padding: 0;">
+                      <span class="btn btn-file file_upload" style="padding: 0;">
                         <!-- User avatar-->
                         {% include "../../user/avatar.html" with { user: player.user, baseURL: baseURL } only %}
                         <input type="file" class="avatar_upload" name="file_upload" id="{{player.user.id}}" accept="image/*">

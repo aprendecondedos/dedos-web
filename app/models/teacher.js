@@ -10,7 +10,7 @@ var TeacherSchema = new Schema({
   salt: String,
   authToken: String,
   provider: String,
-  acebook: {},
+  facebook: {},
   twitter: {},
   github: {},
   google: {},
@@ -145,9 +145,7 @@ TeacherSchema.statics = {
    *
    * @param {Object} options
    * @param {Function} cb
-   * @api private
    */
-
   load: function(options, cb) {
     options.select = options.select || 'name';
     this.findOne(options.criteria)

@@ -42,10 +42,7 @@ userSchema.methods.setAsTeacher = function() {
   return this;
 };
 userSchema.methods.setAsStudent = function() {
-
   this.type = 'student';
-  //this.createdBy: 'ID_teacher'
-  //var p = new Student(baseSchema);
   return this;
 };
 /**
@@ -69,9 +66,7 @@ UserSchema.statics = {
    *
    * @param {ObjectId} id
    * @param {Function} cb
-   * @api private
    */
-
   load: function(id, cb) {
     this.findOne({_id: id})
         .exec(cb);
