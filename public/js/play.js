@@ -577,13 +577,23 @@
     elements.pair = function(token) {
       // Número de interacciones por token
       var targets = [];
-      var isCommon = $container.find('#' + token.id).parent().hasClass('common');
-      var container = $container.find('#' + token.id).find('.interaction-num');
-      var num = parseInt(container.text()) > 0 ? parseInt(container.text()) + 1 : 1;
-      container.fadeIn().html('&nbsp;&nbsp;');
-
+      var isCommon;
+      var container;
+      var num;
+      if (token.data) {
+        isCommon = $container.find('#' + token.data.id).parent().hasClass('common');
+        container = $container.find('#' + token.data.id).find('.interaction-num');
+        num = parseInt(container.text()) > 0 ? parseInt(container.text()) + 1 : 1;
+        container.fadeIn().html('&nbsp;&nbsp;');
+      } else {
+        isCommon = $container.find('#' + token.id).parent().hasClass('common');
+        container = $container.find('#' + token.id).find('.interaction-num');
+        num = parseInt(container.text()) > 0 ? parseInt(container.text()) + 1 : 1;
+        container.fadeIn().html('&nbsp;&nbsp;');
+      }
+      var container_target;
       if (token.target) {
-        var container_target = $container.find('#' + token.target.id).find('.interaction-num');
+        container_target = $container.find('#' + token.target.id).find('.interaction-num');
         container_target.fadeIn().html('&nbsp;&nbsp;');
         if (!targets[token.target.id]) {
           targets[token.target.id] = true;
@@ -594,6 +604,18 @@
           container.css('background-color', container_target.css('background-color'));
         }
       } else {
+        if (token.droppedInto) {
+          container_target = $container.find('#' + token.droppedInto.id).find('.interaction-num');
+          container_target.fadeIn().html('&nbsp;&nbsp;');
+          if (!targets[token.droppedInto.id]) {
+            targets[token.droppedInto.id] = true;
+            container_target.css('background-color', 'rgb(' + _randomColor() + ')');
+            console.log();
+            container.fadeIn().css('background-color', container_target.css('background-color'));
+          } else {
+            container.css('background-color', container_target.css('background-color'));
+          }
+        }
         // Se selecciona el color de su target
         //container.css('background-color', .css('background-color'))
       }
@@ -615,6 +637,7 @@
         if (token.droppedInto) {
           $container.find('#' + token.data.id).addClass('dropped');
           $container.find('#' + token.data.id).attr('data-droppedin',token.droppedInto.id);
+          elements.pair(token);
         }else {
           $container.find('#' + token.data.id).toggleClass('clicked');
         }
