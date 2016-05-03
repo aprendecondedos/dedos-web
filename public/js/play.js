@@ -89,6 +89,7 @@
     var _randomColor = function() {
       return (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256));
     };
+
     /**
      * Contador hacia atrás
      */
@@ -231,15 +232,16 @@
 
           $container.find('.token-movable').draggable({
             //revert: true, //if self.options.failpermitted { revert == true } else { revert == false }
-            revert: !self.options.properties.delayed,
+            revert: false,//!self.options.properties.delayed,
             containment: $('.play-table'),
             cursor: 'move',
             zIndex: 2500,
             //opacity: 0.7,
-            helper: 'original',
+            helper: 'clone',
             drag: function(event, ui) {
               $container.find('.token').not('.token-droppable').css('opacity', .6);
-              $(this).css('opacity', 1);
+              $(ui.helper).css('opacity', 1);
+              $(this).css('opacity', 0.3);
               //jsPlumb.repaint($(this));
             },
             stop: function(event, ui) {
@@ -571,6 +573,31 @@
         });
       }
     };
+
+    elements.pair = function(token) {
+      // Número de interacciones por token
+      var targets = [];
+      var isCommon = $container.find('#' + token.id).parent().hasClass('common');
+      var container = $container.find('#' + token.id).find('.interaction-num');
+      var num = parseInt(container.text()) > 0 ? parseInt(container.text()) + 1 : 1;
+      container.fadeIn().html('&nbsp;&nbsp;');
+
+      if (token.target) {
+        var container_target = $container.find('#' + token.target.id).find('.interaction-num');
+        container_target.fadeIn().html('&nbsp;&nbsp;');
+        if (!targets[token.target.id]) {
+          targets[token.target.id] = true;
+          container_target.css('background-color', 'rgb(' + _randomColor() + ')');
+          console.log();
+          container.fadeIn().css('background-color', container_target.css('background-color'));
+        } else {
+          container.css('background-color', container_target.css('background-color'));
+        }
+      } else {
+        // Se selecciona el color de su target
+        //container.css('background-color', .css('background-color'))
+      }
+    };
     /**
      * Comprobación por AJAX del token
      *
@@ -608,26 +635,33 @@
           },
           success: function(data) {
             console.log(data);
+
             //var token_data = data.tokens;
             for (var key in data.tokens) {
               var token = data.tokens[key];
+              var valid = new String();
+              if (data.tokens[key].valid) {
+                valid = 'correct checked';
+              } else {
+                valid = 'wrong checked';
+              }
 
               if (data.tokens[key].type == 'sel') {
-                var valid = new String();
-                if (data.tokens[key].valid) {
-                  valid = 'correct checked';
-                } else {
-                  valid = 'wrong checked';
-                }
                 $container.find('#' + data.tokens[key].id).addClass(valid);
 
               }else if (data.tokens[key].type == 'pair') {
                 if (data.tokens[key].valid) {
                   $container.find('#' + data.tokens[key].id).draggable('option', 'revert', false);
-                  $container.find('#' + data.tokens[key].id).hide();
+                  console.log(data.tokens[key]);
+                  elements.pair(data.tokens[key]);
+                  $container.find('#' + data.tokens[key].id).addClass(valid);
+                 // $container.find('#' + data.tokens[key].id).hide();
                   //$container.find('#' + data.tokens[key].id).css('opacity',0);
                 } else {
-                  //$container.find('#' + data.tokens[key].id).css('opacity',1);
+                  if (self.options.properties.failNotAllowed) {
+                    elements.pair(data.tokens[key]);
+                    $container.find('#' + data.tokens[key].id).addClass(valid);
+                  }
                 }
               } else if (data.tokens[key].type = 'tokenMeter') {
                 $container.find('[data-element=' + data.tokens[key].targetName + ']').attr(
@@ -640,10 +674,8 @@
               }
               $.event.trigger('token:action', {token: token, directInteraction: directInteraction});
             }
-
             activity.valid = data.activity.valid;
             answer.setProperties(data.answer);
-            console.log(data);
             if (data.activity.finished) {
               activity.setFinished(data);
               // disableElements();
@@ -672,26 +704,27 @@
       var paintStyleTargets = [];
       var index = 0;
       objectives.forEach(function(objective) {
+        console.log(objective);
         if (objective.type == 'sel') {
           $container.find('[data-element=' + objective.obj + ']').addClass('correct checked');
         } else if (objective.type == 'pair') {
           objective.targets.forEach(function(target) {
-            $container.find('[data-element=' + objective.origen + ']').draggable({
-              stop: function(event, ui) {
-                if (!paintStyleTargets[target]) {
-                  paintStyleTargets[target] = paintStyle[index];
-                  lineStyleTargets[target] = lineStyle[index];
-                  index++;
-                }
+            // $container.find('[data-element=' + objective.origen + ']').draggable({
+            // stop: function(event, ui) {
+            if (!paintStyleTargets[target]) {
+              paintStyleTargets[target] = paintStyle[index];
+              lineStyleTargets[target] = lineStyle[index];
+              index++;
+            }
 
-                connect(
-                  $container.find('[data-element=' + objective.origen + ']').attr('id'),
-                  $container.find('[data-element=' + target + ']').attr('id'),
-                  paintStyleTargets[target],
-                  lineStyleTargets[target]
-                );
-              }
-            });
+            connect(
+              $container.find('[data-element=' + objective.origen + ']').attr('id'),
+              $container.find('[data-element=' + target + ']').attr('id'),
+              paintStyleTargets[target],
+              lineStyleTargets[target]
+            );
+            //}
+            // });
             if (!$container.find('[data-element=' + objective.origen + ']').hasClass('dragged')) {
               if (!paintStyleTargets[target]) {
                 paintStyleTargets[target] = paintStyle[index];
