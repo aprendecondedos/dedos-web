@@ -595,7 +595,7 @@
       if (token.target) {
         container_target = $container.find('#' + token.target.id).find('.interaction-num');
         container_target.fadeIn().html('&nbsp;&nbsp;');
-        if (!targets[token.target.id]) {
+        if (container_target.is(':hidden')) {
           targets[token.target.id] = true;
           container_target.css('background-color', 'rgb(' + _randomColor() + ')');
           console.log();
@@ -607,7 +607,7 @@
         if (token.droppedInto) {
           container_target = $container.find('#' + token.droppedInto.id).find('.interaction-num');
           container_target.fadeIn().html('&nbsp;&nbsp;');
-          if (!targets[token.droppedInto.id]) {
+          if (container_target.is(':hidden')) {
             targets[token.droppedInto.id] = true;
             container_target.css('background-color', 'rgb(' + _randomColor() + ')');
             console.log();
