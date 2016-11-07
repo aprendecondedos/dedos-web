@@ -29,6 +29,7 @@
     "mongoose": "^4.2.5",
     "morgan": "~1.6.1",
     "multer": "^1.1.0",
+    "node-rest-client": "git+https://github.com/jwindmuller/node-rest-client.git",
     "nodemailer": "^1.10.0",
     "nodemailer-mandrill-transport": "^1.0.0",
     "nunjucks": "^2.1.0",

@@ -105,4 +105,24 @@ $(function(){
       });
     });
   })();
+
+  /**
+   * jQuery function para mostrar los datos de un usuario especifico
+   *
+   * @returns {$}
+   */
+  $.fn.getUser = function() {
+    $(this).each(function() {
+      var self = $(this);
+      var userId = $(this).data().userid;
+      var user = Users.getById(userId);
+      var findCriteria = $(this).data().show.split(',');
+      if (user) {
+        findCriteria.forEach(function (criteria) {
+          self.append(user[criteria]);
+        });
+      }
+    });
+    return this;
+  };
 });

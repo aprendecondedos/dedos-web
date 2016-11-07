@@ -67,10 +67,6 @@ ActivitySchema.methods = {
     }
     return this;
   },
-  addAnswerx: function(answer) {
-    this.answers.push(answer);
-    return this;
-  },
   setAnswers: function(answers) {
     var self = this;
     this.answers = [];

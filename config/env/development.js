@@ -17,9 +17,7 @@ if (fs.existsSync(envFile)) {
     process.env[key] = env[key];
   });
 }
-if (!process.env.BASE_URL) {
-  process.env.BASE_URL = 'http://127.0.0.1:3000';
-}
+
 /**
  * Expose
  */
@@ -54,11 +52,11 @@ module.exports = {
   facebook: {
     clientID: process.env.FACEBOOK_CLIENTID,
     clientSecret: process.env.FACEBOOK_SECRET,
-    callbackURL: process.env.BASE_URL + '/auth/facebook/callback'
+    callbackURL: '/auth/facebook/callback'
   },
   twitter: {
     clientID: process.env.TWITTER_CLIENTID,
     clientSecret: process.env.TWITTER_SECRET,
-    callbackURL: process.env.BASE_URL + '/auth/twitter/callback'
+    callbackURL: '/auth/twitter/callback'
   }
 };

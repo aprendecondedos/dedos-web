@@ -1,34 +1,61 @@
 'use strict';
+var mandrillTransport = require('nodemailer-mandrill-transport');
+var fs = require('fs');
+var env = {};
+var envFile = require('path').join(__dirname, 'env.json');
+
+// Read env.json file, if it exists, load the id's and secrets from that
+// Note that this is only in the development env
+// it is not safe to store id's in files
+
+if (fs.existsSync(envFile)) {
+  env = fs.readFileSync(envFile, 'utf-8');
+  env = JSON.parse(env);
+  Object.keys(env).forEach(function(key) {
+    process.env[key] = env[key];
+  });
+}
 
 /**
  * Expose
  */
 
 module.exports = {
-  db: process.env.MONGOHQ_URL,
+  baseUrl: process.env.BASE_URL,
+  db: 'mongodb://' + process.env.DATABASE_SERVER + '/' + process.env.DATABASE_TABLE,
+  mailer: {
+    from: 'info@aprendecondedos.es',
+    /**
+     * Ejemplo con datos de Gmail
+     */
+    transporter: {
+      service: 'Gmail',
+      auth: {
+        user: 'gmail.user@gmail.com',
+        pass: 'userpass'
+      }
+    },
+    /**
+     * Servidor propio
+     */
+    transporter: null,
+    /**
+     * MandrillApp
+     */
+    transporter: mandrillTransport({
+      auth: {
+        apiKey: process.env.MAILER_MANDRILL_APIKEY
+      }
+    })
+  },
   facebook: {
     clientID: process.env.FACEBOOK_CLIENTID,
     clientSecret: process.env.FACEBOOK_SECRET,
-    callbackURL: 'http://nodejs-express-demo.herokuapp.com/auth/facebook/callback'
+    callbackURL: '/auth/facebook/callback'
   },
   twitter: {
     clientID: process.env.TWITTER_CLIENTID,
     clientSecret: process.env.TWITTER_SECRET,
-    callbackURL: 'http://nodejs-express-demo.herokuapp.com/auth/twitter/callback'
-  },
-  github: {
-    clientID: process.env.GITHUB_CLIENTID,
-    clientSecret: process.env.GITHUB_SECRET,
-    callbackURL: 'http://nodejs-express-demo.herokuapp.com/auth/github/callback'
-  },
-  linkedin: {
-    clientID: process.env.LINKEDIN_CLIENTID,
-    clientSecret: process.env.LINKEDIN_SECRET,
-    callbackURL: 'http://nodejs-express-demo.herokuapp.com/auth/linkedin/callback'
-  },
-  google: {
-    clientID: process.env.GOOGLE_CLIENTID,
-    clientSecret: process.env.GOOGLE_SECRET,
-    callbackURL: 'http://nodejs-express-demo.herokuapp.com/auth/google/callback'
+    callbackURL: '/auth/twitter/callback'
   }
 };

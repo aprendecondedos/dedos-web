@@ -9,6 +9,7 @@ var extend = require('util')._extend;
 var wrap = require('co-express');
 var _ = require('underscore');
 var xl = require('excel4node');
+var LA = require('../learning_analytics/lib');
 
 var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
@@ -108,7 +109,7 @@ exports.new = wrap(function*(req, res) {
         }
         project.setPlayers(users);
       }
-      console.log(project);
+
       parser.parseString(xml_data, function(err, XML) {
         if (err) {
           res.redirect('/project/new');
@@ -181,7 +182,7 @@ exports.new = wrap(function*(req, res) {
           // Set elements
           var elements = [];
           activity_data.Arealist.forEach(function(area_list) {
-            if (typeof area_list != 'object') return;
+            if (typeof area_list != 'object') { return; }
 
             area_list.Area.forEach(function(area_data) {
               var area = new Area({
@@ -195,7 +196,7 @@ exports.new = wrap(function*(req, res) {
               // Set tokens (cards)
               var tokens = [];
               area_data.Tokenlist.forEach(function(tokens_data) {
-                if (typeof tokens_data != 'object') return;
+                if (typeof tokens_data != 'object') { return; }
 
                 tokens_data.Token.forEach(function(token_data) {
                   var token = new Token({
@@ -248,7 +249,7 @@ exports.new = wrap(function*(req, res) {
       project: new Project(),
       education: {
         levels: edu.education_levels(),
-        subjects:edu.subjects(),
+        subjects: edu.subjects(),
       }
     });
   }
@@ -289,6 +290,29 @@ exports.settings = function(req, res) {
   const project = req.project;
 
   res.render('project/settings', {
+    title: project.name,
+    project: project,
+    education: {
+      levels: edu.education_levels(),
+      subjects: edu.subjects()
+    }
+  });
+};
+
+/**
+ *  Analíticas del proyecto con conexión al motor de Learning Analytics
+ *
+ * @param {Object} req
+ * @param {Object} res
+ */
+exports.statistics = function(req, res) {
+  const project = req.project;
+  //LA.get('project', {type: 'timing', params: {
+  //  projectId: '5721df292f01890c9a2b363e',
+  //
+  //}});
+
+  res.render('project/statistics', {
     title: project.name,
     project: project,
     education: {
@@ -342,7 +366,6 @@ exports.export = wrap(function*(req, res) {
     playerName2.String(player.user.name);
     playerName2.Style(headerStyle);
 
-
     project.activities.forEach(function(activity, index1) {
       // Creamos el header con el número de la actividad
       var header = ws.Cell(1, index1 + 2);
@@ -368,7 +391,7 @@ exports.export = wrap(function*(req, res) {
 
       var correctAnswers = activity.returnCorrectAnswers();
       if (playerAnswers) {
-        playerAnswers.elements.forEach(function (element, indexanswer) {
+        playerAnswers.elements.forEach(function(element, indexanswer) {
 
           var data = {
             content: element.token.getContent(),
@@ -385,7 +408,6 @@ exports.export = wrap(function*(req, res) {
           header3.Style(answerHeaderStyle);
 
 
-          console.log(data.content);
           var result2 = ws2.Cell(rowSheet2 + 2, columnSheet2 + 1);
           result2.Style(resultStyle);
           if (data.targetContent) {
@@ -406,12 +428,12 @@ exports.export = wrap(function*(req, res) {
         columnSheet2++;
       }
       if (correctAnswers) {
-        correctAnswers.forEach(function (answer, indexcorrect) {
-          var header4 = ws2.Cell(rowSheet2+1, columnSheet2 + 1);
+        correctAnswers.forEach(function(answer, indexcorrect) {
+          var header4 = ws2.Cell(rowSheet2 + 1, columnSheet2 + 1);
           header4.Style(answerHeaderStyle);
           header4.String('Respuesta correcta ' + String(indexcorrect + 1));
 
-          var answerCell = ws2.Cell(rowSheet2+2, columnSheet2 + 1);
+          var answerCell = ws2.Cell(rowSheet2 + 2, columnSheet2 + 1);
           answerCell.Style(correctAnswerStyle);
           answerCell.String(answer);
           columnSheet2++;
@@ -459,6 +481,7 @@ exports.update = function(req, res) {
   delete req.body.players_name;
   delete req.body.file_upload;
   delete req.body.classroom;
+
   project = extend(project, req.body);
   var prop = req.body.properties || {};
   // Propiedades del proyecto seleccionadas

@@ -1,0 +1,87 @@
+<script>
+    $('.user-results [data-userid]').getUser();
+
+    // Footable
+    var filtering = $('#table-filtering');
+    filtering.footable().on('footable_filtering', function(e) {
+        var selected = $('#filteringStatus').find(':selected').val();
+        e.filter += (e.filter && e.filter.length > 0) ? ' ' + selected : selected;
+        e.clear = !e.filter;
+    });
+</script>
+<style>
+    .mini-chart.bar {
+        margin-top: 6px;
+        height: 10px;
+        background: #f1f1f1;
+        width: 100%;
+    }
+    .mini-chart.bar > div {
+        transition: width .5s;
+    }
+    .mini-chart.bar .red {
+        background: #f96868;
+        height: 100%;
+        float: left;
+        border-bottom-left-radius: 3px;
+        border-top-left-radius: 3px;
+    }
+    .mini-chart.bar .green {
+        background: #46BE8A;
+        height: 100%;
+        float: left;
+    }
+    .mini-chart.bar .gray {
+        background: #e4eaec;
+        height: 100%;
+        float: left;
+    }
+</style>
+<table class="table user-results footable" data-page-size="5" id="table-filtering">
+    <thead>
+    <tr>
+        <th style="width: 50%;">Nombre</th>
+        <th style="width: 40%;"><span title="Progreso">Progreso</span></th>
+        <th style="width: 10%;">Estado</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for result in results %}
+    <tr>
+        <td>
+            <div data-userid="{{result.userId}}" data-show="avatar,name"></div>
+        </td>
+        <td data-value="{{result.correct}}">
+            <div class="mini-chart bar">
+                <div class="red" style="width: {{(result.failed * 100) / totalActivities}}%;" data-toggle="tooltip"
+                     data-original-title="{{result.failed}} fallados"></div>
+                <div class="green" style="width: {{(result.correct * 100) / totalActivities}}%;" data-toggle="tooltip"
+                     data-original-title="{{result.correct}} acertados"></div>
+                <div class="gray" style="width: {{(result.notAnswered * 100) / totalActivities}}%;" data-toggle="tooltip"
+                     data-original-title="{{result.notAnswered}} no contestados"></div>
+            </div>
+        </td>
+        <td>
+            {% if result.status == 'pending' %}
+                <span class="label label-warning">Pendiente</span>
+            {% endif %}
+            {% if result.status == 'finished' %}
+                <span class="label label-success">Terminado</span>
+            {% endif %}
+            {% if result.status == 'unstarted' %}
+                <span class="label label-default">No empezado</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="5">
+            <div class="text-center margin-top-10">
+                <ul class="pagination"></ul>
+            </div>
+        </td>
+    </tr>
+    </tfoot>
+</table>

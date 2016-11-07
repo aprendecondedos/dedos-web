@@ -3,6 +3,7 @@ var wrap = require('co-express');
 var lib = require('../../lib/functions');
 var gettext = require('../../i18n/i18n').gettext;
 var _ = require('underscore');
+var LA = require('../learning_analytics/lib');
 var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
 var Activity = mongoose.model('Activity');
@@ -213,6 +214,9 @@ exports.activity = {
       });
     });
 
+    // Learning Analytics tracking
+    LA.emit('activity', {event: 'load', activity: req.activity, user: req.player.user});
+
     res.render('play/show', {
       title: gettext('play'),
       project: project,
@@ -290,6 +294,17 @@ exports.activity = {
 
     activity.save();
     answer.save();
+
+    // Learning Analytics tracking
+    LA.emit('activity', {
+      event: 'answer',
+      isCorrect: activityResult.activityResult,
+      isFinished: answer.activityData.finished,
+      activity: req.activity,
+      answer: answer,
+      tokens: token_results,
+      user:  req.player.user
+    });
 
     res.send({
       tokens: token_results,

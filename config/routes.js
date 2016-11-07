@@ -78,6 +78,7 @@ module.exports = function(app, passport, io) {
   app.get('/project/new', auth.requiresLogin, project.new);
   app.post('/project/new', auth.requiresLogin, project.new);
   app.get('/project/:projectId/settings', projectAuth, project.settings);
+  app.get('/project/:projectId/statistics', projectAuth, project.statistics);
   app.get('/project/:projectId/export', projectAuth, project.export);
   app.get('/project/:projectId/copy', projectAuth, project.copy);
 

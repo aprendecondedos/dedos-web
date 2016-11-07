@@ -1,0 +1,639 @@
+{% extends '../layouts/default.html' %}
+
+{% block content %}
+{% include 'includes/header.html' %}
+<script>
+    $(function() {
+        $("body").tooltip({
+            selector: '[data-toggle="tooltip"]'
+        });
+    });
+</script>
+<div class="row">
+
+    <div class="col-md-4">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Estado del proyecto</h3>
+            </div>
+            <div class="panel-body container-chart pie">
+                <div id="pie-chart-status" style="height:235px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Resultados por jugador</h3>
+            </div>
+            <!-- HTML render container -->
+            <div class="panel-body container-results" style="padding-bottom: 0;"></div>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Duración del proyecto</h3>
+            </div>
+            <div class="panel-body container-chart line">
+                <div id="line-chart-duration"></div>
+                <hr>
+                <div class="margin-top-40">
+                    <div class="pull-right alert alert-info hide">
+                        Puedes realizar comparaciones entre los diferentes alumnos
+                    </div>
+                    <h4>Mostrar por Alumno</h4>
+                    <div class="row">
+                        <select id="ddl2" data-live-search="true" class="pull-left col-md-7 compare-duration" required multiple data-plugin="selectpicker" data-selected-text-format="count">
+                            {% for player in project.players %}
+                            <option value="{{player.user.id}}" data-content='{% include "../user/avatar.html" with { user: player.user, baseURL: baseURL } only %} {{player.user.name}}'>
+                                {{player.user.name}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div class="col-md-5">
+                            <small>Puedes realizar comparaciones entre los diferentes alumnos</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+(function() {
+    this.LA = function() {
+        var defaults = {
+            server: {
+                ip: '127.0.0.1',
+                port: 8888,
+                protocol: 'http',
+                path: '/api/'
+            }
+        };
+        this.options = defaults;
+        // Create options by extending defaults with the passed in arugments
+        if (arguments[0] && typeof arguments[0] === 'object') {
+            this.options = $.extend(defaults, arguments[0]);
+        }
+        this.endpointBase = this.options.server.protocol + '://' + this.options.server.ip + ':' + this.options.server.port + this.options.server.path;
+        var self = this;
+        this.formatUrl = function(url, params) {
+            var str = url.toString();
+            if (!Object.keys(params).length) return str;
+
+            var args = typeof params,
+                    args = (("string" == args || "number" == args) ? arguments : params);
+
+            for (arg in args) str = str.replace(RegExp("\\:" + arg , "gi"), args[arg]);
+            return str;
+        };
+        this.get = function(url, options) {
+            options.method = 'GET';
+            return self._request(url, options);
+        };
+        this.setDefaultOptions = function(url, options) {
+            var result = {};
+            if (typeof url === 'string' ) {
+                var formattedUrl = self.formatUrl(url, options.params);
+                result.url = self.endpointBase + formattedUrl;
+            }
+            if (typeof options === 'object') {
+                result.success = options.success || {};
+                result.error = options.error || {};
+            }
+            return result;
+        };
+        this._request = function(url, options) {
+            defaults = {};
+            var options = self.setDefaultOptions(url, options);
+            var paramsRequest = $.extend(defaults, options);
+            $.ajax(paramsRequest)
+                .done(self._onSuccess(paramsRequest))
+                .fail(self._onFail(paramsRequest))
+                .always(self._onComplete(paramsRequest));
+        };
+        this._onSuccess = function(event) {
+            event = event.success || {};
+        };
+        this._onFail = function(event) {
+            event = event.error || {};
+        };
+        this._onComplete = function(event) {
+            event = event.complete || {};
+        };
+        /**
+         * Endpoints de Learning Analytics API
+         */
+        this.endpoint = {
+            project: {
+                timing: {
+                    read: 'project/:projectId/timing',
+                    readByUsers: 'project/:projectId/timing/users',
+                    readByUserId: 'project/:projectId/timing/user/:userId'
+                },
+                results: {
+                    read: 'project/:projectId/results',
+                    readByUsers: 'project/:projectId/results/users'
+                }
+            }
+        };
+
+        return this;
+    };
+}());
+</script>
+
+<script>
+(function() {
+    this.User = function() {
+        this.baseURL = '';
+        this.users = [];
+        var self = this;
+        /**
+         * Añade al array el listado de usuarios
+         */
+        this.setUsers = function (users) {
+            this.users = users;
+        };
+        /**
+         * Obtener un usuario único por el identificador
+         * @param userId
+         * @returns {*}
+         */
+        this.getById = function (userId) {
+            var user = $.map(self.users, function(user) {
+                if(user.userId == userId) {
+                    user.avatar = self.renderAvatar(user);
+                    return user;
+                }
+            });
+            if (!user.length) {
+                return false;
+            }
+            // puesto que es un array de objetos se debe mostrar un único elemento del array
+            return user[0];
+        };
+        this.renderAvatar = function(user) {
+            var avatar = $('<img>');
+            if (user.avatar) {
+                avatar.attr('src', self.baseURL +'/uploads/'+ user.avatar);
+            } else {
+                // Se muestra con las iniciales como una imagen (plugin Initial)
+                avatar.attr('data-name', user.name).initial({
+                    charCount: 2
+                });
+            }
+            avatar.css({width: '20px', height: '20px'});
+            avatar.addClass('profile img-circle margin-right-5');
+            return avatar;
+        };
+
+        return this;
+    }
+}());
+</script>
+<script>
+    var Users = new User();
+        Users.baseURL = '{{baseURL}}';
+        Users.setUsers([
+            {% for player in project.players %}
+                {userId: '{{player.user.id}}', name: '{{player.user.name}}', avatar: '{{player.user.avatar}}'},
+            {% endfor %}
+        ]);
+</script>
+<style>
+    .axisLabel {
+        position: absolute;
+        text-align: center;
+        font-size: 12px;
+    }
+    .xaxisLabel {
+        bottom: -25px;
+        left: 10px;
+    }
+    .yaxisLabel {
+        top: 50%;
+        left: -20px;
+        transform: rotate(-90deg);
+        -o-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+        -moz-transform: rotate(-90deg);
+        -webkit-transform: rotate(-90deg);
+        transform-origin: 0 0;
+        -o-transform-origin: 0 0;
+        -ms-transform-origin: 0 0;
+        -moz-transform-origin: 0 0;
+        -webkit-transform-origin: 0 0;
+    }
+</style>
+<script src="http://www.flotcharts.org/javascript/jquery.flot.min.js"></script>
+<script src="http://www.flotcharts.org/flot/jquery.flot.navigate.js"></script>
+<script src="http://www.flotcharts.org/flot/jquery.flot.pie.js"></script>
+<link rel="stylesheet" href="http://getbootstrapadmin.com/remark/base/assets/examples/css/charts/flot.min.css?v2.2.0">
+<script>
+/// CHART
+(function() {
+    this.Chart = function() {
+        var self = this;
+        // Paleta de colores a usar en el proyecto para cualquier tipo de gráfica
+        this.colors = ['#9C27B0', '#E91E63', '#F44336', '#EA80FC', '#673AB7', '#2196F3', '#00BCD4', '#009688', '#03A9F4', '#FF8A80'];
+
+        /**
+         * Gráfica de tipo pie
+         * @api https://github.com/flot/flot/blob/master/API.md
+         * @type {{}}
+         */
+        this.pie = {};
+        this.pie.data = [];
+        this.pie.element = '';
+        this.pie.colors = this.colors;
+        this.pie.getChart = {};
+        this.pie.render = function () {
+            self.pie.getChart = $.plot(self.pie.element, self.pie.data, self.pie.options);
+        };
+        this.pie.labelFormatter = function(label, series) {
+            return "<div" + " style='" + "font-size: 20px; text-align: center; padding: 2px; color: #fff;'" + ">" + Math.round(series.percent) + "%</div>";
+        };
+        this.pie.options = {
+            series: {
+                pie: {
+                    show: true,
+                    radius: 1,
+                    label: {
+                        show: true,
+                        radius: 2/4,
+                        formatter: self.pie.labelFormatter
+                    }
+                }
+            },
+            colors: ["#46BE8A", "#f96868", "#e4eaec"],
+            grid: {
+                clickable: true
+            }
+        };
+
+        /**
+         * Gráfica de tipo lineal
+         * @api https://github.com/flot/flot/blob/master/API.md
+         * @type {{}}
+         */
+        this.line = {};
+        this.line.data = [];
+        this.line.element = '';
+        this.line.colors = this.colors;
+        this.line.getChart = {};
+        this.line.getAxes = function() {
+            return self.line.getChart.getAxes();
+        };
+        this.line.axisLabels = {
+            x: '',
+            y: ''
+        };
+        this.line.renderAxisLabels = function() {
+            var axisLabels = self.line.axisLabels;
+            for(label in axisLabels) {
+                if (axisLabels[label]) {
+                    var axisLabel = $("<div class='axisLabel "+ label +"axisLabel'/>")
+                            .text(axisLabels[label])
+                            .appendTo(self.line.element);
+                    axisLabel.css("margin-top", axisLabel.width() / 2 - 20);
+                }
+            }
+        };
+        this.line.render = function () {
+            self.line.getChart = $.plot(self.line.element, self.line.data, self.line.options);
+            self.line.renderAxisLabels();
+        };
+        this.line.options = {
+            xaxis: {
+                mode: null,
+                tickDecimals: 0,
+                tickLength: 0,
+                color: "#474e54",
+                font: {
+                    size: 14,
+                    weight: 300
+                },
+                zoomRange: [0.1],
+                panRange: [1]
+            },
+            yaxis: {
+                axisLabel: "Duración",
+                axisLabelUseCanvas: true,
+                axisLabelFontSizePixels: 12,
+                axisLabelFontFamily: "Verdana, Arial, Helvetica, Tahoma, sans-serif",
+                axisLabelPadding: 5,
+                tickColor: "#edeff2",
+                color: "#474e54",
+                tickDecimals: 1,
+                font: {
+                    size: 14,
+                    weight: "300"
+                },
+                zoomRange: [0.1],
+                panRange: [0]
+            },
+            zoom: {
+                interactive: true
+            },
+            pan: {
+                interactive: true
+            },
+            series: {
+                shadowSize: 0,
+                lines: {
+                    show: true,
+                    lineWidth: 1.5
+                },
+                points: {
+                    show: true,
+                    fill: true,
+                    radius: 4,
+                    lineWidth: 1
+                }
+            },
+            colors: [self.line.colors],
+            grid: {
+                hoverable: true,
+                clickable: true,
+                backgroundColor: {
+//                        colors: ["#fcfdfe", "#fcfdfe"]
+                    colors: ["#ffffff", "#ffffff"]
+                },
+                borderWidth: 0
+            },
+            legend: {
+                show: true
+            }
+        };
+
+        return this;
+    };
+}());
+</script>
+<script>
+    // Reenderizado de templates en el navegador usando SWIG
+    function renderTemplate(templateFile, $element, data) {
+        data = data || {};
+        $.ajax({
+            url: '/templates/' + templateFile,
+            success: function (tpl) {
+                var html = swig.render(tpl, {locals: data});
+                $element.html(html);
+            },
+            dataType: 'text'
+        });
+    };
+</script>
+<script src="/assets/vendor/swig/swig.min.js"></script>
+<script>
+/// Inicialización
+    var request = new LA();
+    var endpoint = request.endpoint;
+    request.get(endpoint.project.results.readByUsers, {
+        params: {
+            projectId: '{{project.id}}'
+        },
+        success: function (data) {
+            data = {
+                totalActivities: {{project.activities.length}},
+                results: data
+            };
+            renderTemplate('project/results.html', $('.container-results'), data);
+        }
+    });
+
+    var Chart = new Chart();
+
+    var chartPie = Chart.pie;
+    chartPie.element = $('#pie-chart-status');
+    request.get(endpoint.project.results.read, {
+        params: {
+            projectId: '{{project.id}}'
+        },
+        success: function (data) {
+            chartPie.data = [
+                {label: 'Acertados', data: (Math.floor(data.correct * 100) / data.total).toFixed(1), color: '#46BE8A'},
+                {label: 'Fallados', data: (Math.floor(data.failed * 100) / data.total).toFixed(1), color: '#f96868'},
+                {label: 'No contestados', data: (Math.floor(data.notAnswered * 100) / data.total).toFixed(1), color: '#e4eaec'}
+            ];
+            chartPie.render();
+        }
+    });
+
+    var chartLine = Chart.line;
+    chartLine.element = $('#line-chart-duration');
+    chartLine.axisLabels = {
+        x: 'Nº Actividad',
+        y: 'Tiempo (segundos)'
+    };
+    var options = [];
+    $('.compare-duration').on('changed.bs.select', function (event, clickedIndex, newValue, oldValue) {
+        var optionClicked = $(this).find('option:eq(' + clickedIndex + ')');
+        $element = $('#line-chart-duration');
+        var userId = optionClicked.val();
+        var username = optionClicked.text();
+        if (optionClicked.is(':selected')) {
+            request.get(endpoint.project.timing.readByUserId, {
+                params: {
+                    projectId: '5721df292f01890c9a2b363e',
+                    userId: userId
+                },
+                success: function (data) {
+                    var activities = data.activities;
+                    console.log(activities.length);
+                    if (!activities.length) {
+                        return false
+                    }
+                    var data = [];
+                    data = activities.map(function (activity, index) {
+                        return [(index + 1), parseFloat(activity.duration)];
+                    });
+                    options.push({label: username, data: data});
+                    chartLine.data = options;
+                    chartLine.render();
+                }
+            });
+        } else {
+            chartLine.data = $.grep(options, function (o, i) {
+                return o.label === username;
+            }, true);
+            chartLine.render();
+        }
+    });
+</script>
+<style>
+    .compare-duration img {
+        width: 20px;
+        margin-right: 5px;
+    }
+    #pie-chart-status {
+        height: 300px;
+    }
+    #line-chart-duration {
+        height: 300px;
+    }
+    .legendColorBox > div {
+        border: 0 !important;
+    }
+</style>
+
+<script>
+(function() {
+    $("<div class='flot-tooltip'></div>").css({
+        position: "absolute",
+        color: "#fff",
+        display: "none",
+        border: "1px solid #777",
+        padding: "2px",
+        "background-color": "#777",
+        opacity: 0.80
+    }).appendTo("body");
+    $("#line-chart-duration").bind("plothover", function(event, pos, item) {
+        if (item) {
+            var x = item.datapoint[0].toFixed(0),
+                    y = item.datapoint[1].toFixed(1);
+            $(".flot-tooltip").html("Actividad " + x + " = " + y)
+                    .css({
+                        top: item.pageY + 5,
+                        left: item.pageX + 5
+                    })
+                    .fadeIn(200);
+        } else {
+            $(".flot-tooltip").hide();
+        }
+    });
+})();
+</script>
+
+<!-- Line chart -->
+<script>
+// Get the data
+request.get(endpoint.project.timing.read, {
+    params: {
+        projectId: '5721df292f01890c9a2b363e'
+//        projectId: '5721df292f01890c9a2b363e',
+//        userId: '5703b3ad526a931458596608'
+    },
+    success: function(data) {
+        var userId = data.userId;
+        var activities = data.activities;
+        var b = [];
+        b = activities.map(function (activity, index) {
+//            return [parseFloat(activity.duration.toFixed(2)), (index + 1)];
+            return [(index + 1), parseFloat(activity.duration)];
+        });
+//        b.push([4, 4], [1.4, 5]);
+//        b.push([4, 1], [5, 2.3], [6, 10], [7, 4], [8, 9], [9, 4], [10, 1.3], [11, 2], [12, 12], [13, 10], [14, 8]);
+//
+        // Example Flot Full-Bg Line
+        // -------------------------
+        console.log(b);
+        var sum = 0;
+        b.map(function(data) {
+            sum += data[1];
+        });
+        var avg = sum / b.length;
+
+        var avgData = [[1, avg], [b.length, avg]];
+        var options = [
+            {
+                label: "Duración",
+                data: b
+            },
+            {
+                label: "Duración media",
+                data: avgData,
+                points: {
+                    show: false
+                },
+                lines: {
+                    show: true,
+                    fill: true,
+                    fillColor: "rgba(228, 234, 236, 0.2)"
+                }
+            }
+        ];
+
+        $.plot("#line-chart-duration", options, {
+            xaxis: {
+                mode: null,
+//                ticks: function() {
+////                    return b.map(function(data) {
+////                        console.log(['AC' + data[0], data[1]]);
+////                        return ['AC' + data[0], data[1]];
+////                    });
+////                    return b.map(function(data) {
+////                        return [data[0], 'AC' + data[1]];
+////                    });
+//                },
+                tickDecimals: 0,
+                tickLength: 0,
+                color: "#474e54",
+                font: {
+                    size: 14,
+                    weight: 300
+                    // family: "OpenSans Light"
+                }
+            },
+            yaxis: {
+                axisLabel: "Duración",
+                axisLabelUseCanvas: true,
+                axisLabelFontSizePixels: 12,
+                axisLabelFontFamily: "Verdana, Arial, Helvetica, Tahoma, sans-serif",
+                axisLabelPadding: 5,
+                tickColor: "#edeff2",
+                color: "#474e54",
+                tickDecimals: 1,
+                font: {
+                    size: 14,
+                    weight: "300"
+                }
+            },
+            series: {
+                shadowSize: 0,
+                lines: {
+                    show: true,
+                    lineWidth: 1.5
+                },
+                points: {
+                    show: true,
+                    fill: true,
+                    fillColor: $.colors("primary", 600),
+                    radius: 3,
+                    lineWidth: 1
+                }
+            },
+            colors: [$.colors("primary", 400), '#57c7d4'],
+            grid: {
+                hoverable: true,
+                clickable: true,
+                // color: "green",
+                // tickColor: "red",
+                backgroundColor: {
+                    colors: ["#fcfdfe", "#fcfdfe"]
+                },
+                borderWidth: 0
+                // borderColor: "#ff0000"
+            },
+            legend: {
+                show: true
+            }
+        });
+
+    }
+//
+});
+
+</script>
+
+
+{% endblock %}
