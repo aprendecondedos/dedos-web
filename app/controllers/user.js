@@ -4,6 +4,9 @@ var extend = require('util')._extend;
 var wrap = require('co-express');
 var fs = require('fs');
 var gm = require('gm');
+var async = require('async');
+var nodemailer = require('nodemailer');
+var crypto = require('crypto');
 var User = mongoose.model('User');
 var Teacher = mongoose.model('Teacher');
 
@@ -20,8 +23,131 @@ exports.index = function(req, res) {
 
 };
 
+exports.forgot = function(req,res, next){
+  if(req.method == "GET") {
+      res.render('user/forgot');
+  }else{
+          async.waterfall([
+              function(done) {
+                  crypto.randomBytes(20, function(err, buf) {
+                      var token = buf.toString('hex');
+                      done(err, token);
+                  });
+              },
+              function(token, done) {
+                  Teacher.load({ email: req.body.email }, function(err, user) {
+                      if (!user) {
+                          req.flash('error', 'No account with that email address exists.');
+                          return res.redirect('/forgot');
+                      }
+
+                      user.resetPasswordToken = token;
+                      user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+                      user.save(function(err) {
+                          done(err, token, user);
+                      });
+                  });
+              },
+              function(token, user, done) {
+                  var smtpTransport = nodemailer.createTransport('SMTP', {
+                      service: 'Gmail',
+                      auth: {
+                          user: 'aprendecondedospwd@gmail.com',
+                          pass: 'aprendecondedospwd1!'
+                      }
+                  });
+                  var mailOptions = {
+                      to: req.body.email,
+                      from: 'passwordreset@aprendecondedos.es',
+                      subject: 'Password Reset player.aprendecondedos.es',
+                      text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                      'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                      'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+                      'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+                  };
+                  console.log("2");
+                  smtpTransport.sendMail(mailOptions, function(err) {
+                      req.flash('info', 'An e-mail has been sent to ' + req.body.email + ' with further instructions.');
+                      done(err, 'done');
+                  });
+              }
+          ], function(err) {
+              if (err) return next(err);
+              res.redirect('/forgot');
+          });
+
+  };
+};
+
+exports.reset = function(req, res) {
+    if(req.method == "POST") {
+        console.log("1");
+        async.waterfall([
+            function (done) {
+                Teacher.load({
+                    resetPasswordToken: req.params.token,
+                    resetPasswordExpires: {$gt: Date.now()}
+                }, function (err, user) {
+                    if (!user) {
+                        req.flash('error', 'Password reset token is invalid or has expired.');
+                        return res.redirect('back');
+                    }
+                    console.log("user: " + user);
+
+                    user.password = req.body.password;
+                    user.resetPasswordToken = undefined;
+                    user.resetPasswordExpires = undefined;
+
+                    user.save(function (err) {
+                        req.logIn(user, function (err) {
+                            done(err, user);
+                        });
+                    });
+                });
+            },
+            function (user, done) {
+                console.log("32");
+                console.log(user);
+                var smtpTransport = nodemailer.createTransport('SMTP', {
+                    service: 'Gmail',
+                    auth: {
+                        user: 'aprendecondedospwd@gmail.com',
+                        pass: 'aprendecondedospwd1!'
+                    }
+                });
+                var mailOptions = {
+                    to: user.email,
+                    from: 'passwordreset@aprendecondedos.es',
+                    subject: 'Your password has been changed',
+                    text: 'Hello,\n\n' +
+                    'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
+                };
+                smtpTransport.sendMail(mailOptions, function (err) {
+                    req.flash('success', 'Success! Your password has been changed.');
+                    done(err);
+                });
+            }
+        ], function (err) {
+            res.redirect('/');
+        });
+    } else {
+        Teacher.load({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+            if (!user) {
+                req.flash('error', 'Password reset token is invalid or has expired.');
+                return res.redirect('/forgot');
+            }
+            console.log(req.params.token);
+            res.render('user/reset', {
+                token: req.params.token
+            });
+        });
+    }
+};
+
 exports.new = function(req, res) {
   if (req.method == 'POST') {
+    console.log(req.body);
     var user = new Teacher(req.body);
     user.provider = 'local';
     user.save(function(err) {

@@ -15,7 +15,9 @@ var userSchemaSSSS = mongoose.Schema({
   // Teacher properties
   email: {type: String, unique: true, lowercase: true},
   password: String,
-  classes: [{type: Schema.Types.ObjectId, ref: 'Class'}]
+  classes: [{type: Schema.Types.ObjectId, ref: 'Class'}],
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
 });
 
 var UserSchema = Schema({

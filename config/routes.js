@@ -20,6 +20,10 @@ module.exports = function(app, passport, io) {
   // User routes
   app.get('/signup', user.new);
   app.post('/signup', user.new);
+  app.get('/forgot', user.forgot);
+    app.post('/forgot', user.forgot);
+    app.post('/reset/:token', user.reset);
+    app.get('/reset/:token', user.reset);
   app.get('/login', user.login);
   app.post('/login',
     passport.authenticate('local', {

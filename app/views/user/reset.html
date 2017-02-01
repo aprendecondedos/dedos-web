@@ -1,0 +1,31 @@
+{% extends '../layouts/auth.html' %}
+
+{% block auth %}
+{{user}}
+<form method="post" action="/reset/{{token}}" role="form">
+    <h3 class="font-size-24">{{gettext('user:recpwd')}}</h3>
+    <p>{{gettext('user:recpwd:description')}}</p>
+
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+
+   <!-- <div>{{gettext('"user:recpwd"')}}</div>-->
+    <div class="form-group error">
+        {% include '../includes/messages.html' %}
+    </div>
+
+    <div class="form-group">
+        <label class="sr-only" for="password">{{gettext('user:password:new')}}</label>
+        <input type="password" class="form-control" id="password" required name="password" placeholder="{{gettext('user:password:new')}}">
+    </div>
+
+    <div class="form-group">
+        <label class="sr-only" for="confirm">{{gettext('user:password:confirm')}}</label>
+        <input type="password" class="form-control" id="confirm" required name="confirm" placeholder="{{gettext('user:password:confirm')}}">
+    </div>
+
+
+    <button type="submit" class="btn btn-primary btn-block">{{gettext('user:password:confirmnew')}}</button>
+
+</form>
+
+{% endblock %}

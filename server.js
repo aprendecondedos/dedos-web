@@ -8,10 +8,12 @@ var express = require('express');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var config = require('./config/config');
+var flash = require('express-flash');
 
 var app = express();
 var server = require('http').Server(app);
 var port = process.env.PORT || 3000;
+app.use(flash());
 
 // Connect to mongodb
 var connect = function() {

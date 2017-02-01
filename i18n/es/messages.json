@@ -4,6 +4,7 @@
   "user:rememberme": "Recuérdame",
   "user:forgotpassword": "¿Olvidó la contraseña?",
   "user:noaccount": "¿No tienes cuenta?",
+  "user:recpwd" : "Recuperacion de contraseña",
   "user:signup": "Registrarse",
   "user:signup:or": "o",
   "user:signup:usingemail": "Registrate usando el correo electrónico",
@@ -15,6 +16,10 @@
   "user:password": "Contraseña",
   "user:password:current": "Contraseña actual",
   "user:password:confirm": "Confirmar contraseña",
+  "user:sendpwd": "Introduzca el correo electrónico con el que se registró en la plataforma",
+  "user:password:confirmnew": "Restablecer contraseña",
+  "user:password:new": "Nueva contraseña",
+  "user:recpwd:description": "Introduzca la nueva contraseña",
 
   "administration:panel": "Panel de administración",
   "project:new": "Nuevo proyecto",
