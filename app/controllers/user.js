@@ -50,8 +50,7 @@ exports.forgot = function(req,res, next){
                   });
               },
               function(token, user, done) {
-              console.log(req.headers);
-              console.log("hola");
+
                   var smtpTransport = nodemailer.createTransport('SMTP', {
                       service: 'Gmail',
                       auth: {
@@ -65,10 +64,10 @@ exports.forgot = function(req,res, next){
                       subject: 'Password Reset player.aprendecondedos.es',
                       text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
                       'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-                      'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+                      'http://' + req.headers.origin + '/reset/' + token + '\n\n' +
                       'If you did not request this, please ignore this email and your password will remain unchanged.\n'
                   };
-                  console.log("2");
+
                   smtpTransport.sendMail(mailOptions, function(err) {
                       req.flash('info', 'An e-mail has been sent to ' + req.body.email + ' with further instructions.');
                       done(err, 'done');
