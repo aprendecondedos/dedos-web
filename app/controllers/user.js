@@ -51,6 +51,7 @@ exports.forgot = function(req,res, next){
               },
               function(token, user, done) {
               console.log(req.headers);
+              console.log("hola");
                   var smtpTransport = nodemailer.createTransport('SMTP', {
                       service: 'Gmail',
                       auth: {
