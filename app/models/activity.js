@@ -6,7 +6,7 @@ var _ = require('underscore');
 
 // Activity model
 var ActivitySchema = new Schema({
-  project: {type: Schema.Types.ObjectId, ref: 'Project'},
+  project: [{type: Schema.Types.ObjectId, ref: 'Project'}],
   objectives: [{type: Schema.Types.ObjectId, ref: 'Objective'}],
   elements: [{type: Schema.Types.ObjectId, ref: 'Element'}],
   answers: [{type: Schema.Types.ObjectId, ref: 'Answer'}],

@@ -444,7 +444,7 @@
         if (optionClicked.is(':selected')) {
             request.get(endpoint.project.timing.readByUserId, {
                 params: {
-                    projectId: '5721df292f01890c9a2b363e',
+                    projectId: '{{project.id}}',
                     userId: userId
                 },
                 success: function (data) {
@@ -519,7 +519,7 @@
 // Get the data
 request.get(endpoint.project.timing.read, {
     params: {
-        projectId: '5721df292f01890c9a2b363e'
+        projectId: '{{project.id}}'
 //        projectId: '5721df292f01890c9a2b363e',
 //        userId: '5703b3ad526a931458596608'
     },
@@ -529,7 +529,7 @@ request.get(endpoint.project.timing.read, {
         var b = [];
         b = activities.map(function (activity, index) {
 //            return [parseFloat(activity.duration.toFixed(2)), (index + 1)];
-            return [(index + 1), parseFloat(activity.duration)];
+            return [(index+1), parseFloat(activity.duration)];
         });
 //        b.push([4, 4], [1.4, 5]);
 //        b.push([4, 1], [5, 2.3], [6, 10], [7, 4], [8, 9], [9, 4], [10, 1.3], [11, 2], [12, 12], [13, 10], [14, 8]);

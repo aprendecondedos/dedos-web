@@ -162,9 +162,16 @@ AnswerSchema.statics = {
    * @param {Array|String} activities
    * @returns {*}
    */
-  getFromActivities: function(activities) {
+  getFromActivities: function(activities,players) {
+
+    var arrayId = new Array();
+    players.forEach(function(player, index){
+      arrayId.push(player.user._id);
+    });
+    console.log(arrayId);
     return this.list({
       criteria: {
+        'player': {$in: arrayId},
         'activityData.activity': {$in: activities}
       },
       populate:  [{path: 'player', select: 'name'}, {path: 'elements.token'}, {path: 'elements.target'}]

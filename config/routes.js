@@ -85,6 +85,9 @@ module.exports = function(app, passport, io) {
   app.get('/project/:projectId/statistics', projectAuth, project.statistics);
   app.get('/project/:projectId/export', projectAuth, project.export);
   app.get('/project/:projectId/copy', projectAuth, project.copy);
+  //share project
+    app.get('/share/:projectId/:email', projectAuth, project.share);
+    app.post('/share/:projectId/:email', projectAuth, project.share);
 
   app.route('/project/:projectId').all(projectAuth)
     .get(project.show)

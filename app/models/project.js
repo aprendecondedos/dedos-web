@@ -6,6 +6,8 @@ var util = require('util');
 var wrap = require('co-express');
 var _ = require('underscore');
 var Activity = mongoose.model('Activity');
+var Objective = mongoose.model('Objective');
+var Element = mongoose.model('Element');
 
 // Project model
 var ProjectSchema = mongoose.Schema({
@@ -43,7 +45,7 @@ var ProjectSchema = mongoose.Schema({
     maxTimeoutAutoNext: {type: Number, default: 0}
   },
   createdDate: {type: Date, default: Date.now},
-  createdBy: {type: Schema.Types.ObjectId, ref: 'User'}
+  createdBy: [{type: Schema.Types.ObjectId, ref: 'User'}]
 });
 
 /**
@@ -57,7 +59,9 @@ ProjectSchema.pre('remove', function(next) {
   const activities = this.activities;
   if (activities.length > 0) {
     this.activities.forEach(function(activity) {
-      activity.remove();
+      if(activity.project.length<2) {
+          activity.remove();
+      }
     });
   }
   next();
@@ -207,12 +211,12 @@ ProjectSchema.statics = {
    * @param {ObjectId} options
    */
 
-  load: function(options) {
+  load: function(options,cb) {
     const criteria = options.criteria || {_id: options};
     return this.findOne(criteria)
       .populate('players.user')
       .populate('activities')
-      .exec();
+      .exec(cb);
   },
   /**
    * Listar proyectos y filtrarlos

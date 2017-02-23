@@ -157,7 +157,7 @@ TeacherSchema.statics = {
    * @param {Function} cb
    */
   load: function(options, cb) {
-    options.select = options.select || 'name email';
+    options.select = options.select || '_id name email';
     this.findOne(options.criteria)
         .select(options.select)
         .exec(cb);

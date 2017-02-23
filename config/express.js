@@ -130,7 +130,7 @@ module.exports = function(app, passport) {
   }
   // i18n translations
   app.use(i18n.middleware({
-    supported_languages: ['es', 'en'],
+    supported_languages: ['es'],
     default_lang: "es",
     mappings: {
       'es': 'es'

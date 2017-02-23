@@ -35,6 +35,8 @@
   "project:delete:text": "No podrás recuperar los datos",
   "project:deleted": "¡Eliminado!",
   "project:deleted:text": "El proyecto ha sido eliminado",
+  "project:share" : "Compartir proyecto",
+  "share" : "Compartir",
 
   "players": "Jugadores",
   "player": "Jugador",

@@ -115,6 +115,31 @@ $(function(){
         </div>
         <div class="panel">
             <div class="panel-heading">
+                <h3 class="panel-title">{{gettext('project:share')}}</h3>
+            </div>
+            <div class="panel-body">
+                {% if req.headers['x-forwarded-host'] %}
+                {% set full_url = req.protocol + '://' + req.headers['x-forwarded-host']; %}
+                {% else %}
+                {% set full_url = req.protocol + '://' + req.get('host'); %}
+                {% endif %}
+                <div class="input-group">
+                    <input type="text" id="emailShare" class="form-control" value="" style="cursor: pointer;">
+                    <span class="input-group-btn">
+                        <button type="button"
+                                data-toggle="tooltip"
+                                id="shareproject"
+                                title="{{gettext('share')}}"
+                                data-copied="{{gettext('copy:clipboard:copied')}}"
+                                class="btn btn-default btn-outline"><i class="wb-share"></i> {{gettext('share')}}</button>
+                    </span>
+                </div>
+                <span class="help-block">A block of help text that breaks onto a new line and may extend
+                  beyond one line.</span>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-heading">
                 <h3 class="panel-title">{{gettext('students')}}</h3>
             </div>
             <div class="panel-body">
@@ -184,4 +209,21 @@ $(function(){
     </div>
     <!-- Players list end -->
 </div>
+
+<script>
+    // Shorthand for $(document).ready();
+    $(function() {
+        $('#shareproject').click(function(){
+            var email = $('#emailShare').val();
+            var projectId = '{{project.id}}';
+            console.log(email);
+            console.log(projectId);
+            window.location.href = '/share/' + projectId + '/' + email;
+
+            return false;
+//            $(this).attr('action',projectId);
+        });
+    });
+</script>
 {% endblock %}
+

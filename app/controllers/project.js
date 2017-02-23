@@ -23,6 +23,7 @@ var TokenMeter = mongoose.model('TokenMeter');
 var Area = mongoose.model('Area');
 var Token = mongoose.model('Token');
 var User = mongoose.model('User');
+var Teacher = mongoose.model('Teacher');
 
 /**
  * Load
@@ -85,7 +86,7 @@ exports.new = wrap(function*(req, res) {
         project: project_id,
         screenshots: screenshots_array,
         path: '/uploads/' + project_id + '/' + xml.split('/')[0],
-        createdBy: req.user.id
+        createdBy: [req.user.id]
       });
       var prop = project_prop.properties || {};
       // Propiedades del proyecto seleccionadas
@@ -261,7 +262,7 @@ exports.new = wrap(function*(req, res) {
 exports.show = wrap(function*(req, res) {
   const project = req.project;
   // Respuestas ordenadas por actividad y valido o incorrecto
-  const answers = yield Answer.getFromActivities(project.activities);
+  const answers = yield Answer.getFromActivities(project.activities, project.players);
   var answers_data = [];
   answers.forEach(function(answer) {
     if (_.isUndefined(answers_data[answer.activityData.activity])) {
@@ -279,6 +280,48 @@ exports.show = wrap(function*(req, res) {
     answers: answers_data
   });
 });
+
+//share project
+
+exports.share = wrap(function*(req, res) {
+    var projectDef = req.project;
+    var projectId = req.params.projectId;
+    var email = req.params.email;
+    var result = true;
+    var options = {
+        criteria: {
+            email: email
+        }
+    };
+  Project.load(projectId, function (err, projectCopy) {
+    projectCopy._id = mongoose.Types.ObjectId();
+    projectCopy.isNew = true;
+    projectCopy.createdBy.pop();
+    projectCopy.players = [];
+    projectCopy.project = lib.unique_id();
+
+    projectCopy.activities.forEach(function(activity,index){
+      activity.project.push(projectCopy._id);
+      activity.save();
+    });
+
+      Teacher.load(options, function (err, teacher) {
+          if (!teacher) {
+              result = false;
+          } else {
+              projectCopy.createdBy.push(teacher._id);
+              projectCopy.save();
+          }
+          if (result) {
+              req.flash('success', 'Se ha compartido el proyecto con éxito');
+          } else {
+              req.flash('error', 'No existe ninguna cuenta con ese correo electrónico');
+          }
+          return res.redirect('/project/' + projectId);
+      });
+  });
+});
+
 
 /**
  *  Configuración de las propiedades del proyecto
