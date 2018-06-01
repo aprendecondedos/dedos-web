@@ -93,11 +93,11 @@ module.exports = function(app, passport) {
 
   // CookieParser should be above session
   app.use(cookieParser());
-  app.use(cookieSession({secret: 'secret'}));
+  app.use(cookieSession({secret: process.env['DEDOS_WEB_COOKIE_SECRET']}));
   app.use(session({
     resave: true,
     saveUninitialized: true,
-    secret: pkg.name,
+    secret: process.env['DEDOS_WEB_SESSION_SECRET'],
     cookie: {
       maxAge: 3600000
     },
