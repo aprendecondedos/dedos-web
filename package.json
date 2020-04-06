@@ -31,7 +31,7 @@
     "less-middleware": "1.0.x",
     "lodash": "^3.10.1",
     "method-override": "^2.3.5",
-    "mongoose": "^4.2.5",
+    "mongoose": "^5.7.5",
     "morgan": "~1.6.1",
     "multer": "^1.1.0",
     "node-rest-client": "git+https://github.com/jwindmuller/node-rest-client.git",
