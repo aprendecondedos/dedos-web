@@ -8,7 +8,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var config = require('./config/config');
-var flash = require('express-flash');
+var flash = require('connect-flash');
 
 var app = express();
 var server = require('http').Server(app);

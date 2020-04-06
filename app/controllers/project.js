@@ -146,9 +146,10 @@ exports.new = wrap(function*(req, res) {
                 });
                 objective.setTargets(targets);
               } else if (objective_data.$.type == 'tokenMeter') {
+                console.log("TOKENMETER");
                 var objective = new TokenMeter(objective_data.$);
                 var origzones = [];
-                if (objective_data.OriginZones) {
+                if ((objective_data.OriginZones.length > 1) || (objective_data.OriginZones[0] != '')) {
                   objective_data.OriginZones.forEach(function(target_data) {
                     target_data.zone.forEach(function(target_data) {
                       origzones.push(target_data.$.id);
@@ -156,7 +157,6 @@ exports.new = wrap(function*(req, res) {
                   });
                   objective.setOriginZones(origzones);
                 }
-
                 if (objective_data.OriginTokens) {
                   var origtokens = [];
                   objective_data.OriginTokens.forEach(function(target_data) {
@@ -178,11 +178,13 @@ exports.new = wrap(function*(req, res) {
               }
             });
           });
+
           activity.setObjectives(objectives);
 
           // Set elements
           var elements = [];
           activity_data.Arealist.forEach(function(area_list) {
+            console.log("AREA");
             if (typeof area_list != 'object') { return; }
 
             area_list.Area.forEach(function(area_data) {
@@ -212,11 +214,13 @@ exports.new = wrap(function*(req, res) {
                     movable: token_data.movable.pop(),
                     feedback: token_data.content[0].feedback.pop()
                   });
-
+                  console.log(token);
                   if (token_data.$.type == 'img') {
+                    console.log(token_data.content[0].urlList[0].url);
                     token.setUrls(token_data.content[0].urlList[0].url);
                   } else if (token_data.$.type == 'txt') {
                     token.text = token_data.content[0].text[0];
+                    console.log(token.text);
                   }
                   token.activity = activity._id;
                   token.save();
@@ -313,9 +317,9 @@ exports.share = wrap(function*(req, res) {
               projectCopy.save();
           }
           if (result) {
-              req.flash('success', 'Se ha compartido el proyecto con éxito');
+             // req.flash('success', 'Se ha compartido el proyecto con éxito');
           } else {
-              req.flash('error', 'No existe ninguna cuenta con ese correo electrónico');
+            //  req.flash('error', 'No existe ninguna cuenta con ese correo electrónico');
           }
           return res.redirect('/project/' + projectId);
       });
@@ -572,7 +576,7 @@ exports.my = wrap(function*(req, res) {
  */
 exports.destroy = wrap(function*(req, res) {
   yield req.project.remove();
-  req.flash('success', 'Deleted successfully');
+  //req.flash('success', 'Deleted successfully');
   res.redirect('/projects/my');
 });
 
