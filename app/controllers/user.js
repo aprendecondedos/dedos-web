@@ -52,9 +52,9 @@ exports.forgot = function(req,res, next){
               function(token, user, done) {
 
                   var smtpTransport = nodemailer.createTransport('SMTP', {
-                      service: 'Gmail',
+                      service: 'gmail',
                       auth: {
-                          user: 'aprendecondedospwd@gmail.com',
+                          user: 'aprendecondedospwd',
                           pass: 'aprendecondedospwd1!'
                       }
                   });

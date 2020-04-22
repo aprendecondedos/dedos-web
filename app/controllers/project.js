@@ -147,6 +147,7 @@ exports.new = wrap(function*(req, res) {
                 objective.setTargets(targets);
               } else if (objective_data.$.type == 'tokenMeter') {
                 console.log("TOKENMETER");
+                console.log("AAAAAAAAY");
                 var objective = new TokenMeter(objective_data.$);
                 var origzones = [];
                 if ((objective_data.OriginZones.length > 1) || (objective_data.OriginZones[0] != '')) {
