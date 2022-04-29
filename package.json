@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
-    "async": "^2.1.4",
+    "async": "^2.6.4",
     "body-parser": "^1.13.3",
     "co-express": "^1.2.1",
     "compression": "^1.6.0",
