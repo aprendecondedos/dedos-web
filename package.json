@@ -21,7 +21,7 @@
     "csurf": "^1.8.3",
     "debug": "~2.2.0",
     "email-templates": "^2.0.1",
-    "excel4node": "^1.7.2",
+    "excel4node": "^1.8.0",
     "express": "~4.13.1",
     "express-flash": "0.0.2",
     "express-session": "^1.12.1",
